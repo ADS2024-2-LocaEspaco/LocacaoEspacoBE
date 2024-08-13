@@ -17,9 +17,21 @@
 
 ### Tecnologia e Ferramentas Empregadas
 - Visual Studio Code (IDE)
-- Figma
-- React.JS/Next.JS com TypeScript
 - Node.JS/Nest.JS com TypeScript
+- fastify
+- jest (Testes unitários e de integração)
+- config
+- fake (mock dos dados)
+- uuid
 - Prisma
 - Pacotes de rotas e validações
 - Banco de Dados Relacional - PostgreSQL
+
+
+#### Variáveis de Ambiente
+- .env (ambinte de produção)
+- .env.test (para execição de testes)
+- .env.developmet (para o desenvolvimento)
+
+#### Ajustes do VS Code
+- com a extensão JestRunner instalada, na opção Code Lens Selector devemos ter: **/*.{test,spec,int-spec}.{js,jsx,ts,tsx}
