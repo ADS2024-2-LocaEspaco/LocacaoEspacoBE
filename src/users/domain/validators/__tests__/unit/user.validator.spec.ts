@@ -134,7 +134,6 @@ describe('UserValidator unit tests', () => {
 		it('Password field is empty', () => {
 			const isValid = sut.validate({
 				...props,
-				password: '' as any,
 			})
 			expect(isValid).toBeFalsy()
 			expect(sut.errors['password']).toStrictEqual([
@@ -145,7 +144,6 @@ describe('UserValidator unit tests', () => {
 		it('Password field is a number', () => {
 			const isValid = sut.validate({
 				...props,
-				password: 10 as any,
 			})
 			expect(isValid).toBeFalsy()
 			expect(sut.errors['password']).toStrictEqual([
@@ -157,7 +155,6 @@ describe('UserValidator unit tests', () => {
 		it('Password field is larger than 100 characters', () => {
 			const isValid = sut.validate({
 				...props,
-				password: 'a'.repeat(101) as any,
 			})
 			expect(isValid).toBeFalsy()
 			expect(sut.errors['password']).toStrictEqual([

@@ -5,7 +5,6 @@ import { EntityValidationError } from "@/shared/domain/errors/validation-error"
 export type UserProps = {
 	name: string
 	email: string
-	password: string
 	createdAt?: Date
 }
 
@@ -24,12 +23,7 @@ export class UserEntity extends Entity<UserProps> {
 	get email(): string {
 		return this.props.email
 	}
-	get password(): string {
-		return this.props.password
-	}
-	private set password(value: string) {
-		this.props.password = value
-	}
+
 	get createdAt(): Date {
 		return this.props.createdAt
 	}
@@ -37,11 +31,6 @@ export class UserEntity extends Entity<UserProps> {
 	update(value: string): void {
 		UserEntity.validate({ ...this.props, name: value })
 		this.name = value
-	}
-
-	updatePassword(value: string): void {
-		UserEntity.validate({ ...this.props, password: value })
-		this.password = value
 	}
 
 	static validate(props: UserProps) {

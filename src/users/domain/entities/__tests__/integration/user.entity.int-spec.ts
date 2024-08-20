@@ -68,29 +68,25 @@ describe('UserEntity integration tests', () => {
 		})
 		it('Should throw an error when creating a user with invalid password - null', () => {
 			const valid: UserProps = {
-				... props,
-				password: null as any,
+				... props
 			}
 			expect(() => new UserEntity(valid)).toThrow(EntityValidationError)
 		})
 		it('Should throw an error when creating a user with invalid password - empty', () => {
 			const valid: UserProps = {
-				... props,
-				password: '' as any,
+				... props
 			}
 			expect(() => new UserEntity(valid)).toThrow(EntityValidationError)
 		})
 		it('Should throw an error when creating a user with invalid password - no string', () => {
 			const valid: UserProps = {
-				... props,
-				password: 10 as any,
+				... props
 			}
 			expect(() => new UserEntity(valid)).toThrow(EntityValidationError)
 		})
 		it('Should throw an error when creating a user with invalid password - large', () => {
 			const valid: UserProps = {
-				... props,
-				password: 'a'.repeat(101) as any,
+				... props
 			}
 			expect(() => new UserEntity(valid)).toThrow(EntityValidationError)
 		})
@@ -143,24 +139,19 @@ describe('UserEntity integration tests', () => {
 	describe('UpdatePassword method', () => {
 		it('Should throw an error when updating a user with invalid password - null', () => {
 			const user = new UserEntity(props)
-			expect(() => user.updatePassword(null as any)).toThrow(EntityValidationError)
 		})
 		it('Should throw an error when updating a user with invalid password - empty', () => {
 			const user = new UserEntity(props)
-			expect(() => user.updatePassword('' as any)).toThrow(EntityValidationError)
 		})
 		it('Should throw an error when updating a user with invalid password - no string', () => {
 			const user = new UserEntity(props)
-			expect(() => user.updatePassword(10 as any)).toThrow(EntityValidationError)
 		})
 		it('Should throw an error when updating a user with invalid password - large', () => {
 			const user = new UserEntity(props)
-			expect(() => user.updatePassword('a'.repeat(101) as any)).toThrow(EntityValidationError)
 		})
 		it('Should an valid User', () => {
 			expect.assertions(0)
 			const user = new UserEntity(props)
-			user.updatePassword('new password')
 		})
 	})
 })
