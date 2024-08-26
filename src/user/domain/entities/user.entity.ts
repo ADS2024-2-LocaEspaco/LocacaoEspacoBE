@@ -14,10 +14,11 @@ export class UserEntity {
   private ads: Array<any>;
 
   //autenticação realizada com Google -> user será inicialmente criado com email e username
-  constructor(id: string, email: string, username: string) {
+  constructor(id: string, email: string, username: string, photo: string) {
     this.id = id;
     this.email = email;
     this.username = username;
+    this.photo = photo;
   }
 
   get getId(): string {
@@ -71,4 +72,33 @@ export class UserEntity {
   get getAds(): Array<any> {
     return this.ads;
   }
+
+  set setCpf(cpf: string) {
+    this.cpf = cpf;
+  }
+
+  set setPhone(phone: string) {
+    this.phone = phone;
+  }
+
+  set setAddress(address: string) {
+    this.address = address;
+  }
+
+  set setState(state: string) {
+    this.state = state;
+  }
+
+  set setCity(city: string) {
+    this.city = city;
+  }
+
+  set setCep(cep: string) {
+    this.cep = cep;
+  }
+
+  set setPhoto(photo: string) {
+    this.photo = photo;
+  }
+
 }
