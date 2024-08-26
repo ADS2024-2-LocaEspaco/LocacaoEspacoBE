@@ -2,13 +2,13 @@ export class UserEntity {
   private readonly id: string;
   private username: string;
   private fullName: string;
-  private email: string;
+  private readonly email: string;
   private cpf: string;
   private phone: string;
   private address: string;
   private state: string;
   private city: string;
-  private cep: string;
+  private cep:  string;
   private photo: string;
   private roleId: number;
   private ads: Array<any>;
@@ -29,32 +29,12 @@ export class UserEntity {
     return this.username;
   }
 
-  get getFullname(): string {
-    return this.fullName;
-  }
-
   get getEmail(): string {
     return this.email;
   }
 
   get getCpf(): string {
     return this.cpf;
-  }
-
-  get getPhone(): string {
-    return this.phone;
-  }
-
-  get getAddress(): string {
-    return this.address;
-  }
-
-  get getSteate(): string {
-    return this.state;
-  }
-
-  get getCity(): string {
-    return this.city;
   }
 
   get getCep(): string {
