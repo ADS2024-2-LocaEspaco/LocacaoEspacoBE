@@ -25,8 +25,9 @@ model User {
   city        String @db.VarChar(50)
   cep         String @db.VarChar(8)
   photo       String @db.VarChar(255)
-  roleId  Int
+  roleId      Int
   anuncio     Anuncio[]
+  feedback    Feedback[]
 
   role    Role @relation(fields: [roleId], references: [id])
 }
@@ -46,6 +47,7 @@ model Anuncio {
   tipoImovelId   String
   tipoEspacoId   String
   qtdMaxHospedes Int
+  feedback       Feedback[]
 
   user           User @relation(fields: [userId], references: [id])
   tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id])
@@ -62,5 +64,15 @@ model TipoEspaco {
   id        String @id @default(uuid())
   descricao String @db.VarChar(30)
   anuncio   Anuncio[]
+}
+
+model Feedback {
+  id        String @id @default(uuid())
+  descricao String @db.VarChar(30)
+  anuncioId String
+  userId    String
+
+  user      User @relation(fields: [userId], references: [id])
+  anuncio    Anuncio @relation(fields: [anuncioId], references: [id])
 }
 
