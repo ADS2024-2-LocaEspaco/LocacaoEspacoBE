@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,54 +7,57 @@ datasource db {
   url      = "mysql://root:aluno@localhost:3306/locacao-espaco"
 }
 
-model User {
-  id          String @id @default(uuid())
-  username    String @db.VarChar(30)
-  fullname    String @db.VarChar(50)
-  email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
-  cpf         String @db.VarChar(11)
-  phone       String @db.VarChar(11)
-  address     String @db.VarChar(100)
-  state       String @db.VarChar(2)
-  city        String @db.VarChar(50)
-  cep         String @db.VarChar(8)
-  photo       String @db.VarChar(255)
-  roleId  Int
-  anuncio     Anuncio[]
-
-  role    Role @relation(fields: [roleId], references: [id])
-}
-
-model Role {
-  id        Int @id @default(autoincrement())
-  descricao String @db.VarChar(30)
-  user      User[]
-}
-
-model Anuncio {
-  id             String @id @default(uuid())
-  title          String @db.VarChar(40)
-  address        String @db.VarChar(100)
-  description    String @db.VarChar(200)
+model anuncio {
+  id             String     @id
+  title          String     @db.VarChar(40)
+  address        String     @db.VarChar(100)
+  description    String     @db.VarChar(200)
   userId         String
   tipoImovelId   String
   tipoEspacoId   String
   qtdMaxHospedes Int
+  tipoespaco     tipoespaco @relation(fields: [tipoEspacoId], references: [id], map: "Anuncio_tipoEspacoId_fkey")
+  tipoimovel     tipoimovel @relation(fields: [tipoImovelId], references: [id], map: "Anuncio_tipoImovelId_fkey")
+  user           user       @relation(fields: [userId], references: [id], map: "Anuncio_userId_fkey")
 
-  user           User @relation(fields: [userId], references: [id])
-  tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id])
-  tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id])
+  @@index([tipoEspacoId], map: "Anuncio_tipoEspacoId_fkey")
+  @@index([tipoImovelId], map: "Anuncio_tipoImovelId_fkey")
+  @@index([userId], map: "Anuncio_userId_fkey")
 }
 
-model TipoImovel {
-  id        String @id @default(uuid())
+model role {
+  id        Int    @id @default(autoincrement())
   descricao String @db.VarChar(30)
-  anuncio   Anuncio[]
+  user      user[]
 }
 
-model TipoEspaco {
-  id        String @id @default(uuid())
-  descricao String @db.VarChar(30)
-  anuncio   Anuncio[]
+model tipoespaco {
+  id        String    @id
+  descricao String    @db.VarChar(30)
+  anuncio   anuncio[]
 }
 
+model tipoimovel {
+  id        String    @id
+  descricao String    @db.VarChar(30)
+  anuncio   anuncio[]
+}
+
+model user {
+  id       String    @id @default(uuid())
+  username String    @db.VarChar(30)
+  fullname String?   @db.VarChar(50)
+  email    String    @unique(map: "email_UNIQUE") @db.VarChar(200)
+  cpf      String?   @db.VarChar(11)
+  phone    String?   @db.VarChar(11)
+  address  String?   @db.VarChar(100)
+  state    String?   @db.VarChar(2)
+  city     String?   @db.VarChar(50)
+  cep      String?   @db.VarChar(8)
+  photo    String?   @db.VarChar(255)
+  roleId   Int?
+  anuncio  anuncio[]
+  role     role?     @relation(fields: [roleId], references: [id], map: "User_roleId_fkey")
+
+  @@index([roleId], map: "User_roleId_fkey")
+}

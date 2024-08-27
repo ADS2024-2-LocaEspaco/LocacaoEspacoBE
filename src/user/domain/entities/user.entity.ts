@@ -29,6 +29,10 @@ export class UserEntity {
     return this.username;
   }
 
+  get getFullname(): string {
+    return this.fullName;
+  }
+
   get getEmail(): string {
     return this.email;
   }
@@ -37,6 +41,22 @@ export class UserEntity {
     return this.cpf;
   }
 
+  get getPhone(): string {
+    return this.phone;
+  }
+
+  get getAddress(): string {
+    return this.address;
+  }
+
+  get getState(): string {
+    return this.state;
+  }
+
+  get getCity(): string {
+    return this.city;
+  }
+  
   get getCep(): string {
     return this.cep;
   }
