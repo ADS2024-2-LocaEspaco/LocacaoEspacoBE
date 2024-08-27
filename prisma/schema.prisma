@@ -69,6 +69,7 @@ model TipoEspaco {
 model Feedback {
   id        String @id @default(uuid())
   descricao String @db.VarChar(30)
+  nota      Int
   anuncioId String
   userId    String
 
