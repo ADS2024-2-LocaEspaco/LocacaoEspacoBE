@@ -14,21 +14,30 @@ datasource db {
 }
 
 model User {
-  id          String @id @default(uuid())
-  username    String @db.VarChar(30)
-  fullname    String @db.VarChar(50)
-  email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
-  cpf         String @db.VarChar(11)
-  phone       String @db.VarChar(11)
-  address     String @db.VarChar(100)
-  state       String @db.VarChar(2)
-  city        String @db.VarChar(50)
-  cep         String @db.VarChar(8)
-  photo       String @db.VarChar(255)
-  roleId  Int
-  anuncio     Anuncio[]
+  id              String @id @default(uuid())
+  username        String @db.VarChar(30)
+  fullname        String @db.VarChar(50)
+  email           String @unique(map: "email_UNIQUE") @db.VarChar(200)
+  cpf             String @db.VarChar(11)
+  phone           String @db.VarChar(11)
+  address         String @db.VarChar(100)
+  state           String @db.VarChar(2)
+  city            String @db.VarChar(50)
+  cep             String @db.VarChar(8)
+  photo           String @db.VarChar(255)
+  roleId          Int
+  anuncio         Anuncio[]
+  classification  Classification[]
 
-  role    Role @relation(fields: [roleId], references: [id])
+  role            Role @relation(fields: [roleId], references: [id])
+}
+
+model Classification {
+  id      Int @id @default(autoincrement())
+  userId  String
+  grade   Int
+
+  user    User @relation(fields: [userId], references: [id])
 }
 
 model Role {
