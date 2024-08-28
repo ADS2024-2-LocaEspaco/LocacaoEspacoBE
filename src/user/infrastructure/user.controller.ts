@@ -7,8 +7,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async getHello(@Query() data: any): Promise<any> {
+  getHello(@Query() data: any) {
     console.log(data)
-    return this.userService.getComentarioUser(data.id);
+    return this.userService.getHello();
   }
 }
