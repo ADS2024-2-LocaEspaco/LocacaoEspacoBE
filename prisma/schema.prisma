@@ -28,6 +28,7 @@ model User {
   roleId      Int
   anuncio     Anuncio[]
   feedback    Feedback[]
+  createdAt   DateTime @default(now())
 
   role    Role @relation(fields: [roleId], references: [id])
 }
@@ -36,6 +37,7 @@ model Role {
   id        Int @id @default(autoincrement())
   descricao String @db.VarChar(30)
   user      User[]
+  createdAt   DateTime @default(now())
 }
 
 model Anuncio {
@@ -48,6 +50,7 @@ model Anuncio {
   tipoEspacoId   String
   qtdMaxHospedes Int
   feedback       Feedback[]
+  createdAt   DateTime @default(now())
 
   user           User @relation(fields: [userId], references: [id])
   tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id])
@@ -58,12 +61,15 @@ model TipoImovel {
   id        String @id @default(uuid())
   descricao String @db.VarChar(30)
   anuncio   Anuncio[]
+  createdAt   DateTime @default(now())
+  
 }
 
 model TipoEspaco {
   id        String @id @default(uuid())
   descricao String @db.VarChar(30)
   anuncio   Anuncio[]
+  createdAt   DateTime @default(now())
 }
 
 model Feedback {
@@ -72,6 +78,7 @@ model Feedback {
   nota      Int
   anuncioId String
   userId    String
+  createdAt   DateTime @default(now())
 
   user      User @relation(fields: [userId], references: [id])
   anuncio    Anuncio @relation(fields: [anuncioId], references: [id])

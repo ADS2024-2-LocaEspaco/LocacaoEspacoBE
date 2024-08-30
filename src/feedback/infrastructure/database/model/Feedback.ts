@@ -15,6 +15,7 @@ export async function getComentariosAnuncio(anuncioId: string): Promise<Feedback
             nota: true,
             anuncioId: true,
             userId: true,
+            createdAt: true,
         },
         
     })

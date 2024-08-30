@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Query } from '@nestjs/common';
+import { Controller, Get, Body, Query, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { FeedbackEntity } from 'src/feedback/domain/entities/feedback.entity';
 
@@ -7,8 +7,16 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async getHello(@Query() data: any): Promise<any> {
+  async getHello(@Body('id') data: any): Promise<any> {
     console.log(data)
-    return this.userService.getComentarioUser(data.id);
+    return this.userService.getComentarioUser(data);
   }
+
+  @Get('data-anfitriao')
+  async getDataAnfitriao(@Body('id') data: any): Promise<any> {
+    data = await this.userService.getDataAnfitriao(data);
+    return data
+  }
+
+  
 }
