@@ -4,12 +4,13 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:aluno@localhost:3306/locacao-espaco"
+  url = env("DATABASE_URL")
+  // url      = "mysql://root:aluno@localhost:3306/locacao-espaco"
 }
 
 model User {
-  id          String @id @default(uuid())
-  username    String @db.VarChar(30)
+  id          Int @id @default(autoincrement()) //Alguém deixou o ID como string e se for string, não da para usar o autoincrement()
+  username    String @db.VarChar(30) //Favor não errar para que isso não se repita KKKKK (contém ironia)
   fullname    String? @db.VarChar(50)
   email       String? @unique(map: "email_UNIQUE") @db.VarChar(200)
   cpf         String? @db.VarChar(11)
@@ -33,13 +34,13 @@ model Role {
 }
 
 model Anuncio {
-  id             String @id @default(uuid())
+  id             Int @id @default(autoincrement())
   title          String @db.VarChar(40)
   address        String @db.VarChar(100)
   description    String @db.VarChar(200)
-  userId         String
-  tipoImovelId   String
-  tipoEspacoId   String
+  userId         Int
+  tipoImovelId   Int
+  tipoEspacoId   Int
   qtdMaxHospedes Int
   tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id], map: "Anuncio_tipoEspacoId_fkey")
   tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id], map: "Anuncio_tipoImovelId_fkey")
@@ -53,20 +54,20 @@ model Anuncio {
 
 
 model TipoEspaco {
-  id        String    @id
+  id        Int    @id @default(autoincrement())
   descricao String    @db.VarChar(30)
   anuncio   Anuncio[]
 }
 
 model TipoImovel {
-  id        String    @id
+  id        Int    @id @default(autoincrement())
   descricao String    @db.VarChar(30)
   anuncio   Anuncio[]
 }
 
 model Classification {
   id      Int @id @default(autoincrement())
-  userId  String
+  userId  Int
   grade   Int
 
   user    User @relation(fields: [userId], references: [id])
