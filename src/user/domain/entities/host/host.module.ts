@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { HostController } from './host.controller';
 import { HostService } from './host.service';
 import { HostRepository } from './repositories/host.repositorires';
-import { ValidateUuid } from 'src/shared/validators/uuid.validator';
+import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
-    imports:[ValidateUuid],
+    imports:[SharedModule],
     controllers:[HostController],
     providers: [HostService, HostRepository]
 })
