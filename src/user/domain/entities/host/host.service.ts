@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { HostRepository } from './repositories/host.repositorires';
+import { HostRepository } from './repositories/host.repositories';
 import { ValidateUuid } from 'src/shared/validators/uuid.validator';
 
 @Injectable()
@@ -22,10 +22,3 @@ export class HostService {
       
 
 }
-
-// import { validate as isUUID } from 'uuid';
-
-// async getHostAllocations(@Query('id') id: string) {
-//     if (!isUUID(id)) {
-//         throw new BadRequestException('ID inválido');
-//     }

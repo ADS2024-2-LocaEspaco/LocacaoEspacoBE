@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { validate as isUUID } from 'uuid';
 
 @Injectable()
@@ -6,10 +6,10 @@ export class ValidateUuid{
 
 async isUuid(id: string){
     if(!isUUID(id)){
-        throw new BadRequestException('ID inválido!')
+        return false
         }
     else{
-        return "Id validado!"
+        return true
         }
     }
 }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { HostController } from './host.controller';
 import { HostService } from './host.service';
-import { HostRepository } from './repositories/host.repositorires';
+import { HostRepository } from './repositories/host.repositories';
 import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
