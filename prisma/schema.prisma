@@ -51,6 +51,7 @@ model Anuncio {
   qtdMaxHospedes Int
   feedback       Feedback[]
   createdAt   DateTime @default(now())
+  
 
   user           User @relation(fields: [userId], references: [id])
   tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id])
