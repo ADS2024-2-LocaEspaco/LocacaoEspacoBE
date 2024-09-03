@@ -18,16 +18,17 @@ model User {
   username    String @db.VarChar(30)
   fullname    String @db.VarChar(50)
   email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
-  cpf         String @db.VarChar(11)
-  phone       String @db.VarChar(11)
-  address     String @db.VarChar(100)
-  state       String @db.VarChar(2)
-  city        String @db.VarChar(50)
-  cep         String @db.VarChar(8)
-  photo       String @db.VarChar(255)
+  cpf         String @db.VarChar(11)  @default("11111111111")
+  phone       String @db.VarChar(11)  @default("99999999999")
+  address     String @db.VarChar(100) @default("rua tal")
+  state       String @db.VarChar(2) @default("SP")
+  city        String @db.VarChar(50) @default("caraguatatuba")
+  cep         String @db.VarChar(8) @default("11111111")
+  photo       String @db.VarChar(255) @default("/photo")
   roleId      Int
   anuncio     Anuncio[]
   feedback    Feedback[]
+  createdAt   DateTime @default(now())
 
   role    Role @relation(fields: [roleId], references: [id])
 }
@@ -36,6 +37,7 @@ model Role {
   id        Int @id @default(autoincrement())
   descricao String @db.VarChar(30)
   user      User[]
+  createdAt   DateTime @default(now())
 }
 
 model Anuncio {
@@ -48,6 +50,7 @@ model Anuncio {
   tipoEspacoId   String
   qtdMaxHospedes Int
   feedback       Feedback[]
+  createdAt   DateTime @default(now())
 
   user           User @relation(fields: [userId], references: [id])
   tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id])
@@ -58,12 +61,15 @@ model TipoImovel {
   id        String @id @default(uuid())
   descricao String @db.VarChar(30)
   anuncio   Anuncio[]
+  createdAt   DateTime @default(now())
+  
 }
 
 model TipoEspaco {
   id        String @id @default(uuid())
   descricao String @db.VarChar(30)
   anuncio   Anuncio[]
+  createdAt   DateTime @default(now())
 }
 
 model Feedback {
@@ -72,6 +78,7 @@ model Feedback {
   nota      Int
   anuncioId String
   userId    String
+  createdAt   DateTime @default(now())
 
   user      User @relation(fields: [userId], references: [id])
   anuncio    Anuncio @relation(fields: [anuncioId], references: [id])
