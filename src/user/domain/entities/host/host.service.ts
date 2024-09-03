@@ -1,33 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-
-
+import { HostRepository } from './repositories/host.repositorires';
 
 @Injectable()
 export class HostService {
+    constructor(private readonly locations: HostRepository){}
+
     private prisma = new PrismaClient()
 
-    findAllocations = async(id: string) => {
-       const id1 = id
-       const id2 = parseInt(id1)
-
-       if(isNaN(id2)){
-        throw new Error("Id não númerico!")
-       }
-        
-        const getLocations = await this.prisma.anuncio.findMany({
-        where:{
-            userId: id2,
-        },
-        select:{
-            id: true,
-            title: true,
-            address: true,
-            description:true
-        }
-        })
-
-        console.log("locais retornados!")
-        return getLocations
+    async findAllocations(id: string){
+        return this.locations.get_all_locations(id)
     }
+      
+
 }
+
+// import { validate as isUUID } from 'uuid';
+
+// async getHostAllocations(@Query('id') id: string) {
+//     if (!isUUID(id)) {
+//         throw new BadRequestException('ID inválido');
+//     }

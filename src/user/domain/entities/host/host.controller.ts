@@ -11,7 +11,6 @@ export class HostController {
 
        const result = await this.host.findAllocations(id)
         
-        console.log("endpoint Acessado 'host'.")
 
         if(!result){
             throw new NotFoundException('Usuário sem locações cadastradas!')
