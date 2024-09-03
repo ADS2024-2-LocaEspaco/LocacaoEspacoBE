@@ -8,7 +8,7 @@ export interface UserRepository {
     getUserbyEmail(email: string): Promise<UserEntity>;
 
     //CRUD
-    createUser(id: string, email: string, username: string, photo: string): Promise<UserEntity>;
+    createUser(email: string, username: string, photo: string): Promise<UserEntity>;
     deleteUser(email: string): Promise<UserEntity>;
     updateUser(user: UserEntity): Promise<UserEntity>;
 

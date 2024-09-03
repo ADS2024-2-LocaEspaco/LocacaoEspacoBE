@@ -1,25 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from "../../domain/repositories/user.repositories";
-import { UserEntity } from "../../domain/entities/user.entity";
+import { UserRepository } from "../../domain/repositories/user.repositories.js";
+import { UserEntity } from "../../domain/entities/user.entity.js";
+import { getUserbyId, getUserbyEmail, createUser, deleteUser } from "../database/models/User.js";
 
 @Injectable()
 export class UserRepositoryImp implements UserRepository {
 
     getUserbyId(id: string): Promise<UserEntity> {
-        throw new Error('Method not implemented.');
+        if (!id) {
+            throw Error ("Id não identificado, tente novamente.")
+        }
+
+        return getUserbyId(id);
     }
 
     getUserbyEmail(email: string): Promise<UserEntity> {
-        throw new Error('Method not implemented.');
+        if (!email) {
+            throw Error ("Email não identificado, tente novamente.")
+        }
+
+        return getUserbyEmail(email);
     }
 
 
-    createUser(id: string, email: string, username: string, photo: string): Promise<UserEntity> {
-        throw new Error('Method not implemented.');
+    createUser(email: string, username: string, photo: string): Promise<UserEntity> {
+        return createUser(username, email, photo);
     }
 
     deleteUser(email: string): Promise<UserEntity> {
-        throw new Error('Method not implemented.');
+        if (!email) {
+            throw Error ("Email não identificado, tente novamente.")
+        }
+
+        return deleteUser(email);
     }
 
     updateUser(user: UserEntity): Promise<UserEntity> {
