@@ -1,46 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { UserRepository } from "../../domain/repositories/user.repositories.js";
-import { UserEntity } from "../../domain/entities/user.entity.js";
-import { getUserbyId, getUserbyEmail, createUser, deleteUser } from "../database/models/User.js";
+// import { Injectable } from '@nestjs/common';
+// import { UserRepository } from "../../domain/repositories/user.repositories.js";
+// import { UserEntity } from "../../domain/entities/user.entity.js";
+// import { getUserbyId, getUserbyEmail, createUser, deleteUser } from "../database/models/User.js";
 
-@Injectable()
-export class UserRepositoryImp implements UserRepository {
+// @Injectable()
+// export class UserRepositoryImp implements UserRepository {
 
-    getUserbyId(id: string): Promise<UserEntity> {
-        if (!id) {
-            throw Error ("Id não identificado, tente novamente.")
-        }
+//     getUserbyId(id: string): Promise<UserEntity> {
+//         if (!id) {
+//             throw Error ("Id não identificado, tente novamente.")
+//         }
 
-        return getUserbyId(id);
-    }
+//         return getUserbyId(id);
+//     }
 
-    getUserbyEmail(email: string): Promise<UserEntity> {
-        if (!email) {
-            throw Error ("Email não identificado, tente novamente.")
-        }
+//     getUserbyEmail(email: string): Promise<UserEntity> {
+//         if (!email) {
+//             throw Error ("Email não identificado, tente novamente.")
+//         }
 
-        return getUserbyEmail(email);
-    }
+//         return getUserbyEmail(email);
+//     }
 
 
-    createUser(email: string, username: string, photo: string): Promise<UserEntity> {
-        return createUser(username, email, photo);
-    }
+//     createUser(email: string, username: string, photo: string): Promise<UserEntity> {
+//         return createUser(username, email, photo);
+//     }
 
-    deleteUser(email: string): Promise<UserEntity> {
-        if (!email) {
-            throw Error ("Email não identificado, tente novamente.")
-        }
+//     deleteUser(email: string): Promise<UserEntity> {
+//         if (!email) {
+//             throw Error ("Email não identificado, tente novamente.")
+//         }
 
-        return deleteUser(email);
-    }
+//         return deleteUser(email);
+//     }
 
-    updateUser(user: UserEntity): Promise<UserEntity> {
-        throw new Error('Method not implemented.');
-    }
+//     updateUser(user: UserEntity): Promise<UserEntity> {
+//         throw new Error('Method not implemented.');
+//     }
 
-    getAvgClassification(id: string): Number {
-        throw new Error('Method not implemented.');
-    }
+//     getAvgClassification(id: string): Number {
+//         throw new Error('Method not implemented.');
+//     }
     
-}
+// }
