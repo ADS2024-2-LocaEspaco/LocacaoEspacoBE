@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:aluno@localhost:3306/locacao-espaco"
+  url      = "mysql://root:root@localhost:3306/airnbnn"
 }
 
 model User {
@@ -43,14 +43,22 @@ model Role {
 model Anuncio {
   id             String @id @default(uuid())
   title          String @db.VarChar(40)
-  address        String @db.VarChar(100)
-  description    String @db.VarChar(200)
+  street         String @db.VarChar(100)
+  bairro         String @db.VarChar(100)
+  cidade         String @db.VarChar(100)
+  cep            String @db.VarChar(100)
+  numero         Int
+  complement     String? @db.VarChar(100)
+  latitude   Float?  // Campo opcional para latitude
+  longitude  Float?
+  description    String @db.VarChar(500)
   userId         String
   tipoImovelId   String
   tipoEspacoId   String
   qtdMaxHospedes Int
   feedback       Feedback[]
-  createdAt   DateTime @default(now())
+  createdAt      DateTime @default(now())
+
   
 
   user           User @relation(fields: [userId], references: [id])
