@@ -1,76 +1,82 @@
-import { PrismaClient } from "@prisma/client";
-import { UserEntity } from "src/user/domain/entities/user.entity";
+/*import { PrismaClient } from '@prisma/client';
+import { UserEntity } from 'src/user/domain/entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
 
-export const getUsers = async() => {
-    const users = await prisma.user.findMany();
+export const getUsers = async () => {
+  const users = await prisma.user.findMany();
 
-    return users;
-}
+  return users;
+};
 
-export const getUserbyId = async(id: string) => {
-    const client = await prisma.user.findUnique({
-        where: {
-            id
-        }
-    });
+export const getUserbyId = async (id: string) => {
+  const client = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
 
-    return client
-}
+  return client;
+};
 
-export const getUserbyEmail = async(email: string) => {
-    const client = await prisma.user.findUnique({
-        where: {
-            email
-        }
-    });
+export const getUserbyEmail = async (email: string) => {
+  const client = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
 
-    return client
-}
+  return client;
+};
 
-export const createUser = async (username: string, email: string, photo: string) => {
-    const user = await prisma.user.create({
-        data: {
-            id: uuidv4(),
-            username,
-            email,
-            photo
-        }
-    });
+export const createUser = async (
+  username: string,
+  email: string,
+  photo: string,
+) => {
+  const user = await prisma.user.create({
+    data: {
+      id: uuidv4(),
+      username,
+      email,
+      photo,
+    },
+  });
 
-    return user;
-}
+  return user;
+};
 
-export const deleteUser = async(email: string) => {
-    const user = await prisma.user.delete({
-        where: {
-            email
-        }
-    });
+export const deleteUser = async (email: string) => {
+  const user = await prisma.user.delete({
+    where: {
+      email,
+    },
+  });
 
-    return user;
-}
+  return user;
+};
 
-export const updateUser = async(client: UserEntity) => {
-    const user = await prisma.user.update({
-        where: {
-            email: client.getEmail
-        }
-    })
+export const updateUser = async (client: UserEntity) => {
+  const user = await prisma.user.update({
+    where: {
+      email: client.getEmail,
+    },
+  });
 
-    return user;
-}
+  return user;
+};
 
-export const getClassifications = async(email: string) => {
-    const user = await prisma.user.find({
-        where: {
-            email
-        }, select: {
-            classification: true
-        }
-    })
+export const getClassifications = async (email: string) => {
+  const user = await prisma.user.find({
+    where: {
+      email,
+    },
+    select: {
+      classification: true,
+    },
+  });
 
-    return
-}
+  return;
+};
+*/

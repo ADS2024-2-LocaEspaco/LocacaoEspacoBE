@@ -8,7 +8,7 @@ export class UserEntity {
   private address: string;
   private state: string;
   private city: string;
-  private cep:  string;
+  private cep: string;
   private photo: string;
   private roleId: number;
   private ads: Array<any>;
@@ -56,7 +56,7 @@ export class UserEntity {
   get getCity(): string {
     return this.city;
   }
-  
+
   get getCep(): string {
     return this.cep;
   }
@@ -100,5 +100,4 @@ export class UserEntity {
   set setPhoto(photo: string) {
     this.photo = photo;
   }
-
 }
