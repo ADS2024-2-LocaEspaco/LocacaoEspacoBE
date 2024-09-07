@@ -57,6 +57,9 @@ export const updateUser = async(client: UserEntity) => {
     const user = await prisma.user.update({
         where: {
             email: client.getEmail
+        },
+        data: {
+
         }
     })
 
@@ -64,13 +67,13 @@ export const updateUser = async(client: UserEntity) => {
 }
 
 export const getClassifications = async(email: string) => {
-    const user = await prisma.user.find({
-        where: {
-            email
-        }, select: {
-            classification: true
-        }
-    })
+    //const user = await prisma.user.find({
+    //    where: {
+    //        email
+    //    }, select: {
+    //        classification: true
+    //    }
+    //})
 
-    return
+    //return user
 }

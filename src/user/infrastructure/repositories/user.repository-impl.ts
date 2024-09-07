@@ -6,12 +6,13 @@ import { getUserbyId, getUserbyEmail, createUser, deleteUser } from "../database
 @Injectable()
 export class UserRepositoryImp implements UserRepository {
 
-    getUserbyId(id: string): Promise<UserEntity> {
+    getUserbyId(id: string): UserEntity {
         if (!id) {
             throw Error ("Id não identificado, tente novamente.")
         }
 
-        return getUserbyId(id);
+        throw Error ("Id não identificado, tente novamente.")
+        //return getUserbyId(id);
     }
 
     getUserbyEmail(email: string): Promise<UserEntity> {
@@ -19,12 +20,14 @@ export class UserRepositoryImp implements UserRepository {
             throw Error ("Email não identificado, tente novamente.")
         }
 
-        return getUserbyEmail(email);
+        throw new Error('Method not implemented.');
+        //return getUserbyEmail(email);
     }
 
 
     createUser(email: string, username: string, photo: string): Promise<UserEntity> {
-        return createUser(username, email, photo);
+        throw new Error('Method not implemented.');
+        //return createUser(username, email, photo);
     }
 
     deleteUser(email: string): Promise<UserEntity> {
@@ -32,7 +35,8 @@ export class UserRepositoryImp implements UserRepository {
             throw Error ("Email não identificado, tente novamente.")
         }
 
-        return deleteUser(email);
+        throw new Error('Method not implemented.');
+        //return deleteUser(email);
     }
 
     updateUser(user: UserEntity): Promise<UserEntity> {

@@ -4,7 +4,7 @@ import { UserEntity } from "../entities/user.entity.js"
 
 export interface UserRepository {
     //Find user by attribute
-    getUserbyId(id: string): Promise<UserEntity>;
+    getUserbyId(id: string): UserEntity | Promise<{success: boolean, message: string}>;
     getUserbyEmail(email: string): Promise<UserEntity>;
 
     //CRUD
