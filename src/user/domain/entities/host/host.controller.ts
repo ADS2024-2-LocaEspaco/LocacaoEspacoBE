@@ -1,21 +1,19 @@
 import { Controller, Get, NotFoundException, Query } from '@nestjs/common';
 import { HostService } from './host.service';
+import { userUuidValidator } from '../../../../shared/validators/Anuncio.validator'
 
 @Controller('host')
 export class HostController {
 
-    constructor(private readonly host: HostService){}
+    constructor(
+        private readonly host: HostService){}
 
     @Get()
-    async getHostAllocations (@Query('id') id: string ){
+    async getHostAllocations (@Query() userUuid: userUuidValidator){
+       
+     console.log(userUuid.userId)
+       const result = await this.host.findAllocations(userUuid.userId)
 
-       const result = await this.host.findAllocations(id)
-        
-
-        if(!result){
-            throw new NotFoundException('Usuário sem locações cadastradas!')
-        }else{
-            return result;
-        }
+     return result
     }
 }

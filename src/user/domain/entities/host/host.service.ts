@@ -1,23 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 import { HostRepository } from './repositories/host.repositories';
-import { ValidateUuid } from 'src/shared/validators/uuid.validator';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class HostService {
-    constructor(
-        private readonly locations: HostRepository,
-        private readonly validate: ValidateUuid){}
-
-    private prisma = new PrismaClient()
+    constructor( private readonly locations: HostRepository ){}
 
     async findAllocations(id: string){
 
-        const valid = this.validate.isUuid(id)
+        const result = await this.locations.get_all_locations(id)
 
-        console.log(valid)
-
-        return this.locations.get_all_locations(id)
+        if(!result || result.length === 0 ){
+            throw new NotFoundException('Usuário sem locações cadastradas!')
+        }else{
+            return result;
+        }
     }
       
 
