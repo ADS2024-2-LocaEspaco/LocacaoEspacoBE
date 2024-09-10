@@ -14,6 +14,7 @@ export class UserController {
 
   @Get('data-anfitriao')
   async getDataAnfitriao(@Body('id') data: any): Promise<any> {
+    console.log(data)
     data = await this.userService.getDataAnfitriao(data);
     return data
   }

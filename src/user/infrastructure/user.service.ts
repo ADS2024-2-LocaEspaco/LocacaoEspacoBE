@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Feedback, User } from '@prisma/client';
 import { FeedbackEntity } from 'src/feedback/domain/entities/feedback.entity';
-import { getComentariosAnuncio } from 'src/feedback/infrastructure/database/model/Feedback';
+import { getComentariosAnuncio } from '../../feedback/infrastructure/database/model/Feedback';
 import { getUserHost } from './database/model/User';
 import { createHostDto } from './dto/create-user-host.dto';
 
