@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:@localhost:3306/stayeasy"
+  url      = "mysql://root:aluno@localhost:3306/stayeasy"
 }
 
 model User {

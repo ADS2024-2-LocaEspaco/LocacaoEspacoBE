@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { UserEntity } from 'src/user/domain/entities/user.entity';
 
 const prisma = new PrismaClient();
 
@@ -25,6 +26,21 @@ export const create = async (user: any) => {
       id: true,
       firstName: true,
     },
+  });
+
+  return result;
+};
+
+export const updateToken = async (user: any) => {
+  const result = await prisma.user.update({
+    where: {
+      email: user.email
+    },
+    data: user,
+    select: {
+      id: true,
+      firstName: true
+    }
   });
 
   return result;
