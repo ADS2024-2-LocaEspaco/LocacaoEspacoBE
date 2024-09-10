@@ -4,76 +4,54 @@ import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
 
-export const getUsers = async() => {
-    const users = await prisma.user.findMany();
+export const getUserByEmail = async(email: string) => {
+    const client = await prisma.user.findUnique({
+        where: {
+            email
+        }
+    });
 
-    return users;
+    return client
 }
 
-export const getUserbyId = async(id: string) => {
-    const client = await prisma.user.findUnique({
+export const updateUsername = async(id: string ,username: string) => {
+    const client = await prisma.user.update({
         where: {
             id
-        }
-    });
-
-    return client
-}
-
-export const getUserbyEmail = async(email: string) => {
-    const client = await prisma.user.findUnique({
-        where: {
-            email
-        }
-    });
-
-    return client
-}
-
-export const createUser = async (username: string, email: string, photo: string) => {
-    const user = await prisma.user.create({
-        data: {
-            id: uuidv4(),
-            username,
-            email,
-            photo
-        }
-    });
-
-    return user;
-}
-
-export const deleteUser = async(email: string) => {
-    const user = await prisma.user.delete({
-        where: {
-            email
-        }
-    });
-
-    return user;
-}
-
-export const updateUser = async(client: UserEntity) => {
-    const user = await prisma.user.update({
-        where: {
-            email: client.getEmail
         },
         data: {
-
+            username
         }
     })
 
-    return user;
+    return ("Username atualizado " + client.username)
 }
+/*
+export const updateBankInformation = async(id: string, bank: string, agency: number, accountNumber: number, accountType: string) => {
+    const client = await prisma.user.update({
+        where: {
+            id
+        },
+        data: {
+            bank, 
+            agency, 
+            accountNumber, 
+            accountType
+        }
+    })
 
-export const getClassifications = async(email: string) => {
-    //const user = await prisma.user.find({
-    //    where: {
-    //        email
-    //    }, select: {
-    //        classification: true
-    //    }
-    //})
+    return client
+}*/
 
-    //return user
+export const updateProfileImage = async(id: string, photo: string) => {
+    const client = await prisma.user.update({
+        where: {
+            id
+        },
+        data: {
+            photo
+        }
+    })
+
+    return ("Foto atualizada " + client.photo)
 }

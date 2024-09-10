@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query, Render, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Put, Query, Render, Req, Res, UseGuards } from "@nestjs/common";
 import { UserProfileService } from "../services/user.profile.service";
 import { UserEntity } from "src/user/domain/entities/user.entity";
 
@@ -11,5 +11,19 @@ export class UserProfileController {
     getUserByEmail(@Body() email:string):string {
         return this.userProfileService.getUserByEmail(email);
     }
+    
+    @Put()
+    updateUsername(@Body() req: Request):Promise<string> {
+        return this.userProfileService.updateUsername(req);
+    }
 
+    @Put("/bank")
+    updateBankInformation(@Body() req: Request):Promise<string>{
+        return this.userProfileService.updateBankInformation(req);
+    }
+
+    @Put("/image")
+    updateProfileImage(@Body() req: Request): Promise<string>{
+        return this.userProfileService.updateProfileImage(req)
+    }
 }

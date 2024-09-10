@@ -4,14 +4,10 @@ import { UserEntity } from "../entities/user.entity.js"
 
 export interface UserRepository {
     //Find user by attribute
-    getUserbyId(id: string): UserEntity | Promise<{success: boolean, message: string}>;
-    getUserbyEmail(email: string): Promise<UserEntity>;
+    getUserByEmail(email: string): any;
 
     //CRUD
-    createUser(email: string, username: string, photo: string): Promise<UserEntity>;
-    deleteUser(email: string): Promise<UserEntity>;
-    updateUser(user: UserEntity): Promise<UserEntity>;
-
-    // average classification
-    getAvgClassification(id: string): Number;
+    updateUsername(username: string, id: string): Promise<string>
+    updateBankInformation(id: string, bank: string, agency: number, accountNumber:number, accountType: string): Promise<string>
+    updateProfileImage(id: string, photo: string): Promise<string>
 }
