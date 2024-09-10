@@ -4,21 +4,22 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:aluno@localhost:3306/locacao-espaco"
+  url      = "mysql://root:aluno@localhost:3306/stayeasy"
 }
 
 model User {
   id          String @id @default(uuid())
-  username    String @db.VarChar(30)
-  fullname    String? @db.VarChar(50)
   email       String? @unique(map: "email_UNIQUE") @db.VarChar(200)
+  firstName   String @db.VarChar(30)
+  lastName    String? @db.VarChar(50)
+  picture     String? @db.VarChar(255)
+  accessToken String? @db.VarChar(255)
   cpf         String? @db.VarChar(11)
   phone       String? @db.VarChar(11)
   address     String? @db.VarChar(100)
   state       String? @db.VarChar(2)
   city        String? @db.VarChar(50)
   cep         String? @db.VarChar(8)
-  photo       String? @db.VarChar(255)
   roleId      Int?
   anuncio     Anuncio[]
   classification  Classification[]

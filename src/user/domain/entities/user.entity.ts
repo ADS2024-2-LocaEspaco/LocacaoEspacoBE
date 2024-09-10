@@ -1,36 +1,38 @@
 export class UserEntity {
   private readonly id: string;
-  private username: string;
-  private fullName: string;
+  private firstName: string;
+  private lastName: string;
   private readonly email: string;
   private cpf: string;
+  private accessToken: string;
   private phone: string;
   private address: string;
   private state: string;
   private city: string;
-  private cep:  string;
-  private photo: string;
+  private cep: string;
+  private picture: string;
   private roleId: number;
   private ads: Array<any>;
 
-  //autenticação realizada com Google -> user será inicialmente criado com email e username
-  constructor(id: string, email: string, username: string, photo: string) {
-    this.id = id;
+  //autenticação realizada com Google -> user será inicialmente criado com email e firstName
+  constructor(email: string, firstName: string, lastName: string, picture: string, accessToken: string) {
     this.email = email;
-    this.username = username;
-    this.photo = photo;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.picture = picture;
+    this.accessToken = accessToken;
   }
 
   get getId(): string {
     return this.id;
   }
 
-  get getUsername(): string {
-    return this.username;
+  get getFirstName(): string {
+    return this.firstName;
   }
 
-  get getFullname(): string {
-    return this.fullName;
+  get getLastName(): string {
+    return this.lastName;
   }
 
   get getEmail(): string {
@@ -56,13 +58,13 @@ export class UserEntity {
   get getCity(): string {
     return this.city;
   }
-  
+
   get getCep(): string {
     return this.cep;
   }
 
-  get getPhoto(): string {
-    return this.photo;
+  get getPicture(): string {
+    return this.picture;
   }
 
   get getRoleId(): number {
@@ -73,6 +75,10 @@ export class UserEntity {
     return this.ads;
   }
 
+  get getAccessToken(): string {
+    return this.accessToken;
+  }
+  
   set setCpf(cpf: string) {
     this.cpf = cpf;
   }
@@ -97,8 +103,7 @@ export class UserEntity {
     this.cep = cep;
   }
 
-  set setPhoto(photo: string) {
-    this.photo = photo;
+  set setPicture(picture: string) {
+    this.picture = picture;
   }
-
 }
