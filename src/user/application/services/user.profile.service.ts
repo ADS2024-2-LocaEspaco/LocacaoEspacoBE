@@ -30,7 +30,7 @@ export class UserProfileService {
         return this.userRepositoryImp.updateBankInformation(req.id, req.bank, req.agency, req.accountNumber, req.accountType);
     }
 
-    updateProfileImage(req: any): Promise<String> {
+    updateProfileImage(req: any): Promise<string> {
         if (!req) {
             throw error("Nenhuma informação.")
         }
