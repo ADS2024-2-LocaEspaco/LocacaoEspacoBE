@@ -14,82 +14,124 @@ datasource db {
 }
 
 model User {
-  id          String @id @default(uuid())
-  username    String @db.VarChar(30)
-  fullname    String @db.VarChar(50)
-  email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
-  cpf         String @db.VarChar(11)
-  phone       String @db.VarChar(11)
-  address     String @db.VarChar(100)
-  state       String @db.VarChar(2)
-  city        String @db.VarChar(50)
-  cep         String @db.VarChar(8)
-  photo       String @db.VarChar(255)
-  roleId      Int
-  anuncio     Anuncio[]
-  feedback    Feedback[]
-  createdAt   DateTime @default(now())
+  id        String     @id @default(uuid())
+  username  String     @db.VarChar(30)
+  fullname  String     @db.VarChar(50)
+  email     String     @unique(map: "email_UNIQUE") @db.VarChar(200)
+  cpf       String     @db.VarChar(11)
+  phone     String     @db.VarChar(11)
+  address   String     @db.VarChar(100)
+  state     String     @db.VarChar(2)
+  city      String     @db.VarChar(50)
+  cep       String     @db.VarChar(8)
+  photo     String     @db.VarChar(255)
+  roleId    Int
+  anuncio   Anuncio[]
+  feedback  Feedback[]
+  createdAt DateTime   @default(now())
 
-  role    Role @relation(fields: [roleId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
 }
 
 model Role {
-  id        Int @id @default(autoincrement())
-  descricao String @db.VarChar(30)
+  id        Int      @id @default(autoincrement())
+  descricao String   @db.VarChar(30)
   user      User[]
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Anuncio {
-  id             String @id @default(uuid())
-  title          String @db.VarChar(40)
-  street         String @db.VarChar(100)
-  bairro         String @db.VarChar(100)
-  cidade         String @db.VarChar(100)
-  cep            String @db.VarChar(100)
+  id             String     @id @default(uuid())
+  title          String     @db.VarChar(40)
+  street         String     @db.VarChar(100)
+  bairro         String     @db.VarChar(100)
+  cidade         String     @db.VarChar(100)
+  cep            String     @db.VarChar(100)
   numero         Int
-  complement     String? @db.VarChar(100)
-  latitude   Float?  // Campo opcional para latitude
-  longitude  Float?
-  description    String @db.VarChar(500)
+  complement     String?    @db.VarChar(100)
+  latitude       Float? // Campo opcional para latitude
+  longitude      Float?
+  description    String     @db.VarChar(500)
   userId         String
   tipoImovelId   String
   tipoEspacoId   String
   qtdMaxHospedes Int
   feedback       Feedback[]
-  createdAt      DateTime @default(now())
+  createdAt      DateTime   @default(now())
 
-  
-
-  user           User @relation(fields: [userId], references: [id])
-  tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id])
-  tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id])
+  user        User          @relation(fields: [userId], references: [id])
+  tipoimovel  TipoImovel    @relation(fields: [tipoImovelId], references: [id])
+  tipoespaco  TipoEspaco    @relation(fields: [tipoEspacoId], references: [id])
+  Comodidades Comodidades[]
 }
 
 model TipoImovel {
-  id        String @id @default(uuid())
-  descricao String @db.VarChar(30)
+  id        String    @id @default(uuid())
+  descricao String    @db.VarChar(30)
   anuncio   Anuncio[]
-  createdAt   DateTime @default(now())
-  
+  createdAt DateTime  @default(now())
 }
 
 model TipoEspaco {
-  id        String @id @default(uuid())
-  descricao String @db.VarChar(30)
+  id        String    @id @default(uuid())
+  descricao String    @db.VarChar(30)
   anuncio   Anuncio[]
-  createdAt   DateTime @default(now())
+  createdAt DateTime  @default(now())
 }
 
 model Feedback {
-  id        String @id @default(uuid())
-  descricao String @db.VarChar(30)
+  id        String   @id @default(uuid())
+  descricao String   @db.VarChar(30)
   nota      Int
   anuncioId String
   userId    String
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  user      User @relation(fields: [userId], references: [id])
-  anuncio    Anuncio @relation(fields: [anuncioId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  anuncio Anuncio @relation(fields: [anuncioId], references: [id])
 }
 
+model Comodidade {
+  id                  String        @id @default(uuid())
+  anuncioId           String
+  wifi                Boolean       @default(false)
+  tv                  Boolean       @default(false)
+  cozinha             Boolean       @default(false)
+  geladeira           Boolean       @default(false)
+  freezer             Boolean       @default(false)
+  fogao               Boolean       @default(false)
+  forno               Boolean       @default(false)
+  lavaLouca           Boolean       @default(false)
+  microondas          Boolean       @default(false)
+  cafeteria           Boolean       @default(false)
+  liquidificador      Boolean       @default(false)
+  torradeira          Boolean       @default(false)
+  loucasTalheres      Boolean       @default(false)
+  utensiliosChurrasco Boolean       @default(false)
+  mesaJantar          Boolean       @default(false)
+  cabides             Boolean       @default(false)
+  cortinaBlackOut     Boolean       @default(false)
+  varal               Boolean       @default(false)
+  armarios            Boolean       @default(false)
+  maquinaLavar        Boolean       @default(false)
+  secadora            Boolean       @default(false)
+  arCondicionado      Boolean       @default(false)
+  estacionamento      Boolean       @default(false)
+  estacionamentoPago  Boolean       @default(false)
+  espacoTrabalho      Boolean       @default(false)
+  detectorFumaca      Boolean       @default(false)
+  extintorIncendio    Boolean       @default(false)
+  kitPrimeiroSocorros Boolean       @default(false)
+  alarmeCarbono       Boolean       @default(false)
+  piscina             Boolean       @default(false)
+  churrasqueira       Boolean       @default(false)
+  mesaBilhar          Boolean       @default(false)
+
+  anuncio Anuncio @relation(fields: [anuncioId], references: [id])
+}
+
+model ItensBasico {
+  id        String @id @default(uuid())
+  descricao String
+  comodidades Comodidade[] @relation("ComodidadeItensBasicos")
+}
