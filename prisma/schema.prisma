@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:aluno@localhost:3306/locacao-espaco"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -50,8 +50,6 @@ model Anuncio {
   @@index([userId], map: "Anuncio_userId_fkey")
 }
 
-
-
 model TipoEspaco {
   id        String    @id
   descricao String    @db.VarChar(30)
@@ -70,4 +68,68 @@ model Classification {
   grade   Int
 
   user    User @relation(fields: [userId], references: [id])
+}
+
+model Property {
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(100)
+  description   String?  @db.Text
+  propertyType  String   @db.VarChar(50)
+  spaceType     String   @db.VarChar(50)
+  rooms         Int      @db.Int // Número de quartos
+  bathrooms     Int      @db.Int // Número de banheiros
+  beds          Int      @db.Int // Número de camas
+  guests        Int      @db.Int // Número de hóspedes
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  address     Address[]
+  propertyAmenities     PropertyAmenities[]
+
+  @@map("properties")
+}
+
+model Address {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  street     String   @db.VarChar(100)
+  number     String   @db.VarChar(10)
+  district   String   @db.VarChar(50)
+  city       String   @db.VarChar(50)
+  state      String   @db.VarChar(2)
+  zipCode    String   @db.VarChar(8)
+  complement String?  @db.VarChar(50)
+
+  // Relationships
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  @@map("addresses")
+}
+
+model PropertyAmenities {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  hasWifi    Boolean  @default(false) // Internet
+  hasTV      Boolean  @default(false) // Televisão
+  hasKitchen Boolean  @default(false) // Cozinha
+  hasWashingMachine  Boolean @default(false) // Máquina de lavar
+  hasAirConditioning Boolean @default(false) // Ar condicionado
+  hasParking Boolean  @default(false) // Estacionamento
+  hasPaidParking Boolean  @default(false) // Estacionamento pago
+  hasWorkstation Boolean  @default(false) // Estação de trabalho
+  hasFan  Boolean  @default(false) // Ventilador
+  hasPool Boolean  @default(false) // Piscina
+  hasBarbecueGrill Boolean @default(false) // Churrasqueira
+  hasBeachAccess   Boolean @default(false) // Acesso à praia
+  hasPoolTable     Boolean @default(false) // Mesa de bilhar
+  hasSmokeDetector Boolean @default(false) // Detector de fumaça
+  hasFireExtinguisher Boolean @default(false) // Extintor de incêndio
+  hasFirstAidKit   Boolean @default(false) // Kit de primeiros socorros
+  hasCarbonAlarm   Boolean @default(false) // Alarme de carbono
+
+  // Relationships
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  @@map("property_amenities")
 }
