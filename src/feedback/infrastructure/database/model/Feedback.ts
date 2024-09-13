@@ -16,6 +16,12 @@ export async function getComentariosAnuncio(anuncioId: string): Promise<CreateFe
             anuncioId: true,
             userId: true,
             createdAt: false,
+            user: {
+                select: {
+                    photo: true,
+                    fullname: true,
+                }
+            }
         }
         
     })
