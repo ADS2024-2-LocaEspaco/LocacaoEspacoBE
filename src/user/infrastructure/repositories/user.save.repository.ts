@@ -3,7 +3,7 @@ import { UserEntity } from 'src/user/domain/entities/user.entity';
 import { create, getUserByEmail, updateToken } from '../database/models/User.create.model';
 
 @Injectable()
-export class UserSaveRepository {
+export class UserSaveRepository implements UserSaveRepository{
   async userExists(email: string): Promise<boolean> {
     if (await getUserByEmail(email)) {
       return true;
