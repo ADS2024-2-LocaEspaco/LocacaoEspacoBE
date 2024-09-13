@@ -10,6 +10,8 @@ export class HostService {
 
         const result = await this.locations.get_all_locations(id)
 
+        console.log(!result)
+
         if(!result || result.length === 0 ){
             throw new NotFoundException('Usuário sem locações cadastradas!')
         }else{
