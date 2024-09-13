@@ -7,23 +7,34 @@ export class UserProfileController {
 
     constructor(private readonly userProfileService: UserProfileService) {}
 
+    
     @Get()
+    getUserById(@Body() id:string):string {
+        return this.userProfileService.getUserById(id);
+    }
+
+    @Get("/email")
     getUserByEmail(@Body() email:string):string {
         return this.userProfileService.getUserByEmail(email);
     }
     
     @Put()
-    updateUsername(@Body() req: Request):Promise<string> {
-        return this.userProfileService.updateUsername(req);
+    async updateUsername(@Body() req: Request): Promise<{message: string, success: boolean}> {
+        return await this.userProfileService.updateUsername(req);
     }
 
     @Put("/bank")
-    updateBankInformation(@Body() req: Request):Promise<string>{
-        return this.userProfileService.updateBankInformation(req);
+    async updateBankInformation(@Body() req: Request): Promise<{message: string, success: boolean}>{
+        return await this.userProfileService.updateBankInformation(req);
     }
 
     @Put("/image")
-    updateProfileImage(@Body() req: Request): Promise<string>{
-        return this.userProfileService.updateProfileImage(req)
+    async updateProfileImage(@Body() req: Request): Promise<{message: string, success: boolean}>{
+        return await this.userProfileService.updateProfileImage(req)
+    }
+
+    @Put("/account")
+    async updateAccountInformation(@Body() req: Request): Promise<{message: string, success: boolean}>{
+        return await this.userProfileService.updateAccountInformation(req)
     }
 }

@@ -14,6 +14,16 @@ export const getUserByEmail = async(email: string) => {
     return client
 }
 
+export const getUserById = async(id: string) => {
+    const client = await prisma.user.findUnique({
+        where: {
+            id
+        }
+    });
+
+    return client
+}
+
 export const updateUsername = async(id: string ,username: string) => {
     const client = await prisma.user.update({
         where: {
@@ -53,5 +63,23 @@ export const updateProfileImage = async(id: string, photo: string) => {
         }
     })
 
-    return ("Foto atualizada " + client.photo)
+    return client
+}
+
+export const updateAccountInformation = async(id: string, cpf: string, fullname: string) => {
+    const client = await prisma.user.update({
+        where: {
+            id
+        },
+        data: {
+            cpf,
+            fullname
+        },
+        select: {
+            cpf: true,
+            fullname: true
+        }
+    })
+
+    return client
 }
