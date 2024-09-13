@@ -1,4 +1,7 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { AddressDto } from './address.dto';
+import { PropertyAmenitiesDto } from './property-amenities.dto';
 
 export class CreatePropertyDto {
   @IsString()
@@ -32,4 +35,12 @@ export class CreatePropertyDto {
   @IsNumber()
   @IsNotEmpty()
   readonly guests: number;
+
+  @ValidateNested()
+  @Type(() => AddressDto)
+  readonly address: AddressDto;
+
+  @ValidateNested()
+  @Type(() => PropertyAmenitiesDto)
+  readonly propertyAmenities: PropertyAmenitiesDto;
 }

@@ -84,15 +84,15 @@ model Property {
   updatedAt     DateTime @updatedAt
 
   // Relationships
-  address     Address[]
-  propertyAmenities     PropertyAmenities[]
+  address       Address?
+  amenities     PropertyAmenities?
 
   @@map("properties")
 }
 
 model Address {
   id         Int      @id @default(autoincrement())
-  propertyId Int
+  propertyId Int @unique
   street     String   @db.VarChar(100)
   number     String   @db.VarChar(10)
   district   String   @db.VarChar(50)
@@ -100,16 +100,18 @@ model Address {
   state      String   @db.VarChar(2)
   zipCode    String   @db.VarChar(8)
   complement String?  @db.VarChar(50)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relationships
-  property   Property @relation(fields: [propertyId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
 
   @@map("addresses")
 }
 
 model PropertyAmenities {
   id         Int      @id @default(autoincrement())
-  propertyId Int
+  propertyId Int @unique
   hasWifi    Boolean  @default(false) // Internet
   hasTV      Boolean  @default(false) // Televisão
   hasKitchen Boolean  @default(false) // Cozinha
@@ -127,9 +129,11 @@ model PropertyAmenities {
   hasFireExtinguisher Boolean @default(false) // Extintor de incêndio
   hasFirstAidKit   Boolean @default(false) // Kit de primeiros socorros
   hasCarbonAlarm   Boolean @default(false) // Alarme de carbono
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relationships
-  property   Property @relation(fields: [propertyId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
 
   @@map("property_amenities")
 }
