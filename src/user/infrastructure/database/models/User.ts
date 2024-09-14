@@ -83,3 +83,27 @@ export const updateAccountInformation = async(id: string, cpf: string, fullname:
 
     return client
 }
+
+export const updateContactInformation = async(id: string, phone: string, address: string, state: string, city: string, cep: string) => {
+    const client = await prisma.user.update({
+        where: {
+            id
+        },
+        data: {
+            phone,
+            address,
+            state,
+            city,
+            cep
+        },
+        select: {
+            phone: true,
+            address: true,
+            state: true,
+            city: true,
+            cep: true
+        }
+    })
+
+    return client
+}

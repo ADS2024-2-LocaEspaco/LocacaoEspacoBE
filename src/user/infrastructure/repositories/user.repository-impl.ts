@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from "../../domain/repositories/user.repositories.js";
 import { UserEntity } from "../../domain/entities/user.entity.js";
-import { getUserByEmail, getUserById, updateUsername, updateProfileImage, updateAccountInformation } from "../database/models/User.js";
+import { getUserByEmail, getUserById, updateUsername, updateProfileImage, updateAccountInformation, updateContactInformation } from "../database/models/User.js";
 
 @Injectable()
 export class UserRepositoryImp implements UserRepository {
@@ -27,5 +27,9 @@ export class UserRepositoryImp implements UserRepository {
 
     async updateAccountInformation(id: string, cpf: string, fullname: string): Promise<any> {
         return await updateAccountInformation(id, cpf, fullname);
+    }
+
+    async updateContactInformation(id: string, phone: string, address: string, state: string, city: string, cep: string): Promise<any> {
+        return await updateContactInformation(id, phone, address, state, city, cep)
     }
 }

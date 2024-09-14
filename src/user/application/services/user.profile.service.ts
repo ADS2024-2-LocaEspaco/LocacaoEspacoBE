@@ -78,7 +78,7 @@ export class UserProfileService {
 
     async updateAccountInformation(req: any): Promise<{message: string, success: boolean}> {
         if (!req) {
-            throw error("Nenhuma informação.")
+            throw error("Nenhuma informação.");
         }
 
         const resService = await this.userRepositoryImp.updateAccountInformation(req.id, req.cpf, req.fullname)
@@ -86,11 +86,29 @@ export class UserProfileService {
         if (!resService) {
             return {message: "Erro ao atualizar os dados da conta",
                 success: false
-            }
+            };
         }
 
         return {message: "Sucesso ao atualizar os dados da conta",
             success: true
+        };
+    }
+
+    async updateContactInformation(req: any): Promise<{message: string, success: boolean}> {
+        if (!req) {
+            throw error("Nenhuma informação.");
         }
+
+        const resService = await this.userRepositoryImp.updateContactInformation(req.id, req.phone, req.address, req.state, req.city, req.cep);
+
+        if (!resService) {
+            return {message: "Erro ao atualizar as informações de contato",
+                success: false
+            };
+        }
+
+        return {message: "Sucesso ao atualizar as informações de contato",
+            success: false
+        };
     }
 }

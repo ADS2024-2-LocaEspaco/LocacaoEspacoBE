@@ -12,4 +12,5 @@ export interface UserRepository {
     updateBankInformation(id: string, bank: string, agency: number, accountNumber:number, accountType: string): Promise<any>
     updateProfileImage(id: string, photo: string): Promise<any>
     updateAccountInformation(id: string, cpf: string ,fullname: string): Promise<any>
+    updateContactInformation(id: string, phone: string, address: string, state: string, city: string, cep: string): Promise<any>
 }

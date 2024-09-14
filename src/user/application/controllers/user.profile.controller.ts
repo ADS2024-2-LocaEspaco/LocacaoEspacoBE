@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Query, Render, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Head, Param, Put, Query, Render, Req, Res, UseGuards } from "@nestjs/common";
 import { UserProfileService } from "../services/user.profile.service";
 import { UserEntity } from "src/user/domain/entities/user.entity";
 
@@ -8,12 +8,12 @@ export class UserProfileController {
     constructor(private readonly userProfileService: UserProfileService) {}
 
     
-    @Get()
-    getUserById(@Body() id:string):string {
+    @Get(":id")
+    getUserById(@Param() id: string): string {
         return this.userProfileService.getUserById(id);
     }
 
-    @Get("/email")
+    @Get("/email/:id")
     getUserByEmail(@Body() email:string):string {
         return this.userProfileService.getUserByEmail(email);
     }
@@ -36,5 +36,10 @@ export class UserProfileController {
     @Put("/account")
     async updateAccountInformation(@Body() req: Request): Promise<{message: string, success: boolean}>{
         return await this.userProfileService.updateAccountInformation(req)
+    }
+
+    @Put("/contact")
+    async updateContactInformation(@Body() req: Request): Promise<{message: string, success: boolean}>{
+        return await this.userProfileService.updateContactInformation(req)
     }
 }
