@@ -1,3 +1,5 @@
+import { ComodidadeEntity } from './comodidade.entity'; // Ajuste o caminho conforme necessário
+
 export class AnuncioEntity {
   private readonly id: string;
   private readonly title: string;
@@ -16,6 +18,8 @@ export class AnuncioEntity {
   private readonly qtdMaxHospedes: number;
   private readonly feedback: any[];  // Ajuste o tipo de feedback conforme a sua necessidade
   private readonly createdAt: Date;
+  private readonly comodidades: ComodidadeEntity[]; // Novo campo adicionado
+
 
   constructor(data: {
       id: string;
@@ -122,4 +126,8 @@ export class AnuncioEntity {
   get getCreatedAt(): Date {
       return this.createdAt;
   }
+  
+  get getComodidades(): ComodidadeEntity[] {
+    return this.comodidades;
+}
 }

@@ -14,82 +14,90 @@ datasource db {
 }
 
 model User {
-  id          String @id @default(uuid())
-  username    String @db.VarChar(30)
-  fullname    String @db.VarChar(50)
-  email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
-  cpf         String @db.VarChar(11)  @default("11111111111")
-  phone       String @db.VarChar(11)  @default("99999999999")
-  address     String @db.VarChar(100) @default("rua tal")
-  state       String @db.VarChar(2) @default("SP")
-  city        String @db.VarChar(50) @default("caraguatatuba")
-  cep         String @db.VarChar(8) @default("11111111")
-  photo       String @db.VarChar(255) @default("/photo")
-  roleId      Int
-  anuncio     Anuncio[]
-  feedback    Feedback[]
-  createdAt   DateTime @default(now())
+  id        String     @id @default(uuid())
+  username  String     @db.VarChar(30)
+  fullname  String     @db.VarChar(50)
+  email     String     @unique(map: "email_UNIQUE") @db.VarChar(200)
+  cpf       String     @default("11111111111") @db.VarChar(11)
+  phone     String     @default("99999999999") @db.VarChar(11)
+  address   String     @default("rua tal") @db.VarChar(100)
+  state     String     @default("SP") @db.VarChar(2)
+  city      String     @default("caraguatatuba") @db.VarChar(50)
+  cep       String     @default("11111111") @db.VarChar(8)
+  photo     String     @default("/photo") @db.VarChar(255)
+  roleId    Int
+  anuncio   Anuncio[]
+  feedback  Feedback[]
+  createdAt DateTime   @default(now()) //adicionado na sprint 2
 
-  role    Role @relation(fields: [roleId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
 }
 
 model Role {
-  id        Int @id @default(autoincrement())
-  descricao String @db.VarChar(30)
+  id        Int      @id @default(autoincrement())
+  descricao String   @db.VarChar(30)
   user      User[]
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now()) //adicionado na sprint 2
 }
 
 model Anuncio {
-  id             String @id @default(uuid())
-  title          String @db.VarChar(40)
-  street         String @db.VarChar(100)
-  bairro         String @db.VarChar(100)
-  cidade         String @db.VarChar(100)
-  cep            String @db.VarChar(100)
-  numero         Int
-  complement     String? @db.VarChar(100)
-  latitude   Float?  // Campo opcional para latitude
-  longitude  Float?
-  description    String @db.VarChar(500)
+  id             String        @id @default(uuid())
+  title          String        @db.VarChar(40)
+  street         String        @db.VarChar(100) //adicionado na sprint 2
+  bairro         String        @db.VarChar(100) //adicionado na sprint 2
+  cidade         String        @db.VarChar(100) //adicionado na sprint 2
+  cep            String        @db.VarChar(100) //adicionado na sprint 2
+  numero         Int    //adicionado na sprint 2
+  complement     String?       @db.VarChar(100) //adicionado na sprint 2
+  latitude       Float? // Campo opcional para latitude//adicionado na sprint 2
+  longitude      Float? //adicionado na sprint 2
+  description    String        @db.VarChar(500)
   userId         String
   tipoImovelId   String
   tipoEspacoId   String
   qtdMaxHospedes Int
   feedback       Feedback[]
-  createdAt      DateTime @default(now())
+  createdAt      DateTime      @default(now()) //adicionado na sprint 2
+  Comodidades    Comodidades[] //adicionado na sprint 3
 
-  
-
-  user           User @relation(fields: [userId], references: [id])
-  tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id])
-  tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+  tipoimovel TipoImovel @relation(fields: [tipoImovelId], references: [id])
+  tipoespaco TipoEspaco @relation(fields: [tipoEspacoId], references: [id])
 }
 
 model TipoImovel {
-  id        String @id @default(uuid())
-  descricao String @db.VarChar(30)
+  id        String    @id @default(uuid())
+  descricao String    @db.VarChar(30)
   anuncio   Anuncio[]
-  createdAt   DateTime @default(now())
-  
+  createdAt DateTime  @default(now()) //adicionado na sprint 2
 }
 
 model TipoEspaco {
-  id        String @id @default(uuid())
-  descricao String @db.VarChar(30)
+  id        String    @id @default(uuid())
+  descricao String    @db.VarChar(30)
   anuncio   Anuncio[]
-  createdAt   DateTime @default(now())
+  createdAt DateTime  @default(now()) //adicionado na sprint 2
 }
 
 model Feedback {
-  id        String @id @default(uuid())
-  descricao String @db.VarChar(30)
+  id        String   @id @default(uuid())
+  descricao String   @db.VarChar(30)
   nota      Int
   anuncioId String
   userId    String
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now()) //adicionado na sprint 2
 
-  user      User @relation(fields: [userId], references: [id])
-  anuncio    Anuncio @relation(fields: [anuncioId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  anuncio Anuncio @relation(fields: [anuncioId], references: [id])
 }
 
+model Comodidades {
+  id        String   @id @default(uuid()) //adicionado na sprint 3
+  anuncioId String //adicionado na sprint 3
+  descricao String   @db.VarChar(50) //adicionado na sprint 3
+  categoria String   @db.VarChar(30) //adicionado na sprint 3
+  principal Boolean //adicionado na sprint 3
+  createdAt DateTime @default(now()) //adicionado na sprint 3
+
+  anuncio Anuncio @relation(fields: [anuncioId], references: [id]) //adicionado na sprint 3
+}
