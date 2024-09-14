@@ -14,7 +14,10 @@ export class AnuncioEntity {
   private readonly tipoImovelId: string;
   private readonly tipoEspacoId: string;
   private readonly qtdMaxHospedes: number;
+  private readonly qtdAvaliacoes: number;
+  private readonly mediaAvaliacao: number;
   private readonly feedback: any[];  // Ajuste o tipo de feedback conforme a sua necessidade
+  private readonly reserva: any[];  // Ajuste o tipo de feedback conforme a sua necessidade
   private readonly createdAt: Date;
 
   constructor(data: {
@@ -33,7 +36,10 @@ export class AnuncioEntity {
       tipoImovelId: string;
       tipoEspacoId: string;
       qtdMaxHospedes: number;
+      qtdAvaliacoes: number;
+      mediaAvaliacao: number;
       feedback: any[];
+      reserva: any[];
       createdAt: Date;
   }) {
       this.id = data.id;
@@ -51,7 +57,10 @@ export class AnuncioEntity {
       this.tipoImovelId = data.tipoImovelId;
       this.tipoEspacoId = data.tipoEspacoId;
       this.qtdMaxHospedes = data.qtdMaxHospedes;
+      this.qtdAvaliacoes = data.qtdAvaliacoes;
+      this.mediaAvaliacao = data.mediaAvaliacao;
       this.feedback = data.feedback;
+      this.reserva = data.reserva;
       this.createdAt = data.createdAt;
   }
 
@@ -119,7 +128,19 @@ export class AnuncioEntity {
       return this.feedback;
   }
 
+  get getReserva(): any[] {
+      return this.feedback;
+  }
+
   get getCreatedAt(): Date {
       return this.createdAt;
+  }
+
+  get getMediaAvaliacao(): number {
+      return this.mediaAvaliacao;
+  }
+
+  get getQtdAvaliacoes(): number {
+      return this.qtdAvaliacoes;
   }
 }

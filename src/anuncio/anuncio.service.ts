@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Anuncio, Feedback, PrismaClient, User } from '@prisma/client';
+import { Anuncio, Feedback, PrismaClient, Reserva, User } from '@prisma/client';
 import { FeedbackEntity } from 'src/feedback/domain/entities/feedback.entity';
 import { getAnuncioById } from './infrastructure/database/model/anuncio';
 import { error } from 'console';
+import { getReservasById } from './infrastructure/database/model/anuncio';
 @Injectable()
 export class AnuncioService {
 
@@ -11,6 +12,10 @@ private readonly prisma = new PrismaClient();
   
   async getAnuncioById(id: string): Promise<Anuncio | null> {
     return getAnuncioById(id);
+  }
+
+  async getReservas(id: string): Promise<Reserva[] | null> {
+    return await getReservasById(id);
   }
 
 

@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:root@localhost:3306/airnbnn"
+  url      = "mysql://root:aluno@localhost:3306/airnbnn"
 }
 
 model User {
@@ -28,6 +28,7 @@ model User {
   roleId      Int
   anuncio     Anuncio[]
   feedback    Feedback[]
+  reserva     Reserva[]
   createdAt   DateTime @default(now())
 
   role    Role @relation(fields: [roleId], references: [id])
@@ -38,6 +39,19 @@ model Role {
   descricao String @db.VarChar(30)
   user      User[]
   createdAt   DateTime @default(now())
+}
+
+model Reserva {
+  id             String @id @default(uuid())
+  userId         String
+  anuncioId      String
+  status         Int
+  data_entrada   DateTime
+  data_saida     DateTime
+  createdAt      DateTime @default(now()) 
+
+  user           User @relation(fields: [userId], references: [id])
+  anuncio     Anuncio @relation(fields: [anuncioId], references: [id])
 }
 
 model Anuncio {
@@ -55,8 +69,11 @@ model Anuncio {
   userId         String
   tipoImovelId   String
   tipoEspacoId   String
-  qtdMaxHospedes Int
+  qtdMaxHospedes Int  
+  qtdAvaliacoes  Int  @default(0)
+  mediaAvaliacao Int  @default(0)
   feedback       Feedback[]
+  reserva        Reserva[]
   createdAt      DateTime @default(now())
 
   
