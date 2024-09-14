@@ -4,8 +4,8 @@ import { CreateFeedbackDto } from "../../dto/create-feedback.dto";
 
 const prisma = new PrismaClient();
 
-export async function getComentariosAnuncio(anuncioId: string): Promise<Feedback[]>{
-    const comentario = prisma.feedback.findMany({
+export async function getComentariosAnuncio(anuncioId: string): Promise<CreateFeedbackDto[]>{
+    const comentarios = prisma.feedback.findMany({
         where:{
             anuncioId
         },
@@ -15,11 +15,17 @@ export async function getComentariosAnuncio(anuncioId: string): Promise<Feedback
             nota: true,
             anuncioId: true,
             userId: true,
-            createdAt: true,
-        },
+            createdAt: false,
+            user: {
+                select: {
+                    photo: true,
+                    fullname: true,
+                }
+            }
+        }
         
     })
-    return comentario
+    return comentarios
 }
 
     

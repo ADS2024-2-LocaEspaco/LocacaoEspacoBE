@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Feedback, PrismaClient, User } from '@prisma/client';
 import { FeedbackEntity } from 'src/feedback/domain/entities/feedback.entity';
-import { getComentariosAnuncio } from 'src/feedback/infrastructure/database/model/Feedback';
+import { getComentariosAnuncio } from '../../feedback/infrastructure/database/model/Feedback';
 import { getUserHost } from './database/model/User';
 import { createHostDto } from './dto/create-user-host.dto';
+import { CreateFeedbackDto } from 'src/feedback/infrastructure/dto/create-feedback.dto';
 
 @Injectable()
 export class UserService {
   private readonly prisma = new PrismaClient();
 
   
-  async getComentarioUser(id: string): Promise<Feedback[]> {
+  async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
     return getComentariosAnuncio(id);
   }
 

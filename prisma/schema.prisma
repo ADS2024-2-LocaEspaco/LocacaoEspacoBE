@@ -14,6 +14,7 @@ datasource db {
 }
 
 model User {
+<<<<<<< HEAD
   id        String     @id @default(uuid())
   username  String     @db.VarChar(30)
   fullname  String     @db.VarChar(50)
@@ -29,6 +30,23 @@ model User {
   anuncio   Anuncio[]
   feedback  Feedback[]
   createdAt DateTime   @default(now())
+=======
+  id          String @id @default(uuid())
+  username    String @db.VarChar(30)
+  fullname    String @db.VarChar(50)
+  email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
+  cpf         String @db.VarChar(11)  @default("11111111111")
+  phone       String @db.VarChar(11)  @default("99999999999")
+  address     String @db.VarChar(100) @default("rua tal")
+  state       String @db.VarChar(2) @default("SP")
+  city        String @db.VarChar(50) @default("caraguatatuba")
+  cep         String @db.VarChar(8) @default("11111111")
+  photo       String @db.VarChar(255) @default("/photo")
+  roleId      Int
+  anuncio     Anuncio[]
+  feedback    Feedback[]
+  createdAt   DateTime @default(now())
+>>>>>>> 98ddff11fc3909dc955488b88ab5627b5fd77416
 
   role Role @relation(fields: [roleId], references: [id])
 }
