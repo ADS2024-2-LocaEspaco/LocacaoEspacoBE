@@ -1,7 +1,6 @@
-import { Controller, Get, NotFoundException, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { HostService } from './host.service';
-import { userUuidValidator } from '../../../../shared/validators/Anuncio.validator'
-
+import { userUuidValidator } from 'src/shared/validators/Anuncio.validator';
 @Controller('host')
 export class HostController {
 
@@ -9,11 +8,11 @@ export class HostController {
         private readonly host: HostService){}
 
     @Get()
-    async getHostAllocations (@Query() userUuid: userUuidValidator){
-       
-     console.log(userUuid.userId)
-       const result = await this.host.findAllocations(userUuid.userId)
+    async getHostAllocations (@Query() query: userUuidValidator){
+      
+      const result = await this.host.findAllocations(query.userId);
 
-     return result
+      return result;
+      
     }
 }

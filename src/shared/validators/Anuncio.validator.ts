@@ -3,9 +3,8 @@ import { IsUUID } from "class-validator";
 
 
 export class userUuidValidator {
-
-    // @IsNotEmpty({message: 'ID do usuário deve ser passado, para acessar os dados de anuncio.'})
-    @IsUUID(1, { message: 'UUID inválido!' } )
+    
+    @IsUUID(1 , { message: 'uuid inválido...' } )
     userId: string
 
 }
