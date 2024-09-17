@@ -7,7 +7,7 @@ export class AnuncioController {
   constructor(private readonly anuncioService: AnuncioService) {}
 
   @Get('reservas')
-  async getReservas(@Body('id') id: string): Promise<Reserva[] | null> {
+  async getReservas(@Body('id') id: string): Promise<Object> {
     return await this.anuncioService.getReservas(id);
   }
 

@@ -4,6 +4,9 @@ import { FeedbackEntity } from 'src/feedback/domain/entities/feedback.entity';
 import { getAnuncioById } from './infrastructure/database/model/anuncio';
 import { error } from 'console';
 import { getReservasById } from './infrastructure/database/model/anuncio';
+import { CreateReservaDto } from '../shared/infrastructure/dto/create-reserva.dto';
+
+
 @Injectable()
 export class AnuncioService {
 
@@ -14,8 +17,28 @@ private readonly prisma = new PrismaClient();
     return getAnuncioById(id);
   }
 
-  async getReservas(id: string): Promise<Reserva[] | null> {
-    return await getReservasById(id);
+  async getReservas(id: string): Promise<CreateReservaDto[] | object> {
+    if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
+      let data = await getReservasById(id);
+
+      // Verifica se 'data' é null, undefined ou uma lista vazia
+      if (data == null || (Array.isArray(data) && data.length === 0)) {
+        return {
+          'message': 'not content',
+          'status': 204
+        }
+
+      } else {
+        return data;
+      }
+
+    }else{
+      return {
+        'message': 'bad request',
+        'status': 400
+      }
+    }
+    
   }
 
 
