@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UserSaveRepository } from './repositories/user.save.repository';
 import { UserEntity } from '../domain/entities/user.entity';
+import { userAuthProperty } from './database/dto/user.auth.property.dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -10,7 +12,13 @@ export class UserService {
       return 'Nenhum usuário';
     }
     
-    const user = new UserEntity(req.user.email, req.user.firstName, req.user.lastName, req.user.picture, req.user.accessToken);
+    const user: userAuthProperty = {
+      accessToken: req.user.accessToken,
+      email: req.user.email,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      picture: req.user.picture,
+    };
     
     this.userSaveRepository.save(user);
 
