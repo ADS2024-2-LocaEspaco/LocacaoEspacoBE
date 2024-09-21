@@ -6,20 +6,61 @@ import { UserRepositoryImp } from "../../infrastructure/repositories/user.reposi
 export class UserProfileService {
     constructor(private readonly userRepositoryImp: UserRepositoryImp) {}
 
-    getUserByEmail(req: any): string {
+    async getUserByEmail(req: any): Promise<any> {
         if (!req.email) {
-            throw error("Email não identificado")
+            throw error("Email não identificada")
         }
 
-        return this.userRepositoryImp.getUserByEmail(req.email)
+        const resService = await this.userRepositoryImp.getUserByEmail(req.email)
+
+        if (!resService) {
+            throw error("Nenhuma informação retornada")
+        }
+
+        return resService
     }
 
-    getUserById(req: any): string {
+    async getUserById(req: any): Promise<any> {
         if (!req) {
-            throw error("Nenhuma informação identificado")
+            throw error("Nenhuma informação identificada")
+        }
+        
+        const resService = await this.userRepositoryImp.getUserById(req.id)
+
+        if (!resService) {
+            throw error("Nenhuma informação retornada")
         }
 
-        return this.userRepositoryImp.getUserById(req.id)
+        return resService
+    }
+
+    async getUserClassification(req: any): Promise<any> {
+        if (!req) {
+            throw error("Nenhuma informação identificada")
+        }
+        
+        const resService = await this.userRepositoryImp.getUserClassification(req.idUser)
+
+        if (!resService) {
+            throw error("Nenhuma informação retornada")
+        }
+
+        const classifications = resService.map((service: { id: string, classification: number }) => {
+            if (service.classification < 0 || service.classification > 5) {
+                throw error("Nota está errada")
+            }
+            return service.classification
+        });
+
+        const sum = classifications.reduce((accumulator: number, currentValue: number) => accumulator + currentValue, 0);
+
+        if (sum < 0) {
+            throw error("Erro durante o calculo das classificações")
+        }
+
+        const avg = (sum/classifications.length).toFixed(1);
+
+        return avg
     }
 
     async updateUsername(req: any): Promise<{message: string, success: boolean}>{
@@ -110,5 +151,19 @@ export class UserProfileService {
         return {message: "Sucesso ao atualizar as informações de contato",
             success: false
         };
+    }
+
+    async deleteUser(req: any): Promise<string> {
+        if (!req) {
+            throw error("Nenhuma informação.");
+        }
+
+        const resService = await this.userRepositoryImp.deleteUser(req.id);
+
+        if (!resService) {
+            throw error("Nenhuma conta encontrada");
+        }
+
+        return resService
     }
 }

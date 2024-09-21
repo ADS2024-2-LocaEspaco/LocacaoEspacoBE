@@ -107,3 +107,32 @@ export const updateContactInformation = async(id: string, phone: string, address
 
     return client
 }
+
+export const getUserClassification = async(idUser: string) => {
+    const client = await prisma.userclassification.findMany({
+        where: {
+            idUser
+        },
+        select: {
+            id: true,
+            classification: true
+        }
+    })
+
+    return client
+}
+
+export const deleteUser = async(id: string) => {
+    await prisma.userclassification.deleteMany({
+        where: {
+            idUser: id
+        }
+    })
+
+    await prisma.user.delete({
+        where: {
+            id
+        }
+    })
+    return ("Conta deletada")
+}

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Head, Param, Put, Query, Render, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Delete, Head, Param, Put, Query, Render, Req, Res, UseGuards } from "@nestjs/common";
 import { UserProfileService } from "../services/user.profile.service";
 import { UserEntity } from "src/user/domain/entities/user.entity";
 
@@ -9,13 +9,18 @@ export class UserProfileController {
 
     
     @Get(":id")
-    getUserById(@Param() id: string): string {
-        return this.userProfileService.getUserById(id);
+    async getUserById(@Param() id: string): Promise<any>  {
+        return await this.userProfileService.getUserById(id);
     }
 
-    @Get("/email/:id")
-    getUserByEmail(@Body() email:string):string {
-        return this.userProfileService.getUserByEmail(email);
+    @Get("/email/:email")
+    async getUserByEmail(@Param() email:string): Promise<any> {
+        return await this.userProfileService.getUserByEmail(email);
+    }
+
+    @Get("/classification/:idUser")
+    async getUserClassification(@Param() idUser:string): Promise<any> {
+        return await this.userProfileService.getUserClassification(idUser)
     }
     
     @Put()
@@ -41,5 +46,10 @@ export class UserProfileController {
     @Put("/contact")
     async updateContactInformation(@Body() req: Request): Promise<{message: string, success: boolean}>{
         return await this.userProfileService.updateContactInformation(req)
+    }
+
+    @Delete(":id")
+    async deleteUser(@Param() id: string): Promise<string>  {
+        return await this.userProfileService.deleteUser(id);
     }
 }

@@ -1,16 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from "../../domain/repositories/user.repositories.js";
 import { UserEntity } from "../../domain/entities/user.entity.js";
-import { getUserByEmail, getUserById, updateUsername, updateProfileImage, updateAccountInformation, updateContactInformation } from "../database/models/User.js";
+import { getUserByEmail, getUserById, getUserClassification, updateUsername, updateProfileImage, updateAccountInformation, updateContactInformation, deleteUser } from "../database/models/User.js";
 
 @Injectable()
 export class UserRepositoryImp implements UserRepository {
-    getUserByEmail(email: string): any {
-        return getUserByEmail(email);
+    async getUserByEmail(email: string): Promise<any> {
+        return await getUserByEmail(email);
     }
 
-    getUserById(id: string): any {
-        return getUserById(id);
+    async getUserById(id: string): Promise<any> {
+        return await getUserById(id);
+    }
+
+    async getUserClassification(idUser: string): Promise<any> {
+        return await getUserClassification(idUser);
     }
 
     async updateUsername(username: string, id: string): Promise<any> {
@@ -30,6 +34,10 @@ export class UserRepositoryImp implements UserRepository {
     }
 
     async updateContactInformation(id: string, phone: string, address: string, state: string, city: string, cep: string): Promise<any> {
-        return await updateContactInformation(id, phone, address, state, city, cep)
+        return await updateContactInformation(id, phone, address, state, city, cep);
+    }
+
+    async deleteUser(id: string): Promise<string> {
+        return await deleteUser(id)
     }
 }

@@ -44,20 +44,30 @@ model tipoimovel {
 }
 
 model user {
-  id       String    @id
-  username String    @db.VarChar(30)
-  fullname String    @db.VarChar(50)
-  email    String    @unique(map: "email_UNIQUE") @db.VarChar(200)
-  cpf      String    @db.VarChar(11)
-  phone    String    @db.VarChar(11)
-  address  String    @db.VarChar(100)
-  state    String    @db.VarChar(2)
-  city     String    @db.VarChar(50)
-  cep      String    @db.VarChar(8)
-  photo    String    @db.VarChar(255)
-  roleId   Int
-  anuncio  anuncio[]
-  role     role      @relation(fields: [roleId], references: [id], map: "User_roleId_fkey")
+  id                 String               @id
+  username           String               @db.VarChar(30)
+  fullname           String               @db.VarChar(50)
+  email              String               @unique(map: "email_UNIQUE") @db.VarChar(200)
+  cpf                String               @db.VarChar(11)
+  phone              String               @db.VarChar(11)
+  address            String               @db.VarChar(100)
+  state              String               @db.VarChar(2)
+  city               String               @db.VarChar(50)
+  cep                String               @db.VarChar(8)
+  photo              String               @db.VarChar(255)
+  roleId             Int
+  anuncio            anuncio[]
+  role               role                 @relation(fields: [roleId], references: [id], map: "User_roleId_fkey")
+  userclassification userclassification[]
 
   @@index([roleId], map: "User_roleId_fkey")
+}
+
+model userclassification {
+  id             String @id
+  idUser         String
+  classification Float  @db.Float
+  user           user   @relation(fields: [idUser], references: [id], map: "User_idUser_fkey")
+
+  @@index([idUser], map: "User_idUser_fkey")
 }
