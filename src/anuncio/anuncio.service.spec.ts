@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Feedback } from '@prisma/client';
-import { CreateReservaDto } from '../shared/infrastructure/dto/create-reserva.dto';
+import { getReservaDto } from '../shared/infrastructure/dto/get-reserva.dto';
 import { AnuncioService } from './anuncio.service';
 
 describe('FeedbackService', () => {
@@ -18,7 +18,7 @@ describe('FeedbackService', () => {
     const data = '1'
 
     // Mock the expected result if necessary
-    const expectedReserva = new CreateReservaDto();
+    const expectedReserva = new getReservaDto();
     // Set up expected values for the feedback DTO
     
     // Ensure that the service.getComentarios(data) returns expectedFeedback

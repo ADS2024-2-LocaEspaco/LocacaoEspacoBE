@@ -1,6 +1,6 @@
 import { Reserva } from "@prisma/client";
 
-export class CreateReservaDto {
+export class getReservaDto {
     id:             String
     userId?:        String
     anuncioId?:     String

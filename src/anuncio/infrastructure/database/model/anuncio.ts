@@ -1,5 +1,5 @@
 import { Anuncio, PrismaClient, Reserva } from "@prisma/client";
-import { CreateReservaDto } from "../../../../shared/infrastructure/dto/create-reserva.dto";
+import { getReservaDto } from "../../../../shared/infrastructure/dto/get-reserva.dto";
 
 const prisma = new PrismaClient();
 
@@ -32,7 +32,7 @@ export async function getAnuncioById(id: string): Promise<Anuncio | null> {
     return anuncio;
 }
 
-export async function getReservasById(id: string): Promise<CreateReservaDto[] | null> {
+export async function getReservasById(id: string): Promise<getReservaDto[] | null> {
     const reservas = await prisma.reserva.findMany({
         where: { 
             anuncioId: id,

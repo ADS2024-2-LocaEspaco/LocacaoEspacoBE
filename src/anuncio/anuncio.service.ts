@@ -4,7 +4,7 @@ import { FeedbackEntity } from 'src/feedback/domain/entities/feedback.entity';
 import { getAnuncioById } from './infrastructure/database/model/anuncio';
 import { error } from 'console';
 import { getReservasById } from './infrastructure/database/model/anuncio';
-import { CreateReservaDto } from '../shared/infrastructure/dto/create-reserva.dto';
+import { getReservaDto } from '../shared/infrastructure/dto/get-reserva.dto';
 
 
 @Injectable()
@@ -17,7 +17,7 @@ private readonly prisma = new PrismaClient();
     return getAnuncioById(id);
   }
 
-  async getReservas(id: string): Promise<CreateReservaDto[] | object> {
+  async getReservas(id: string): Promise<getReservaDto[] | object> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let data = await getReservasById(id);
 
