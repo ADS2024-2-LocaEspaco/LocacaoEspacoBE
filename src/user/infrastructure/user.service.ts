@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserSaveRepository } from './repositories/user.save.repository';
 import { userAuthProperty } from './database/dto/user.auth.property.dto';
 import { User } from '@prisma/client';
+import { userAuth } from './database/dto/user.auth.dto';
 
 @Injectable()
 export class UserService {
@@ -11,7 +12,7 @@ export class UserService {
       return 'Nenhum usuário';
     }
     
-    const user: userAuthProperty = {
+    const user: userAuth = {
       accessToken: req.user.accessToken,
       email: req.user.email,
       firstName: req.user.firstName,
@@ -36,30 +37,5 @@ export class UserService {
         message: error
       }
     }
-    //     const result = await prisma.user.create({
-    //       data: user,
-    //       select: {
-    //         id: true,
-    //         email: true,
-    //         firstName: true,
-    //         accessToken: true,
-    //         picture: true,
-    //         lastName: true
-    //       },
-    //     });
-
-    //     return result;
-        
-    //   } else {
-    //     console.log('Usuário já existe');
-    //     await updateToken(user);
-    //   }
-
-
-    // } catch (error) {
-    //   return error;
-    // }
-
-    
   }
 }
