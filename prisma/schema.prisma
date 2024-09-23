@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,21 +9,23 @@ datasource db {
 
 model User {
   id          String @id @default(uuid())
+  email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
   username    String @db.VarChar(30)
   fullname    String @db.VarChar(50)
-  email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
   cpf         String @db.VarChar(11)  @default("11111111111")
   phone       String @db.VarChar(11)  @default("99999999999")
-  address     String @db.VarChar(100) @default("rua tal")
-  state       String @db.VarChar(2) @default("SP")
-  city        String @db.VarChar(50) @default("caraguatatuba")
-  cep         String @db.VarChar(8) @default("11111111")
-  photo       String @db.VarChar(255) @default("/photo")
+  address     String? @db.VarChar(100) @default("rua tal")
+  state       String? @db.VarChar(2) @default("SP")
+  city        String? @db.VarChar(50) @default("caraguatatuba")
+  cep         String? @db.VarChar(8) @default("11111111")
   roleId      Int
+  createdAt   DateTime @default(now())
+  photo       String? @db.VarChar(255) @default("/photo")
+
   anuncio     Anuncio[]
   feedback    Feedback[]
   reserva     Reserva[]
-  createdAt   DateTime @default(now())
+  classification  Classification[]
 
   role    Role @relation(fields: [roleId], references: [id])
 }
@@ -72,20 +68,23 @@ model Anuncio {
   qtdMaxHospedes Int  
   qtdAvaliacoes  Int  @default(0)
   mediaAvaliacao Int  @default(0)
-  feedback       Feedback[]
-  reserva        Reserva[]
   createdAt      DateTime @default(now())
 
+  tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id], map: "Anuncio_tipoEspacoId_fkey")
+  tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id], map: "Anuncio_tipoImovelId_fkey")
+  user           User       @relation(fields: [userId], references: [id], map: "Anuncio_userId_fkey")
   
+  feedback       Feedback[]
+  reserva        Reserva[]
 
-  user           User @relation(fields: [userId], references: [id])
-  tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id])
-  tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id])
+  @@index([tipoEspacoId], map: "Anuncio_tipoEspacoId_fkey")
+  @@index([tipoImovelId], map: "Anuncio_tipoImovelId_fkey")
+  @@index([userId], map: "Anuncio_userId_fkey")
 }
 
 model TipoImovel {
-  id        String @id @default(uuid())
-  descricao String @db.VarChar(30)
+  id        String    @id
+  descricao String    @db.VarChar(30)
   anuncio   Anuncio[]
   createdAt   DateTime @default(now())
   
@@ -109,4 +108,10 @@ model Feedback {
   user      User @relation(fields: [userId], references: [id])
   anuncio    Anuncio @relation(fields: [anuncioId], references: [id])
 }
+model Classification {
+  id      Int @id @default(autoincrement())
+  userId  String
+  grade   Int
 
+  user    User @relation(fields: [userId], references: [id])
+}
