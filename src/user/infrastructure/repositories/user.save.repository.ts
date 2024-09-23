@@ -1,7 +1,5 @@
 import { PrismaClient, User } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from 'src/user/domain/entities/user.entity';
-import { create, getUserByEmail, updateToken } from '../database/models/User.create.model';
 import { userAuthProperty } from '../database/dto/user.auth.property.dto';
 
 const prisma = new PrismaClient();
@@ -46,31 +44,20 @@ export class UserSaveRepository implements UserSaveRepository{
         });
 
       return result;
-    // try {
-    //   if (!(await this.userExists(user.email))) {
-        
-    //     const result = await prisma.user.create({
-    //       data: user,
-    //       select: {
-    //         id: true,
-    //         email: true,
-    //         firstName: true,
-    //         accessToken: true,
-    //         picture: true,
-    //         lastName: true
-    //       },
-    //     });
-
-    //     return result;
-        
-    //   } else {
-    //     console.log('Usuário já existe');
-    //     await updateToken(user);
-    //   }
-
-
-    // } catch (error) {
-    //   return error;
-    // }
   }
+
+  async updateToken(user: any) {
+    const result = await prisma.user.update({
+      where: {
+        email: user.email
+      },
+      data: user,
+      select: {
+        id: true,
+        firstName: true
+      }
+    });
+
+    return result;
+  };
 }
