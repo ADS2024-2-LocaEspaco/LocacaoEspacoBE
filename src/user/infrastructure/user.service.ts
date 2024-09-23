@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { UserSaveRepository } from './repositories/user.save.repository';
-import { UserEntity } from '../domain/entities/user.entity';
 import { userAuthProperty } from './database/dto/user.auth.property.dto';
 import { User } from '@prisma/client';
 
