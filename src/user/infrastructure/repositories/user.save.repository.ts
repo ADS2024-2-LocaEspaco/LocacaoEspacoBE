@@ -24,7 +24,7 @@ export class UserSaveRepository implements UserSaveRepository{
 
     return false;
   }
-  async save(user: userAuthProperty): Promise<userAuthProperty | null> {
+  async save(user: userAuthProperty): Promise<userAuthProperty> {
     const result = await prisma.user.create({
           data: {
             accessToken: user.accessToken,
@@ -46,7 +46,7 @@ export class UserSaveRepository implements UserSaveRepository{
       return result;
   }
 
-  async updateToken(user: any) {
+  async updateToken(user: userAuthProperty): Promise<userAuthProperty> {
     const result = await prisma.user.update({
       where: {
         email: user.email
@@ -54,7 +54,11 @@ export class UserSaveRepository implements UserSaveRepository{
       data: user,
       select: {
         id: true,
-        firstName: true
+        email: true,
+        firstName: true,
+        lastName: true,
+        picture: true,
+        accessToken: true,
       }
     });
 
