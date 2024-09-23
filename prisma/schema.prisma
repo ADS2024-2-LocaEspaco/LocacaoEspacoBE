@@ -4,24 +4,23 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:aluno@localhost:3306/airnbnn"
+  url      = "mysql://root:aluno@localhost:3306/stayeasy"
 }
 
 model User {
   id          String @id @default(uuid())
   email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
-  username    String @db.VarChar(30)
-  fullname    String @db.VarChar(50)
-  cpf         String @db.VarChar(11)  @default("11111111111")
-  phone       String @db.VarChar(11)  @default("99999999999")
-  address     String? @db.VarChar(100) @default("rua tal")
-  state       String? @db.VarChar(2) @default("SP")
-  city        String? @db.VarChar(50) @default("caraguatatuba")
-  cep         String? @db.VarChar(8) @default("11111111")
-  roleId      Int
-  createdAt   DateTime @default(now())
-  photo       String? @db.VarChar(255) @default("/photo")
-
+  firstName   String @db.VarChar(30)
+  lastName    String? @db.VarChar(50)
+  picture     String @db.VarChar(255)
+  accessToken String @db.VarChar(255)
+  cpf         String? @db.VarChar(11)
+  phone       String? @db.VarChar(11)
+  address     String? @db.VarChar(100)
+  state       String? @db.VarChar(2)
+  city        String? @db.VarChar(50)
+  cep         String? @db.VarChar(8)
+  roleId      Int @default(1)
   anuncio     Anuncio[]
   feedback    Feedback[]
   reserva     Reserva[]

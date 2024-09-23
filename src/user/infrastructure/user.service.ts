@@ -4,10 +4,16 @@ import { getComentariosAnuncio } from '../../feedback/infrastructure/repositorie
 import { getUserHost } from './database/model/User';
 import { createHostDto } from './dto/create-user-host.dto';
 import { CreateFeedbackDto } from 'src/feedback/infrastructure/database/dto/create-feedback.dto';
+import { UserSaveRepository } from './repositories/user.save.repository';
+import { userAuthProperty } from './database/dto/user.auth.property.dto';
+
 
 @Injectable()
 export class UserService {
-  private readonly prisma = new PrismaClient();
+  constructor(
+    private readonly userSaveRepository: UserSaveRepository,
+    private readonly prisma = new PrismaClient(),
+  ) {}
 
   
   async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
@@ -40,6 +46,39 @@ export class UserService {
     return this.prisma.user.findUnique({
       where: { id },
     });
+  }
+
+  async googleLogin(req: any) {
+    if (!req.user) {
+      return 'Nenhum usuário';
+    }
+    
+    const user: userAuthProperty = {
+      accessToken: req.user.accessToken,
+      email: req.user.email,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      picture: req.user.picture,
+    };
+    
+    try {
+      if (!(await this.userSaveRepository.userExists(user.email))) {
+        await this.userSaveRepository.save(user);
+      
+      }else {
+        await this.userSaveRepository.updateToken(user);
+      }
+
+      return {
+        message: 'Usuário logado',
+        user: user,
+      };
+    }catch(error) {
+      return {
+        message: error
+      }
+    }
+    
   }
 
 }
