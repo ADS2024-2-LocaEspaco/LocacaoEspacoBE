@@ -1,7 +1,7 @@
 import { Controller, Get, Body, Query, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { FeedbackEntity } from 'src/feedback/domain/entities/feedback.entity';
-import { CreateFeedbackDto } from '../../feedback/infrastructure/dto/create-feedback.dto';
+import { CreateFeedbackDto } from '../../feedback/infrastructure/database/dto/create-feedback.dto';
 
 @Controller('user')
 export class UserController {

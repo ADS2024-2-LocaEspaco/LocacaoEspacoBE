@@ -1,6 +1,5 @@
 import { Feedback, PrismaClient } from "@prisma/client";
-import { FeedbackEntity } from "src/feedback/domain/entities/feedback.entity";
-import { CreateFeedbackDto } from "../../dto/create-feedback.dto";
+import { CreateFeedbackDto } from "../database/dto/create-feedback.dto";
 
 const prisma = new PrismaClient();
 

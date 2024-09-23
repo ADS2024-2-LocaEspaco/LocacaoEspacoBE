@@ -1,5 +1,5 @@
 import { Anuncio, PrismaClient, Reserva } from "@prisma/client";
-import { getReservaDto } from "../../../../shared/infrastructure/dto/get-reserva.dto";
+import { getReservaDto } from "../database/dto/get-reserva.dto";
 
 const prisma = new PrismaClient();
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Feedback } from '@prisma/client';
-import { getComentariosAnuncio } from '../../infrastructure/database/model/Feedback';
-import { CreateFeedbackDto } from 'src/feedback/infrastructure/dto/create-feedback.dto';
+import { getComentariosAnuncio } from './repositories/Feedback.repositories';
+import { CreateFeedbackDto } from "./database/dto/create-feedback.dto";
 
 @Injectable()
 export class FeedbackService {

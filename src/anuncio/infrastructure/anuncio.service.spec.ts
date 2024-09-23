@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Feedback } from '@prisma/client';
-import { getReservaDto } from '../shared/infrastructure/dto/get-reserva.dto';
+import { getReservaDto } from './database/dto/get-reserva.dto';
 import { AnuncioService } from './anuncio.service';
 
 describe('FeedbackService', () => {

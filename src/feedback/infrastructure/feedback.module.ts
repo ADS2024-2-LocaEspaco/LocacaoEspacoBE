@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { FeedbackService } from '../domain/service/feedback.service';
+import { FeedbackService } from './feedback.service';
 
 @Module({
   imports: [],

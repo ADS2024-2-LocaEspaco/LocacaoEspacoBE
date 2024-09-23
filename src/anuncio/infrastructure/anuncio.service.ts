@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Anuncio, Feedback, PrismaClient, Reserva, User } from '@prisma/client';
-import { FeedbackEntity } from 'src/feedback/domain/entities/feedback.entity';
-import { getAnuncioById } from './infrastructure/database/model/anuncio';
 import { error } from 'console';
-import { getReservasById } from './infrastructure/database/model/anuncio';
-import { getReservaDto } from '../shared/infrastructure/dto/get-reserva.dto';
+import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
+import { getReservaDto } from './database/dto/get-reserva.dto';
 
 
 @Injectable()
