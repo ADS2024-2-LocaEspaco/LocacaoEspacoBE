@@ -8,67 +8,29 @@ datasource db {
 }
 
 model User {
-  id          String @id @default(uuid())
-  email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
-  firstName   String @db.VarChar(30)
-  lastName    String? @db.VarChar(50)
-  picture     String @db.VarChar(255)
-  accessToken String @db.VarChar(255)
-  cpf         String? @db.VarChar(11)
-  phone       String? @db.VarChar(11)
-  address     String? @db.VarChar(100)
-  state       String? @db.VarChar(2)
-  city        String? @db.VarChar(50)
-  cep         String? @db.VarChar(8)
-  roleId      Int @default(1)
-  anuncio     Anuncio[]
-  classification  Classification[]
+  id            String @id @default(uuid())
+  bank_id       Int?
+  email         String @unique(map: "email_UNIQUE") @db.VarChar(250)
+  firstName     String @db.VarChar(100)
+  lastName      String @db.VarChar(250)
+  picture       String @db.VarChar(1024)
+  accessToken   String @db.VarChar(255)
+  cpf           String? @db.VarChar(14)
+  phone         String? @db.VarChar(11)
+  agency        Int? 
+  account       String? @db.VarChar(12)
+  admin         Boolean @default(false)
+  created_at    DateTime @default(now())
+  active        Boolean @default(true)
+  url_document  String? @db.VarChar(500)
+  blocked       Boolean @default(false)
 
-  role    Role? @relation(fields: [roleId], references: [id])
+  bank          Bank? @relation(fields: [bank_id], references: [id])
 }
 
-model Role {
-  id        Int @id @default(autoincrement())
-  descricao String @db.VarChar(30)
-  user      User[]
-}
-
-model Anuncio {
-  id             String @id @default(uuid())
-  title          String @db.VarChar(40)
-  address        String @db.VarChar(100)
-  description    String @db.VarChar(200)
-  userId         String
-  tipoImovelId   String
-  tipoEspacoId   String
-  qtdMaxHospedes Int
-  tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id], map: "Anuncio_tipoEspacoId_fkey")
-  tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id], map: "Anuncio_tipoImovelId_fkey")
-  user           User       @relation(fields: [userId], references: [id], map: "Anuncio_userId_fkey")
-
-  @@index([tipoEspacoId], map: "Anuncio_tipoEspacoId_fkey")
-  @@index([tipoImovelId], map: "Anuncio_tipoImovelId_fkey")
-  @@index([userId], map: "Anuncio_userId_fkey")
-}
-
-
-
-model TipoEspaco {
-  id        String    @id
-  descricao String    @db.VarChar(30)
-  anuncio   Anuncio[]
-}
-
-model TipoImovel {
-  id        String    @id
-  descricao String    @db.VarChar(30)
-  anuncio   Anuncio[]
-}
-
-model Classification {
-  id      Int @id @default(autoincrement())
-  userId  String
-  grade   Int
-
-  user    User @relation(fields: [userId], references: [id])
+model Bank {
+  id            Int @id  @default(autoincrement())
+  bankCode      Int
+  name          String @db.VarChar(100)
+  user          User[]
 }
