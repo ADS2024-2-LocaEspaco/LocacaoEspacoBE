@@ -1,5 +1,5 @@
 export class createHostDto {
-    username: string;
-    photo:    string;
-    createdAt: Date;
+    firstName: string;
+    lastName?: string | null;
+    picture: string;
 }

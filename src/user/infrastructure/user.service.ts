@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Feedback, PrismaClient, User } from '@prisma/client';
 import { getComentariosAnuncio } from '../../feedback/infrastructure/repositories/Feedback.repositories';
-import { getUserHost } from './database/model/User';
+import { UserRepository } from './repositories/user.repositories';
 import { createHostDto } from './dto/create-user-host.dto';
 import { CreateFeedbackDto } from 'src/feedback/infrastructure/database/dto/create-feedback.dto';
 import { UserSaveRepository } from './repositories/user.save.repository';
 import { userAuthProperty } from './database/dto/user.auth.property.dto';
 
 
+const prisma = new PrismaClient()
 @Injectable()
 export class UserService {
   constructor(
     private readonly userSaveRepository: UserSaveRepository,
-    private readonly prisma = new PrismaClient(),
+    private readonly userRepository: UserRepository,
   ) {}
 
   
@@ -24,7 +25,7 @@ export class UserService {
     let data: createHostDto | any 
 
     try {
-      data = await getUserHost(id)
+      data = await this.userRepository.getUserHost(id)
 
       if(data == null){
         data = {
@@ -42,11 +43,11 @@ export class UserService {
     return data
   }
 
-  async getUserById(id: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { id },
-    });
-  }
+  // async getUserById(id: string): Promise<User | null> {
+  //   return this.prisma.user.findUnique({
+  //     where: { id },
+  //   });
+  // }
 
   async googleLogin(req: any) {
     if (!req.user) {

@@ -1,5 +1,8 @@
-export class CreateUserDto {
+import { User } from "@prisma/client";
+
+export class CreateUserDto{
     id:       string;
-    username: string;
-    photo:    string;
+    firstName: string;
+    lastName?: string | null;
+    picture:    string;
 }
