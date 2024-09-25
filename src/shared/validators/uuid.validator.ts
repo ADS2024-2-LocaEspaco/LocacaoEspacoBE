@@ -1,18 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { validate as isUUID } from 'uuid';
+import { IsUUID } from 'class-validator';
 
-@Injectable()
-export class ValidateUuid{
+export class userUuidValidator {
 
-async isUuid(id: string){
-    if(!isUUID(id)){
-        return false
-        }
-    else{
-        return true
-        }
-    }
+    @IsUUID(1, {message: 'uuid inválido!'})
+    userId: string
+
 }
+
 
 //tratamento de exceção, porém podemos alterar para retornar true ou false para que cada um trate da maneira que achar adequado
 //qualquer coisa avisem por favor
