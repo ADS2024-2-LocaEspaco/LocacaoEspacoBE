@@ -8,33 +8,97 @@ datasource db {
 }
 
 model User {
-  id          String @id @default(uuid())
-  email       String @unique(map: "email_UNIQUE") @db.VarChar(200)
-  firstName   String @db.VarChar(30)
-  lastName    String? @db.VarChar(50)
-  picture     String @db.VarChar(255)
-  accessToken String @db.VarChar(255)
-  cpf         String? @db.VarChar(11)
-  phone       String? @db.VarChar(11)
-  address     String? @db.VarChar(100)
-  state       String? @db.VarChar(2)
-  city        String? @db.VarChar(50)
-  cep         String? @db.VarChar(8)
-  roleId      Int @default(1)
-  anuncio     Anuncio[]
-  feedback    Feedback[]
-  reserva     Reserva[]
-  classification  Classification[]
+  id            String @id @default(uuid())
+  bank_id       Int?
+  email         String @unique(map: "email_UNIQUE") @db.VarChar(250)
+  firstName     String @db.VarChar(100)
+  lastName      String @db.VarChar(250)
+  picture       String @db.VarChar(1024)
+  accessToken   String @db.VarChar(255)
+  cpf           String? @db.VarChar(14)
+  phone         String? @db.VarChar(11)
+  agency        Int? 
+  account       String? @db.VarChar(12)
+  admin         Boolean @default(false)
+  created_at    DateTime @default(now())
+  active        Boolean @default(true)
+  url_document  String? @db.VarChar(500)
+  blocked       Boolean @default(false)
 
-  role    Role @relation(fields: [roleId], references: [id])
+  bank          Bank? @relation(fields: [bank_id], references: [id])
+
+  address Address[]
+}
+model Bank {
+  id            Int @id  @default(autoincrement())
+  bankCode      Int
+  name          String @db.VarChar(100)
+  user          User[]
 }
 
-model Role {
-  id        Int @id @default(autoincrement())
-  descricao String @db.VarChar(30)
-  user      User[]
-  createdAt   DateTime @default(now())
+model Address {
+  id          Int @id @default(autoincrement())
+  anuncio_id  String
+  usuario_id  String
+  logradouro  String    @db.VarChar(255)
+  bairro      String    @db.VarChar(255)
+  cidade      String    @db.VarChar(255)
+  estado      String    @db.VarChar(2)
+  numero      String    @db.VarChar(10)
+  complemento String    @db.VarChar(255)
+  cep         String    @db.VarChar(10)
+  longitude   String    @db.VarChar(100)
+  latitude    String    @db.VarChar(100)
+  criado_em   DateTime  @default(now())
+
+  ad          Ad @relation(fields: [anuncio_id], references: [id])
+  user        User    @relation(fields: [usuario_id], references: [id])
 }
+
+model Ad {
+  id      String @id @default(uuid())
+  address Address[]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 model Reserva {
   id             String @id @default(uuid())
@@ -45,7 +109,7 @@ model Reserva {
   data_saida     DateTime
   createdAt      DateTime @default(now()) 
 
-  user           User @relation(fields: [userId], references: [id])
+  //user           User @relation(fields: [userId], references: [id])
   anuncio     Anuncio @relation(fields: [anuncioId], references: [id])
 }
 
@@ -71,7 +135,7 @@ model Anuncio {
 
   tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id], map: "Anuncio_tipoEspacoId_fkey")
   tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id], map: "Anuncio_tipoImovelId_fkey")
-  user           User       @relation(fields: [userId], references: [id], map: "Anuncio_userId_fkey")
+  //user           User       @relation(fields: [userId], references: [id], map: "Anuncio_userId_fkey")
   
   feedback       Feedback[]
   reserva        Reserva[]
@@ -104,7 +168,7 @@ model Feedback {
   userId    String
   createdAt   DateTime @default(now())
 
-  user      User @relation(fields: [userId], references: [id])
+  //user      User @relation(fields: [userId], references: [id])
   anuncio    Anuncio @relation(fields: [anuncioId], references: [id])
 }
 model Classification {
@@ -112,5 +176,5 @@ model Classification {
   userId  String
   grade   Int
 
-  user    User @relation(fields: [userId], references: [id])
+  //user    User @relation(fields: [userId], references: [id])
 }
