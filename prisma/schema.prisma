@@ -22,15 +22,19 @@ model User {
   admin         Boolean @default(false)
   created_at    DateTime @default(now())
   active        Boolean @default(true)
+  role_id           Int     @default(1)
   url_document  String? @db.VarChar(500)
   blocked       Boolean @default(false)
 
+  role          Role @relation(fields: [role_id], references: [id])
   bank          Bank? @relation(fields: [bank_id], references: [id])
 
+  favorites_list    Favorites_list[]
   address Address[]
 }
+
 model Bank {
-  id            Int @id  @default(autoincrement())
+  id            Int    @id  @default(autoincrement())
   bankCode      Int
   name          String @db.VarChar(100)
   user          User[]
@@ -53,6 +57,21 @@ model Address {
 
   ad          Ad @relation(fields: [anuncio_id], references: [id])
   user        User    @relation(fields: [usuario_id], references: [id])
+}
+
+model Favorites_list {
+  id           Int        @id  @default(autoincrement())
+  user_id      String     @db.VarChar(255)
+  list_name    String     @db.VarChar(120)
+  created_at   DateTime   @default(now())
+
+  user         User @relation(fields: [user_id], references: [id])
+}
+model Role {
+  id        Int @id @default(autoincrement())
+  descricao String @db.VarChar(30)
+  user      User[]
+  createdAt   DateTime @default(now())
 }
 
 model Ad {
