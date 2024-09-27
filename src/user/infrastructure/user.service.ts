@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { Feedback, PrismaClient, User } from '@prisma/client';
 import { getComentariosAnuncio } from '../../feedback/infrastructure/repositories/Feedback.repositories';
 import { UserRepository } from './repositories/user.repositories';
-import { createHostDto } from './dto/create-user-host.dto';
+import { createHostDto } from './database/dto/create-user-host.dto';
 import { CreateFeedbackDto } from 'src/feedback/infrastructure/database/dto/create-feedback.dto';
 import { UserSaveRepository } from './repositories/user.save.repository';
 import { userAuthProperty } from './database/dto/user.auth.property.dto';
+import { userAuth } from './database/dto/user.auth.dto';
 
 
 const prisma = new PrismaClient()
@@ -54,7 +55,7 @@ export class UserService {
       return 'Nenhum usuário';
     }
     
-    const user: userAuthProperty = {
+    const user: userAuth = {
       accessToken: req.user.accessToken,
       email: req.user.email,
       firstName: req.user.firstName,

@@ -1,6 +1,6 @@
 import { PrismaClient, User } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { userAuthProperty } from '../database/dto/user.auth.property.dto';
+import { userAuth } from '../database/dto/user.auth.dto';
 
 const prisma = new PrismaClient();
 @Injectable()
@@ -24,7 +24,7 @@ export class UserSaveRepository implements UserSaveRepository{
 
     return false;
   }
-  async save(user: userAuthProperty): Promise<userAuthProperty> {
+  async save(user: userAuth): Promise<userAuth> {
     const result = await prisma.user.create({
           data: {
             accessToken: user.accessToken,
@@ -46,7 +46,7 @@ export class UserSaveRepository implements UserSaveRepository{
       return result;
   }
 
-  async updateToken(user: userAuthProperty): Promise<userAuthProperty> {
+  async updateToken(user: userAuth): Promise<userAuth> {
     const result = await prisma.user.update({
       where: {
         email: user.email
