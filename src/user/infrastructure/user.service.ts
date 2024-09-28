@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Feedback, PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { getComentariosAnuncio } from '../../feedback/infrastructure/repositories/Feedback.repositories';
 import { UserRepository } from './repositories/user.repositories';
 import { createHostDto } from './database/dto/create-user-host.dto';
@@ -58,8 +58,8 @@ export class UserService {
     const user: userAuth = {
       accessToken: req.user.accessToken,
       email: req.user.email,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
+      name: req.user.firstName,
+      fullName: req.user.firstName + req.user.lastName,
       picture: req.user.picture,
     };
     

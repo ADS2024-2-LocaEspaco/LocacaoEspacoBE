@@ -1,4 +1,4 @@
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { userAuth } from '../database/dto/user.auth.dto';
 
@@ -25,13 +25,11 @@ export class UserSaveRepository implements UserSaveRepository{
     return false;
   }
   async save(user: userAuth): Promise<userAuth> {
-    const result = await prisma.user.create({
+    const result = await prisma.usuario.create({
           data: {
-            accessToken: user.accessToken,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            picture: user.picture,
+            nome: user.name,
+            nome_completo: user.fullName,
+            email: user.email
           },
           select: {
             id: true,
