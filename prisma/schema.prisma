@@ -8,7 +8,7 @@ datasource db {
 }
 
 model anuncio {
-  id                      Int               @id
+  id                      Int                  @id
   usuario_id              String
   tipo_espaco_id          Int
   tipo_imoveis_id         Int
@@ -44,11 +44,9 @@ model anuncio {
   criado_em               DateTime?            @default(now()) //@db.Timestamptz(6)
   publicado               Boolean?             @default(false)
   temp_antec_reserva      BigInt?
-
   usuario                 usuario              @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "anuncio_fk1")
   tipo_espaco             tipo_espaco          @relation(fields: [tipo_espaco_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "anuncio_fk2")
   tipo_imoveis            tipo_imoveis         @relation(fields: [tipo_imoveis_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "anuncio_fk3")
-
   comodidade_anuncio      comodidade_anuncio[]
   endereco                endereco[]
   favoritos               favoritos[]
@@ -67,8 +65,7 @@ model avaliacao {
   nota_seguiu_regras    String?   @db.VarChar(255)
   nota_pontualidade     String?   @db.VarChar(255)
   nota_cordialidade     String?   @db.VarChar(255)
-  criado_em             DateTime? @default(now()) //@db.Timestamptz(6)
-
+  criado_em             DateTime? @default(now()) @db.Timestamptz(6)
   reservas              reservas  @relation(fields: [reservas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "avaliacao_fk1")
 }
 
@@ -82,7 +79,6 @@ model comodidade_anuncio {
   id             Int         @id @default(autoincrement())
   comodidades_id Int
   anuncio_id     Int
-
   comodidades    comodidades @relation(fields: [comodidades_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk1")
   anuncio        anuncio     @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk2")
 }
@@ -92,7 +88,6 @@ model comodidades {
   categorias_comodidade_id Int
   nome                     String                @db.VarChar(100)
   icone                    String?               @db.VarChar(500)
-
   comodidade_anuncio       comodidade_anuncio[]
   categorias_comodidade    categorias_comodidade @relation(fields: [categorias_comodidade_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidades_fk1")
 }
@@ -110,8 +105,7 @@ model endereco {
   cep         String   @db.VarChar(10)
   longitude   String?  @db.VarChar(50)
   latitude    String?  @db.VarChar(50)
-  criado_em   DateTime @default(now()) //@db.Timestamptz(6)
-
+  criado_em   DateTime @default(now()) @db.Timestamptz(6)
   anuncio     anuncio  @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "endereco_fk1")
   usuario     usuario  @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "endereco_fk2")
 }
@@ -120,17 +114,15 @@ model favoritos {
   id                 Int             @id @default(autoincrement())
   lista_favoritos_id Int
   anuncio_id         Int
-  criado_em          DateTime?       @default(now()) //@db.Timestamptz(6)
-
+  criado_em          DateTime?       @default(now()) @db.Timestamptz(6)
   lista_favoritos    lista_favoritos @relation(fields: [lista_favoritos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_fk1")
   anuncio            anuncio         @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_fk2")
 }
 
 model instituicao_financeira {
-  id                 BigInt       @id @default(autoincrement())
+  id                 Int       @id @default(autoincrement())
   codigo_instituicao BigInt    @unique(map: "codigo")
   nome_instituicao   String    @unique(map: "instituicao") @db.VarChar(150)
-
   usuario            usuario[]
 }
 
@@ -138,10 +130,8 @@ model lista_favoritos {
   id         Int         @id @default(autoincrement())
   usuario_id String
   nome_lista String      @db.VarChar(120)
-  criado_em  DateTime?   @default(now()) //@db.Timestamptz(6)
-
+  criado_em  DateTime?   @default(now()) @db.Timestamptz(6)
   favoritos  favoritos[]
-
   usuario    usuario     @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lista_favoritos_fk1")
 }
 
@@ -164,10 +154,8 @@ model reservas {
   multa                    Boolean?
   cancelamento             Boolean?
   solicitante_cancelamento String?     @db.VarChar(25)
-  criado_em                DateTime    @default(now()) //@db.Timestamptz(6)
-
+  criado_em                DateTime    @default(now()) @db.Timestamptz(6)
   avaliacao                avaliacao[]
-
   anuncio                  anuncio     @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "reservas_fk1")
   usuario                  usuario     @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "reservas_fk2")
 }
@@ -185,8 +173,8 @@ model tipo_imoveis {
 }
 
 model usuario {
-  id                        String                     @id @default(uuid())
-  instituicao_financeira_id BigInt?
+  id                        String                  @id @default(uuid())
+  instituicao_financeira_id Int?
   nome                      String                  @db.VarChar(100)
   img                       String?                 @db.VarChar(500)
   nome_completo             String                  @db.VarChar(250)
@@ -200,10 +188,10 @@ model usuario {
   ativo                     Boolean?                @default(true)
   url_documento             String?                 @db.VarChar(500)
   bloqueado                 Boolean?                @default(false)
+  token_acesso              String                  @db.VarChar(255)
   anuncio                   anuncio[]
   endereco                  endereco[]
   lista_favoritos           lista_favoritos[]
   reservas                  reservas[]
-
-  instituicao_financeira    instituicao_financeira? @relation(fields: [instituicao_financeira_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usuario_fk1")          
+  instituicao_financeira    instituicao_financeira? @relation(fields: [instituicao_financeira_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usuario_fk1")
 }
