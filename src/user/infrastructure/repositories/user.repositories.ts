@@ -7,15 +7,15 @@ const prisma = new PrismaClient();
 @Injectable()
 export class UserRepository{
     async getUserById(id: string): Promise<CreateUserDto | null>{
-        const comentario = prisma.user.findUnique({
+        const comentario = prisma.usuario.findUnique({
             where:{
                 id: id
             },
             select:{
                 id: true,
-                firstName: true,
-                lastName: true,
-                picture: true,
+                nome: true,
+                nome_completo: true,
+                img: true,
             }
         })
 

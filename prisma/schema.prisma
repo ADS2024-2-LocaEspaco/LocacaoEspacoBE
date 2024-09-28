@@ -65,7 +65,7 @@ model avaliacao {
   nota_seguiu_regras    String?   @db.VarChar(255)
   nota_pontualidade     String?   @db.VarChar(255)
   nota_cordialidade     String?   @db.VarChar(255)
-  criado_em             DateTime? @default(now()) @db.Timestamptz(6)
+  criado_em             DateTime? @default(now()) @db.Timestamp(6)
   reservas              reservas  @relation(fields: [reservas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "avaliacao_fk1")
 }
 
@@ -105,7 +105,7 @@ model endereco {
   cep         String   @db.VarChar(10)
   longitude   String?  @db.VarChar(50)
   latitude    String?  @db.VarChar(50)
-  criado_em   DateTime @default(now()) @db.Timestamptz(6)
+  criado_em   DateTime @default(now()) @db.Timestamp(6)
   anuncio     anuncio  @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "endereco_fk1")
   usuario     usuario  @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "endereco_fk2")
 }
@@ -114,7 +114,7 @@ model favoritos {
   id                 Int             @id @default(autoincrement())
   lista_favoritos_id Int
   anuncio_id         Int
-  criado_em          DateTime?       @default(now()) @db.Timestamptz(6)
+  criado_em          DateTime?       @default(now()) @db.Timestamp(6)
   lista_favoritos    lista_favoritos @relation(fields: [lista_favoritos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_fk1")
   anuncio            anuncio         @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_fk2")
 }
@@ -130,7 +130,7 @@ model lista_favoritos {
   id         Int         @id @default(autoincrement())
   usuario_id String
   nome_lista String      @db.VarChar(120)
-  criado_em  DateTime?   @default(now()) @db.Timestamptz(6)
+  criado_em  DateTime?   @default(now()) @db.Timestamp(6)
   favoritos  favoritos[]
   usuario    usuario     @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lista_favoritos_fk1")
 }
@@ -154,7 +154,7 @@ model reservas {
   multa                    Boolean?
   cancelamento             Boolean?
   solicitante_cancelamento String?     @db.VarChar(25)
-  criado_em                DateTime    @default(now()) @db.Timestamptz(6)
+  criado_em                DateTime    @default(now()) @db.Timestamp(6)
   avaliacao                avaliacao[]
   anuncio                  anuncio     @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "reservas_fk1")
   usuario                  usuario     @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "reservas_fk2")

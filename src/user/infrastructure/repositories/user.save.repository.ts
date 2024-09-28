@@ -29,15 +29,16 @@ export class UserSaveRepository implements UserSaveRepository{
           data: {
             nome: user.name,
             nome_completo: user.fullName,
-            email: user.email
+            email: user.email,
+            token_acesso: user.accessToken
           },
           select: {
             id: true,
             email: true,
-            lastName: true,
-            firstName: true,
-            picture: true,
-            accessToken: true,
+            nome_completo: true,
+            nome: true,
+            img: true,
+            token_acesso: true,
           },
         });
 
