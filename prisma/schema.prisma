@@ -55,7 +55,7 @@ model Address {
   latitude    String    @db.VarChar(100)
   criado_em   DateTime  @default(now())
 
-  ad          Ad @relation(fields: [anuncio_id], references: [id])
+  anuncio     Anuncio @relation(fields: [anuncio_id], references: [id])
   user        User    @relation(fields: [usuario_id], references: [id])
 }
 
@@ -74,9 +74,37 @@ model Role {
   createdAt   DateTime @default(now())
 }
 
-model Ad {
-  id      String @id @default(uuid())
-  address Address[]
+model Anuncio {
+  id             String @id @default(uuid())
+  title          String @db.VarChar(40)
+  street         String @db.VarChar(100)
+  bairro         String @db.VarChar(100)
+  cidade         String @db.VarChar(100)
+  cep            String @db.VarChar(100)
+  numero         Int
+  complement     String? @db.VarChar(100)
+  latitude   Float?  // Campo opcional para latitude
+  longitude  Float?
+  description    String @db.VarChar(500)
+  userId         String
+  tipoImovelId   String
+  tipoEspacoId   String
+  qtdMaxHospedes Int  
+  qtdAvaliacoes  Int  @default(0)
+  mediaAvaliacao Int  @default(0)
+  createdAt      DateTime @default(now())
+
+  tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id], map: "Anuncio_tipoEspacoId_fkey")
+  tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id], map: "Anuncio_tipoImovelId_fkey")
+  //user           User       @relation(fields: [userId], references: [id], map: "Anuncio_userId_fkey")
+  
+  feedback       Feedback[]
+  reserva        Reserva[]
+  address        Address[]
+  
+  @@index([tipoEspacoId], map: "Anuncio_tipoEspacoId_fkey")
+  @@index([tipoImovelId], map: "Anuncio_tipoImovelId_fkey")
+  @@index([userId], map: "Anuncio_userId_fkey")
 }
 
 
@@ -132,37 +160,7 @@ model Reserva {
   anuncio     Anuncio @relation(fields: [anuncioId], references: [id])
 }
 
-model Anuncio {
-  id             String @id @default(uuid())
-  title          String @db.VarChar(40)
-  street         String @db.VarChar(100)
-  bairro         String @db.VarChar(100)
-  cidade         String @db.VarChar(100)
-  cep            String @db.VarChar(100)
-  numero         Int
-  complement     String? @db.VarChar(100)
-  latitude   Float?  // Campo opcional para latitude
-  longitude  Float?
-  description    String @db.VarChar(500)
-  userId         String
-  tipoImovelId   String
-  tipoEspacoId   String
-  qtdMaxHospedes Int  
-  qtdAvaliacoes  Int  @default(0)
-  mediaAvaliacao Int  @default(0)
-  createdAt      DateTime @default(now())
 
-  tipoespaco     TipoEspaco @relation(fields: [tipoEspacoId], references: [id], map: "Anuncio_tipoEspacoId_fkey")
-  tipoimovel     TipoImovel @relation(fields: [tipoImovelId], references: [id], map: "Anuncio_tipoImovelId_fkey")
-  //user           User       @relation(fields: [userId], references: [id], map: "Anuncio_userId_fkey")
-  
-  feedback       Feedback[]
-  reserva        Reserva[]
-
-  @@index([tipoEspacoId], map: "Anuncio_tipoEspacoId_fkey")
-  @@index([tipoImovelId], map: "Anuncio_tipoImovelId_fkey")
-  @@index([userId], map: "Anuncio_userId_fkey")
-}
 
 model TipoImovel {
   id        String    @id
