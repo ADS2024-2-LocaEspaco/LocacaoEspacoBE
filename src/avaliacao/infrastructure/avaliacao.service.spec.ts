@@ -1,24 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FeedbackService } from './feedback.service';
-import { Feedback } from '@prisma/client';
-import { CreateFeedbackDto } from "./database/dto/create-feedback.dto";
+import { AvaliacaoService } from './avaliacao.service';
+import { avaliacao } from '@prisma/client';
+import { GetComentariosDto } from "./database/dto/get-comentarios.dto";
 
 describe('FeedbackService', () => {
-  let service: FeedbackService;
+  let service: AvaliacaoService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [FeedbackService],
+      providers: [AvaliacaoService],
     }).compile();
 
-    service = module.get<FeedbackService>(FeedbackService);
+    service = module.get<AvaliacaoService>(AvaliacaoService);
   });
 
   it('Retornar feedback valido', async () => {
     const data = '1'
 
     // Mock the expected result if necessary
-    const expectedFeedback = new CreateFeedbackDto();
+    const expectedFeedback = new GetComentariosDto();
     // Set up expected values for the feedback DTO
     // For example: expectedFeedback.id = '1';
     
@@ -32,7 +32,7 @@ describe('FeedbackService', () => {
     const data = '0'
 
     // Define um usuário mock para o teste
-    const mockUser: Array<Feedback> = [];
+    const mockUser: Array<avaliacao> = [];
     expect(await service.getComentarios(data)).toStrictEqual(mockUser);
   });
 });
