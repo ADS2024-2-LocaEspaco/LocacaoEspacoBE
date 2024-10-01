@@ -176,7 +176,7 @@ model usuario {
   id                        String                  @id @default(uuid())
   instituicao_financeira_id Int?
   nome                      String                  @db.VarChar(100)
-  img                       String?                 @db.VarChar(500)
+  img                       String                 @db.VarChar(500)
   nome_completo             String                  @db.VarChar(250)
   email                     String                  @unique(map: "email_unq") @db.VarChar(250)
   fone                      BigInt?

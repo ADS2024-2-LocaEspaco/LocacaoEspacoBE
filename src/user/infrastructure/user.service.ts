@@ -59,7 +59,7 @@ export class UserService {
       accessToken: req.user.accessToken,
       email: req.user.email,
       name: req.user.firstName,
-      fullName: req.user.firstName + req.user.lastName,
+      fullName: req.user.firstName + ' ' + req.user.lastName,
       picture: req.user.picture,
     };
     
