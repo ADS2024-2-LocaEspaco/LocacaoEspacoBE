@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-//import { getComentariosAnuncio } from '../../feedback/infrastructure/repositories/Feedback.repositories';
+import { getComentariosAnuncio } from '../../feedback/infrastructure/repositories/Feedback.repositories';
 import { UserRepository } from './repositories/user.repositories';
 import { createHostDto } from './database/dto/create-user-host.dto';
 import { CreateFeedbackDto } from 'src/feedback/infrastructure/database/dto/create-feedback.dto';
@@ -18,9 +18,9 @@ export class UserService {
   ) {}
 
   
-  /*async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
+  async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
     return getComentariosAnuncio(id);
-  }*/
+  }
 
   async getDataAnfitriao(id: number): Promise<createHostDto | null> {
     let data: createHostDto | any 

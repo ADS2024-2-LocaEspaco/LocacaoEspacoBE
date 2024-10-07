@@ -3,7 +3,7 @@ import { getReservaDto } from "../database/dto/get-reserva.dto";
 
 const prisma = new PrismaClient();
 
-/*export async function getAnuncioById(id: Number): Promise<anuncio | null> {
+export async function getAnuncioById(id: Number): Promise<anuncio | null> {
     const anuncio = await prisma.anuncio.findUnique({
         where: { id },
         select: {
@@ -30,9 +30,9 @@ const prisma = new PrismaClient();
     });
 
     return anuncio;
-}*/
+}
 
-/*export async function getReservasById(id: string): Promise<getReservaDto[] | null> {
+export async function getReservasById(id: string): Promise<getReservaDto[] | null> {
     const reservas = await prisma.reserva.findMany({
         where: { 
             anuncioId: id,
@@ -47,4 +47,4 @@ const prisma = new PrismaClient();
     });
 
     return reservas;
-}*/
+}

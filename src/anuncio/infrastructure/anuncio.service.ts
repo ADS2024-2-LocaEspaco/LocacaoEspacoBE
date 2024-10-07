@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { anuncio, /*Feedback,*/ PrismaClient, reservas, usuario } from '@prisma/client';
+import { anuncio, Feedback, PrismaClient, reservas, usuario } from '@prisma/client';
 import { error } from 'console';
-//import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
+import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 
 
@@ -11,7 +11,7 @@ export class AnuncioService {
 private readonly prisma = new PrismaClient();
 
   
-  /*async getAnuncioById(id: string): Promise<Anuncio | null> {
+  async getAnuncioById(id: number): Promise<anuncio | null> {
     return getAnuncioById(id);
   }
 
@@ -40,7 +40,7 @@ private readonly prisma = new PrismaClient();
   }
 
 
-  async getUserFromAnuncio(id: string): Promise<User | null> {
+  async getUserFromAnuncio(id: number): Promise<usuario | null> {
     try {
       const anuncio = await this.getAnuncioById(id);
   
@@ -58,6 +58,6 @@ private readonly prisma = new PrismaClient();
       console.error('Error fetching user:', error);
       return null;
     }
-  }*/
+  }
 
 }

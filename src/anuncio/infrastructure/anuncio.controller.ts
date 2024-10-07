@@ -5,7 +5,7 @@ import { anuncio, reservas, usuario } from '@prisma/client';
 @Controller('anuncio')
 export class AnuncioController {
   constructor(private readonly anuncioService: AnuncioService) {}
-/*
+
   @Get('reservas')
   async getReservas(@Body('id') id: string): Promise<Object> {
     return await this.anuncioService.getReservas(id);
@@ -19,5 +19,5 @@ export class AnuncioController {
   @Get(':id/:user')
   async getUserFromAnuncio(@Param('id') id: string): Promise<usuario | null> {
     return this.anuncioService.getUserFromAnuncio(id);
-  }*/
+  }
 }
