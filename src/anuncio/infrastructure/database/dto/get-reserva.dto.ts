@@ -1,5 +1,3 @@
-import { Reserva } from "@prisma/client";
-
 export class getReservaDto {
     id:             String
     userId?:        String

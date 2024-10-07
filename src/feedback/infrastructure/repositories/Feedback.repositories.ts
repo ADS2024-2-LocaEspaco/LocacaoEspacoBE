@@ -1,4 +1,4 @@
-import { Feedback, PrismaClient } from "@prisma/client";
+/*import { Feedback, PrismaClient } from "@prisma/client";
 import { CreateFeedbackDto } from "../database/dto/create-feedback.dto";
 
 const prisma = new PrismaClient();
@@ -28,5 +28,5 @@ export async function getComentariosAnuncio(anuncioId: string): Promise<CreateFe
     return comentarios
 }
 
-    
+    */
 
