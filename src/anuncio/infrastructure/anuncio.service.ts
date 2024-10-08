@@ -60,4 +60,11 @@ private readonly prisma = new PrismaClient();
     }
   }*/
 
+  async getAnunciosService(destino: String, checkin: Date, checkout: Date, hospedes: number) {
+      console.log(destino)
+      console.log(checkin)
+      console.log(checkout)
+      console.log(checkout)
+      console.log(hospedes)
+  }
 }
