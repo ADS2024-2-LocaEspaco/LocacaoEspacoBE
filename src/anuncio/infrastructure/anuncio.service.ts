@@ -3,6 +3,7 @@ import { anuncio, /*Feedback,*/ PrismaClient, reservas, usuario } from '@prisma/
 import { error } from 'console';
 //import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
+import { AnuncioFiltroRepository } from './repositories/anuncio.filtro.repository';
 
 
 @Injectable()
@@ -10,6 +11,9 @@ export class AnuncioService {
 
 private readonly prisma = new PrismaClient();
 
+constructor(
+  private readonly anuncioFiltroRepository: AnuncioFiltroRepository
+){}
   
   /*async getAnuncioById(id: string): Promise<Anuncio | null> {
     return getAnuncioById(id);
@@ -60,11 +64,7 @@ private readonly prisma = new PrismaClient();
     }
   }*/
 
-  async getAnunciosService(destino: String, checkin: Date, checkout: Date, hospedes: number) {
-      console.log(destino)
-      console.log(checkin)
-      console.log(checkout)
-      console.log(checkout)
-      console.log(hospedes)
+  async getAnunciosService(destino: string, checkin: Date, checkout: Date, hospedes: number) {
+      console.log(await this.anuncioFiltroRepository.searchAnuncios(destino, checkin, checkout, hospedes));
   }
 }
