@@ -1,8 +1,8 @@
-import { User } from "@prisma/client";
+import { usuario } from '@prisma/client';
 
-export class userAuthProperty{
-    email: string;
-    firstName: string;
-    lastName: string;
-    picture: string;
+export class userAuthProperty {
+  email: string;
+  nome: string;
+  nome_completo: string;
+  img: string;
 }

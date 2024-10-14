@@ -1,19 +1,19 @@
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { userAuth } from '../database/dto/user.auth.dto';
 
 const prisma = new PrismaClient();
 @Injectable()
-export class UserSaveRepository implements UserSaveRepository{
+export class UserSaveRepository implements UserSaveRepository {
   async userExists(email: string): Promise<boolean> {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.usuario.findUnique({
       where: {
         email,
       },
       select: {
         id: true,
-        firstName: true,
-        lastName: true,
+        nome: true,
+        nome_completo: true,
         email: true,
       },
     });
@@ -24,44 +24,44 @@ export class UserSaveRepository implements UserSaveRepository{
 
     return false;
   }
-  async save(user: userAuth): Promise<userAuth> {
-    const result = await prisma.user.create({
-          data: {
-            accessToken: user.accessToken,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            picture: user.picture,
-          },
-          select: {
-            id: true,
-            email: true,
-            lastName: true,
-            firstName: true,
-            picture: true,
-            accessToken: true,
-          },
-        });
+  async save(user: userAuth): Promise<any> {
+    const result = await prisma.usuario.create({
+      data: {
+        token_acesso: user.accessToken,
+        email: user.email,
+        nome: user.nome,
+        nome_completo: user.nome_completo,
+        img: user.img,
+      },
+      select: {
+        id: true,
+        email: true,
+        nome: true,
+        nome_completo: true,
+        img: true,
+        token_acesso: true,
+      },
+    });
 
-      return result;
+    return result;
   }
 
-  async updateToken(user: userAuth): Promise<userAuth> {
-    const result = await prisma.user.update({
+  async updateToken(user: userAuth): Promise<any> {
+    const result = await prisma.usuario.update({
       where: {
-        email: user.email
+        email: user.email,
       },
       data: user,
       select: {
         id: true,
         email: true,
-        firstName: true,
-        lastName: true,
-        picture: true,
-        accessToken: true,
-      }
+        nome: true,
+        nome_completo: true,
+        img: true,
+        token_acesso: true,
+      },
     });
 
     return result;
-  };
+  }
 }
