@@ -2,7 +2,14 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  googleLogin(req: any) {
+    if(!req.user) {
+      return 'Nenhum usuário';
+    }
+
+    return {
+      message: "Usuário logado",
+      user: req.user
+    }
   }
 }
