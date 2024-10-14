@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { anuncio, Feedback, PrismaClient, reservas, usuario } from '@prisma/client';
+import { anuncio, /*Feedback,*/ PrismaClient, reservas, usuario } from '@prisma/client';
 import { error } from 'console';
 import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
@@ -44,9 +44,9 @@ private readonly prisma = new PrismaClient();
     try {
       const anuncio = await this.getAnuncioById(id);
   
-      if (anuncio && anuncio.userId) {
+      if (anuncio && anuncio.usuario_id) {
         return this.prisma.usuario.findUnique({
-          where: { id: anuncio.userId },
+          where: { id: anuncio.usuario_id},
         });
       } else {
         throw new Error('Usuário não encontrado');

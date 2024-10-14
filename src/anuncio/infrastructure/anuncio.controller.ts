@@ -12,12 +12,12 @@ export class AnuncioController {
   }
 
   @Get(':id')
-  async getAnuncioById(@Param('id') id: string): Promise<anuncio | null> {
+  async getAnuncioById(@Param('id') id: number): Promise<anuncio | null> {
     return this.anuncioService.getAnuncioById(id);
   }
 
   @Get(':id/:user')
-  async getUserFromAnuncio(@Param('id') id: string): Promise<usuario | null> {
+  async getUserFromAnuncio(@Param('id') id: number): Promise<usuario | null> {
     return this.anuncioService.getUserFromAnuncio(id);
   }
 }
