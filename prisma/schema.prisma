@@ -9,8 +9,8 @@ datasource db {
 
 
 model anuncio {
-  id                      Int                  @id
-  usuario_id              String
+  id                      Int                  @id @default(autoincrement())
+  usuario_id              Int
   tipo_espaco_id          Int
   tipo_imoveis_id         Int
   titulo                  String               @db.VarChar(40)
@@ -96,7 +96,7 @@ model comodidades {
 model endereco {
   id          Int      @id @default(autoincrement())
   anuncio_id  Int
-  usuario_id  String
+  usuario_id  Int
   logradouro  String   @db.VarChar(255)
   bairro      String   @db.VarChar(255)
   cidade      String   @db.VarChar(255)
@@ -129,7 +129,7 @@ model instituicao_financeira {
 
 model lista_favoritos {
   id         Int         @id @default(autoincrement())
-  usuario_id String
+  usuario_id Int
   nome_lista String      @db.VarChar(120)
   criado_em  DateTime    @default(now()) @db.Timestamp(0)
   favoritos  favoritos[]
@@ -139,7 +139,7 @@ model lista_favoritos {
 model reservas {
   id                       Int         @id @default(autoincrement())
   anuncio_id               Int
-  usuario_id               String
+  usuario_id               Int
   data_inicial             DateTime    @db.Date
   data_final               DateTime    @db.Date
   num_adultos              BigInt?
@@ -174,7 +174,7 @@ model tipo_imoveis {
 }
 
 model usuario {
-  id                        String                  @id @default(uuid())
+  id                        Int         @id @default(autoincrement())
   instituicao_financeira_id Int?
   nome                      String                  @db.VarChar(100)
   img                       String?                 @db.VarChar(500)

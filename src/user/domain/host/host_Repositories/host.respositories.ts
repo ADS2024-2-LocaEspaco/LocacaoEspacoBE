@@ -1,25 +1,25 @@
 export interface AnuncioPartial {
   id: number;
-  usuario_id: string;
+  usuario_id: number;
   tipo_espaco_id: number;
   tipo_imoveis_id: number;
   titulo: string;
   descricao: string;
   url_imgs: string;
-  polit_cancelamento: bigint;
+  polit_cancelamento: number;
 }
 
 export interface Anuncio_qtds_suportadas {
-  quant_quartos: bigint;
-  quant_banheiro: bigint;
-  quant_cama: bigint;
-  quant_hospede: bigint;
+  quant_quartos: number;
+  quant_banheiro: number;
+  quant_cama: number;
+  quant_hospede: number;
 }
 export interface Anuncio_Permissoes {
   aceita_crianca: boolean | null;
   aceita_bebe: boolean | null;
   aceita_pet: boolean | null;
-  quant_pet: bigint | null;
+  quant_pet: number | null;
   permite_eventos: boolean | null;
   permite_fumar: boolean | null;
 }
@@ -32,8 +32,8 @@ export interface Anuncio_checkInOut {
 
 export interface Anuncio_valores {
   valor_diaria: string;
-  quant_diaria_min: bigint | null;
-  quant_diaria_max: bigint | null;
+  quant_diaria_min: number | null;
+  quant_diaria_max: number | null;
 }
 
 export interface Anuncio_Atributos_Não_Obrigatorios {
@@ -65,3 +65,4 @@ export interface hostRepositories {
     id: number,
   ): Promise<Anuncio_Atributos_Não_Obrigatorios[]>;
 }
+

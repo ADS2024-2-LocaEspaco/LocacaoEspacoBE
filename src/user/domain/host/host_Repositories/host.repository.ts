@@ -15,9 +15,9 @@ export class HostRepository implements hostRepositories {
   private prisma = new PrismaClient();
 
   async getAnuncioLocations(id: number): Promise<AnuncioPartial[]> {
-    return await this.prisma.anuncio.findMany({
+    const anuncios = await this.prisma.anuncio.findMany({
       where: {
-        id: id,
+        usuario_id: id,
       },
       select: {
         id: true,
@@ -30,6 +30,17 @@ export class HostRepository implements hostRepositories {
         polit_cancelamento: true,
       },
     });
+
+    return anuncios.map((anuncio) => ({
+      id: Number(anuncio.id),
+      usuario_id: Number(anuncio.usuario_id),
+      tipo_espaco_id: Number(anuncio.tipo_espaco_id),
+      tipo_imoveis_id: Number(anuncio.tipo_imoveis_id),
+      titulo: anuncio.titulo,
+      descricao: anuncio.descricao,
+      url_imgs: anuncio.url_imgs,
+      polit_cancelamento: Number(anuncio.polit_cancelamento),
+    }));
   }
 
   async getAnuncioAtrNaObrigatorios(
@@ -37,7 +48,7 @@ export class HostRepository implements hostRepositories {
   ): Promise<Anuncio_Atributos_Não_Obrigatorios[]> {
     return await this.prisma.anuncio.findMany({
       where: {
-        id: id,
+        usuario_id: id,
       },
       select: {
         cftv: true,
@@ -57,9 +68,9 @@ export class HostRepository implements hostRepositories {
   }
 
   async getAnuncioQtdSuportada(id: number): Promise<Anuncio_qtds_suportadas[]> {
-    return await this.prisma.anuncio.findMany({
+    const qtd = await this.prisma.anuncio.findMany({
       where: {
-        id: id,
+        usuario_id: id,
       },
       select: {
         quant_quartos: true,
@@ -68,12 +79,19 @@ export class HostRepository implements hostRepositories {
         quant_hospede: true,
       },
     });
+
+    return qtd.map((qtd) =>({
+      quant_quartos: Number(qtd.quant_quartos),
+      quant_banheiro: Number(qtd.quant_banheiro),
+      quant_cama: Number(qtd.quant_cama),
+      quant_hospede: Number(qtd.quant_hospede)
+    }))
   }
 
   async getAnuncioPermissoes(id: number): Promise<Anuncio_Permissoes[]> {
-    return await this.prisma.anuncio.findMany({
+    const permissoes =  await this.prisma.anuncio.findMany({
       where: {
-        id: id,
+        usuario_id: id,
       },
       select: {
         aceita_crianca: true,
@@ -84,12 +102,21 @@ export class HostRepository implements hostRepositories {
         permite_fumar: true,
       },
     });
+
+    return permissoes.map((permissoes) =>({
+      aceita_crianca: permissoes.aceita_crianca,
+      aceita_bebe: permissoes.aceita_bebe,
+      aceita_pet: permissoes.aceita_pet,
+      quant_pet: permissoes.quant_pet !== null ? Number(permissoes.quant_pet) : null,
+      permite_eventos: permissoes.permite_eventos,
+      permite_fumar: permissoes.permite_fumar
+    }))
   }
 
   async getAnuncioChecks(id: number): Promise<Anuncio_checkInOut[]> {
     return await this.prisma.anuncio.findMany({
       where: {
-        id: id,
+        usuario_id: id,
       },
       select: {
         checkin_inicio: true,
@@ -100,9 +127,9 @@ export class HostRepository implements hostRepositories {
   }
 
   async getAnuncioValores(id: number): Promise<Anuncio_valores[]> {
-    return await this.prisma.anuncio.findMany({
+    const valores = await this.prisma.anuncio.findMany({
       where: {
-        id: id,
+        usuario_id: id,
       },
       select: {
         valor_diaria: true,
@@ -110,5 +137,11 @@ export class HostRepository implements hostRepositories {
         quant_diaria_max: true,
       },
     });
+
+    return valores.map((valores) =>({
+      valor_diaria: valores.valor_diaria,
+      quant_diaria_min: valores.quant_diaria_min !== null ? Number(valores.quant_diaria_min) : null,
+      quant_diaria_max: valores.quant_diaria_max !== null ? Number(valores.quant_diaria_max) : null
+    }))
   }
 }
