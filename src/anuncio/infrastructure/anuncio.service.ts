@@ -64,7 +64,11 @@ constructor(
     }
   }*/
 
-  async getAnunciosService(destino: string, checkin: Date, checkout: Date, hospedes: number) {
-      console.log(await this.anuncioFiltroRepository.searchAnuncios(destino, checkin, checkout, hospedes));
+  async getAnunciosService(destino: string, checkin: Date | null, checkout: Date | null, hospedes: number) {
+    const anuncios = await this.anuncioFiltroRepository.searchAnuncios(destino, checkin, checkout, hospedes)
+    
+    anuncios.map((anuncio: any) => {
+      console.log(anuncio);
+    })
   }
 }

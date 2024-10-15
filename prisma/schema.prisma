@@ -17,7 +17,7 @@ model anuncio {
   quant_quartos           BigInt
   quant_banheiro          BigInt
   quant_cama              BigInt
-  quant_hospede           BigInt
+  quant_hospede           Int
   url_imgs                String               @db.VarChar(500)
   cftv                    Boolean?             @default(false)
   monitoramento_ruido     Boolean?             @default(false)
@@ -36,9 +36,9 @@ model anuncio {
   horario_silencio_inicio DateTime?            @db.Time(6)
   horario_silencio_fim    DateTime?            @db.Time(6)
   fotografia_comercial    Boolean?             @default(false)
-  checkin_inicio          DateTime             @db.Time(6)
-  checkin_fim             DateTime?            @db.Time(6)
-  checkout                DateTime             @db.Time(6)
+  checkin_inicio          DateTime?            @db.Date
+  checkin_fim             DateTime?            @db.Date
+  checkout                DateTime?            @db.Date
   polit_cancelamento      BigInt
   regras_adicionais       String?              @db.VarChar(500)
   criado_em               DateTime?            @default(now()) //@db.Timestamptz(6)
