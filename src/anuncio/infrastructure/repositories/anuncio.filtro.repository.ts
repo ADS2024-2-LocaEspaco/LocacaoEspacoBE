@@ -6,10 +6,37 @@ const prisma = new PrismaClient();
 
 @Injectable()
 export class AnuncioFiltroRepository implements AnuncioFiltroRepositoryInterface{
-    async searchAnuncios(destino: string, checkin: Date, checkout: Date, hospedes: number): Promise<any> {
+    async searchAnuncios(destino: string, checkin: Date | null, checkout: Date | null, hospedes: number): Promise<any> {
         const anuncios = await prisma.anuncio.findMany({
-            include: {
-                endereco: true,
+            where: {
+                OR: [
+                    {endereco: {some: {cidade: destino}},
+                        AND: [
+                            {checkin_inicio: checkin},
+                            {checkout: checkout},
+                            {quant_hospede: hospedes}
+                    ]},
+                {
+                    AND: [
+                        {checkin_inicio: checkin},
+                        {checkout: checkout},
+                        {quant_hospede: hospedes}
+                    ]
+                },
+                {endereco: {some: {cidade: destino}}}
+            ] 
+            },
+
+            select: {
+                id: true,
+                titulo: true,
+                quant_hospede: true,
+                endereco: {
+                    select: {
+                        anuncio_id: true,
+                        cidade: true
+                    }
+                }
             }
         })
 
