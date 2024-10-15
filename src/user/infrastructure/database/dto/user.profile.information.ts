@@ -3,12 +3,12 @@ export class userProfile {
     lastName?: string | null;
     picture: string;
     email: string;
-    cpf: string;
-    phone: BigInt;
-    agency: BigInt;
-    account: string;
-    bankName: string;
-    bankCode: BigInt;
+    cpf: string  | null;
+    phone: bigint | null;
+    agency: bigint | null;
+    account: string | null;
+    bankName: string | undefined;
+    bankCode: bigint | undefined;
     state: string;
     city: string;
     address: string;

@@ -6,11 +6,11 @@ import { CreateFeedbackDto } from '../../feedback/infrastructure/database/dto/cr
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('comentario')
-  async getComentarioUser(@Body('id') data: any): Promise<CreateFeedbackDto[]> {
-    console.log(data)
-    return this.userService.getComentarioUser(data);
-  }
+  // @Get('comentario')
+  // async getComentarioUser(@Body('id') data: any): Promise<CreateFeedbackDto[]> {
+  //   console.log(data)
+  //   return this.userService.getComentarioUser(data);
+  // }
 
   @Get('data-anfitriao')
   async getDataAnfitriao(@Body('id') data: any): Promise<any> {
