@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { HostService } from '../../host.service';
+import { HostReservaDados, HostService } from '../../host.service';
 import { HostQueryDto } from '../../database/dto/host.id.dto';
+import { ReservaDto } from '../../database/dto/host.reserva.dto';
 @Controller('host')
 export class HostController {
   constructor(private readonly host: HostService) {}
@@ -55,6 +56,22 @@ export class HostController {
     const { id } = query;
 
     const result = await this.host.getValores(id);
+
+    return result;
+  }
+
+}
+
+@Controller('reservas')
+export class HostReservas {
+  constructor(private readonly reservas: HostReservaDados){}
+
+  @Get()
+  async getReservas(@Query() query: ReservaDto) {
+
+    const { id_anuncio, id_usuario } = query;
+
+    const result = await this.reservas.getRervas(id_anuncio, id_usuario);
 
     return result;
   }

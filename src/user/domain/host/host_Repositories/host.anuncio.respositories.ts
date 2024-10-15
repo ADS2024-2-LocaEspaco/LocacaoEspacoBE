@@ -50,7 +50,14 @@ export interface Anuncio_Atributos_Não_Obrigatorios {
   publicado: boolean | null;
   temp_antec_reserva: bigint | null;
 }
-export interface hostRepositories {
+
+export interface AnuncioStatus {
+  anuncio_id: number,
+  usuario_id: number,
+  status_reserva: number
+}
+
+export interface HostRepositories {
   getAnuncioLocations(id: number): Promise<AnuncioPartial[]>;
 
   getAnuncioQtdSuportada(id: number): Promise<Anuncio_qtds_suportadas[]>;
@@ -61,8 +68,7 @@ export interface hostRepositories {
 
   getAnuncioValores(id: number): Promise<Anuncio_valores[]>;
 
-  getAnuncioAtrNaObrigatorios(
-    id: number,
-  ): Promise<Anuncio_Atributos_Não_Obrigatorios[]>;
+  getAnuncioAtrNaObrigatorios(id: number): Promise<Anuncio_Atributos_Não_Obrigatorios[]>;
+
 }
 

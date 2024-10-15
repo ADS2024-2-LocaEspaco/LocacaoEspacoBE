@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { HostController } from './host_Application/controllers/host.controller';
-import { HostService } from './host.service';
-import { HostRepository } from './host_Repositories/host.repository';
+import { HostController, HostReservas } from './host_Application/controllers/host.controller'; 
+import { HostReservaDados, HostService } from './host.service';
+import { HostRepository, HostReservasRepo} from './host_Repositories/host.repository';
 import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
   imports: [SharedModule],
-  controllers: [HostController],
-  providers: [HostService, HostRepository],
+  controllers: [HostController, HostReservas],
+  providers: [HostService, HostReservaDados, HostRepository, HostReservasRepo],
 })
 export class HostModule {}
