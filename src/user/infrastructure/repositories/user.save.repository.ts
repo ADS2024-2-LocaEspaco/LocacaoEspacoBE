@@ -1,28 +1,84 @@
+import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from 'src/user/domain/entities/user.entity';
-import { create, getUserByEmail, updateToken } from '../database/models/User.create.model';
+import { userAuth } from '../database/dto/user.auth.dto';
 
+const prisma = new PrismaClient();
 @Injectable()
-export class UserSaveRepository implements UserSaveRepository{
+export class UserSaveRepository implements UserSaveRepository {
   async userExists(email: string): Promise<boolean> {
-    if (await getUserByEmail(email)) {
+    const user = await prisma.usuario.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+        nome: true,
+        nome_completo: true,
+        email: true,
+      },
+    });
+
+    if (user) {
       return true;
     }
 
     return false;
   }
-  async save(user: UserEntity): Promise<UserEntity> {
-    try {
-      if (!(await this.userExists(user.getEmail))) {
-        await create(user);
-      } else {
-        console.log('Usuário já existe');
-        await updateToken(user);
-      }
+  async save(user: userAuth): Promise<userAuth> {
+    const result = await prisma.usuario.create({
+      data: {
+        nome: user.name,
+        nome_completo: user.fullName,
+        email: user.email,
+        token_acesso: user.accessToken,
+        img: user.picture,
+      },
+      select: {
+        token_acesso: true,
+        email: true,
+        nome: true,
+        nome_completo: true,
+        img: true,
+      },
+    });
 
-      return user;
-    } catch (error) {
-      return error;
-    }
+    const userSaved: userAuth = {
+      accessToken: result.token_acesso,
+      email: result.email,
+      name: result.nome,
+      fullName: result.nome_completo,
+      picture: result.img,
+    };
+
+    return userSaved;
+  }
+
+  async updateToken(user: userAuth): Promise<userAuth> {
+    const result = await prisma.usuario.update({
+      where: {
+        email: user.email,
+      },
+      data: {
+        token_acesso: user.accessToken,
+      },
+      select: {
+        id: true,
+        email: true,
+        nome: true,
+        nome_completo: true,
+        img: true,
+        token_acesso: true,
+      },
+    });
+
+    const userSaved: userAuth = {
+      accessToken: result.token_acesso,
+      email: result.email,
+      name: result.nome,
+      fullName: result.nome_completo,
+      picture: result.img,
+    };
+
+    return userSaved;
   }
 }

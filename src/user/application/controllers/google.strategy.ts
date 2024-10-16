@@ -12,7 +12,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: process.env.ID_CLIENT,
       clientSecret: process.env.SECRET_CLIENT,
-      callbackURL: 'http://localhost:3000/google/redirect',
+      callbackURL: 'http://localhost:3001/google/redirect',
       scope: ['email', 'profile'],
     });
   }
@@ -24,7 +24,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     done: VerifyCallback,
   ): Promise<any> {
     const { name, emails, photos } = profile;
-    
+
     const user = {
       email: emails[0].value,
       firstName: name.givenName,
