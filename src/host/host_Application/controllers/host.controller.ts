@@ -1,14 +1,14 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Put, Query } from '@nestjs/common';
 import { AnuncioService } from '../../anuncio/host.anuncio.service';
-import { HostQueryDto } from '../../database/dto/host.id.dto';
-import { ReservaDto } from '../../database/dto/host.reserva.dto';
+import { ReservaValidator, AnuncioValidator, DadosDeAttStatus } from 'src/host/database/validator/host.validator.dto';
 import { ReservaService } from 'src/host/reserva/reserva.service';
+import { queryObjects } from 'v8';
 @Controller('anuncio')
 export class HostController {
   constructor(private readonly host: AnuncioService) {}
 
   @Get()
-  async getHostAllocations(@Query() query: HostQueryDto) {
+  async getHostAllocations(@Query() query: AnuncioValidator) {
     const { id } = query;
 
     const result = await this.host.findAllocations(id);
@@ -17,7 +17,7 @@ export class HostController {
   }
 
   @Get('obrigatorios')
-  async getObrigatorios(@Query() query: HostQueryDto){
+  async getObrigatorios(@Query() query: AnuncioValidator){
     const { id } = query;
     
     const result = await this.host.getAttrNaoObrigatorios(id);
@@ -26,7 +26,7 @@ export class HostController {
   }
 
   @Get('qtd')
-  async getQtds(@Query() query: HostQueryDto) {
+  async getQtds(@Query() query: AnuncioValidator) {
     const { id } = query;
 
     const result = await this.host.getQtdSuportada(id);
@@ -35,7 +35,7 @@ export class HostController {
   }
 
   @Get('permissoes')
-  async getPermissoes(@Query() query: HostQueryDto) {
+  async getPermissoes(@Query() query: AnuncioValidator) {
     const { id } = query;
 
     const result = await this.host.getPermissoes(id);
@@ -44,7 +44,7 @@ export class HostController {
   }
 
   @Get('checks')
-  async getCheckInOut(@Query() query: HostQueryDto) {
+  async getCheckInOut(@Query() query: AnuncioValidator) {
     const { id } = query;
 
     const result = await this.host.getCheckInOut(id);
@@ -53,7 +53,7 @@ export class HostController {
   }
 
   @Get('valores')
-  async getValores(@Query() query: HostQueryDto) {
+  async getValores(@Query() query: AnuncioValidator) {
     const { id } = query;
 
     const result = await this.host.getValores(id);
@@ -68,12 +68,26 @@ export class HostReservas {
   constructor(private readonly reservas: ReservaService){}
 
   @Get()
-  async getReservas(@Query() query: ReservaDto) {
+  async getReservas(@Query() query: ReservaValidator) {
 
     const { id_anuncio, id_usuario } = query;
 
-    const result = await this.reservas.getRervas(id_anuncio, id_usuario);
+    const result = await this.reservas.getReservas(id_anuncio, id_usuario);
 
     return result;
   }
+
+  @Put('pagamento')
+  async attReservas(@Query() query: DadosDeAttStatus) {
+
+    const data = { 
+      id: query.id, 
+      status_pagamento: query.status
+    };
+
+    const result = await this.reservas.attPagamento(data)
+
+    return result;
+  }
+
 }

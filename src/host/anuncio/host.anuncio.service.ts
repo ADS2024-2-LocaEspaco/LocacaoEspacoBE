@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { HostRepository, HostReservasRepo } from '../host_Repositories/host.repository';
+import { AnuncioRepository } from '../database/dto/host.anuncio.dto';
+
 
 
 @Injectable()
 export class AnuncioService {
-  constructor(private readonly locations: HostRepository) {}
+  constructor(private readonly locations: AnuncioRepository) {}
 
   async findAllocations(id: number) {
     try {

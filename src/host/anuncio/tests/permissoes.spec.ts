@@ -1,18 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AnuncioService } from '../host.anuncio.service';
-import { HostRepository } from '../../host_Repositories/host.repository';
-
+import { AnuncioRepository } from '../../database/dto/host.anuncio.dto';
 
 describe('Teste do Host Service: recebendo ID e enviando permissoes a este ID', () => {
   let service: AnuncioService;
-  let repository: HostRepository;
+  let repository: AnuncioRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AnuncioService, HostRepository],
+      providers: [AnuncioService, AnuncioRepository],
     }).compile();
 
-    repository = module.get<HostRepository>(HostRepository);
+    repository = module.get<AnuncioRepository>(AnuncioRepository);
     service = module.get<AnuncioService>(AnuncioService);
   });
 
