@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Feedback } from '@prisma/client';
+import { avaliacao } from '@prisma/client';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { AnuncioService } from './anuncio.service';
 
