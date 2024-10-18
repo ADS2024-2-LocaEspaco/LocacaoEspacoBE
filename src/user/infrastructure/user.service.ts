@@ -23,7 +23,7 @@ export class UserService {
   }
 
   async getDataAnfitriao(id: number): Promise<createHostDto | null> {
-    let data: createHostDto | any 
+    let data: createHostDto | any
 
     try {
       data = await this.userRepository.getUserHost(id)
@@ -43,12 +43,6 @@ export class UserService {
 
     return data
   }
-
-  // async getUserById(id: string): Promise<User | null> {
-  //   return this.prisma.user.findUnique({
-  //     where: { id },
-  //   });
-  // }
 
   async googleLogin(req: any) {
     if (!req.user) {

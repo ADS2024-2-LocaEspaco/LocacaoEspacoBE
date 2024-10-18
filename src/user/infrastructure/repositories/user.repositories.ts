@@ -1,7 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { createHostDto } from '../database/dto/create-user-host.dto';
-import { CreateUserDto } from '../database/dto/create-user.dto';
 
 const prisma = new PrismaClient();
 @Injectable()

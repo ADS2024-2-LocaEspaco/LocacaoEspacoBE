@@ -66,6 +66,7 @@ model avaliacao {
   nota_pontualidade     String?   @db.VarChar(255)
   nota_cordialidade     String?   @db.VarChar(255)
   criado_em             DateTime? @default(now()) @db.Timestamp(6)
+
   reservas              reservas  @relation(fields: [reservas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "avaliacao_fk1")
 }
 
