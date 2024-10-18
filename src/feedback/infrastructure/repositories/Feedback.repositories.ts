@@ -5,7 +5,7 @@ import { CreateFeedbackDto } from "../database/dto/create-feedback.dto";
 const prisma = new PrismaClient();
 
 @Injectable()
-export class feedbackRepository{
+export class feedbackRepository implements feedbackRepository{
     async getComentariosAnuncio(anuncioId: number): Promise<CreateFeedbackDto[] | string>{
         const avaliacoes = await prisma.avaliacao.findMany({
             where:{
