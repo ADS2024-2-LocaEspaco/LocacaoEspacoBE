@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { anuncio, Feedback, PrismaClient, reservas, usuario } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { error } from 'console';
-import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
+import { getReservasById, getAnuncioById, getUsuarioByUsuarioId  } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
+import { getAnuncioDto } from './database/dto/get-anuncio.dto';
+import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 
 
 @Injectable()
@@ -11,11 +13,11 @@ export class AnuncioService {
 private readonly prisma = new PrismaClient();
 
   
-  async getAnuncioById(id: number): Promise<anuncio | null> {
+  async getAnuncioById(id: number): Promise<getAnuncioDto  | null> {
     return getAnuncioById(id);
   }
 
-  async getReservas(id: string): Promise<getReservaDto[] | object> {
+  async getReservas(id: number): Promise<getReservaDto[] | object> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let data = await getReservasById(id);
 
@@ -40,24 +42,21 @@ private readonly prisma = new PrismaClient();
   }
 
 
-  async getUserFromAnuncio(id: number): Promise<usuario | null> {
+  async getUserFromAnuncio(id: number): Promise<getUsuarioDto | null> {
     try {
-      const anuncio = await this.getAnuncioById(id);
-  
-      if (anuncio && anuncio.userId) {
-        return this.prisma.usuario.findUnique({
-          where: { id: anuncio.userId },
-        });
-      } else {
-        throw new Error('Usuário não encontrado');
-      }
-  
-      return null;
-    } catch (error) {
-      // Handle errors gracefully, e.g., log the error and return null
-      console.error('Error fetching user:', error);
-      return null;
-    }
-  }
+        const anuncio = await this.getAnuncioById(id);
 
+        if (anuncio && anuncio.usuario_id) {
+            // Agora chamamos o método correto para buscar o usuário pelo usuario_id
+            const userId = anuncio.usuario_id.toString();
+            const usuario = await getUsuarioByUsuarioId(userId);
+            return usuario; // Retorna o usuário encontrado
+        } else {
+            throw new Error('Anúncio ou usuário não encontrado');
+        }
+    } catch (error) {
+        console.error('Error fetching user from anuncio:', error);
+        return null; // Retorna null em caso de erro
+    }
+  } 
 }
