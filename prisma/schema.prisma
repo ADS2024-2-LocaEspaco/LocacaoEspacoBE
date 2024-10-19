@@ -8,7 +8,7 @@ datasource db {
 }
 
 model anuncio {
-  id                      Int                  @id
+  id                      Int                  @id @default(autoincrement())
   usuario_id              Int
   tipo_espaco_id          Int
   tipo_imoveis_id         Int
@@ -17,7 +17,7 @@ model anuncio {
   quant_quartos           BigInt
   quant_banheiro          BigInt
   quant_cama              BigInt
-  quant_hospede           BigInt
+  quant_hospede           Int
   url_imgs                String               @db.VarChar(500)
   cftv                    Boolean?             @default(false)
   monitoramento_ruido     Boolean?             @default(false)

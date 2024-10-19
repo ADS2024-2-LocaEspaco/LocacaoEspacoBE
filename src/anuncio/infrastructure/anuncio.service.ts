@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { anuncio, Feedback, PrismaClient, reservas, usuario } from '@prisma/client';
-import { error } from 'console';
+import { PrismaClient } from '@prisma/client';
 import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 
@@ -15,8 +14,8 @@ private readonly prisma = new PrismaClient();
     return getAnuncioById(id);
   }
 
-  async getReservas(id: string): Promise<getReservaDto[] | object> {
-    if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
+  async getReservas(id: number): Promise<getReservaDto[] | object> {
+    if(!Number.isNaN((id)) && id > 0){
       let data = await getReservasById(id);
 
       // Verifica se 'data' é null, undefined ou uma lista vazia
