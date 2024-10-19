@@ -18,7 +18,7 @@ private readonly prisma = new PrismaClient();
   }
 
   async getReservas(id: number): Promise<getReservaDto[] | object> {
-    if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
+    if(!Number.isNaN(id) && (id) > 0){
       let data = await getReservasById(id);
 
       // Verifica se 'data' é null, undefined ou uma lista vazia
@@ -48,8 +48,7 @@ private readonly prisma = new PrismaClient();
 
         if (anuncio && anuncio.usuario_id) {
             // Agora chamamos o método correto para buscar o usuário pelo usuario_id
-            const userId = anuncio.usuario_id.toString();
-            const usuario = await getUsuarioByUsuarioId(userId);
+            const usuario = await getUsuarioByUsuarioId(id);
             return usuario; // Retorna o usuário encontrado
         } else {
             throw new Error('Anúncio ou usuário não encontrado');
