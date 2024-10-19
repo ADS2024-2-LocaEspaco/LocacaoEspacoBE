@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "mysql"
+  url      = "mysql://root:aluno@localhost:3306/stayeasy"
 }
 
 model anuncio {
   id                            Int                             @id @default(autoincrement())
-  fotos                         String[]                        @db.VarChar
+  fotos                         foto[]                        
   titulo                        String?                         @db.VarChar(50)
   hospedes                      Int
   quartos                       Int
@@ -34,6 +34,13 @@ model anuncio {
   favoritos                     favoritos[]
   lista_favoritos_personalizada lista_favoritos_personalizada[]
   reserva                       reserva[]
+}
+
+model foto {
+    id                          Int                           @id @default(autoincrement())
+    id_anuncio                  Int
+
+    anuncio                     anuncio                       @relation(fields: [id_anuncio], references: [id])
 }
 
 model avaliacao {
@@ -69,7 +76,7 @@ model endereco {
   latitude    String?   @db.VarChar(50)
   longitude   String?   @db.VarChar(50)
   criado_em   DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
-  usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  usuario     usuario?  @relation(fields: [id_usuario], references: [id])
 }
 
 model favoritos {
@@ -77,8 +84,8 @@ model favoritos {
   id_usuario Int?
   id_anuncio Int?
   criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
-  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
-  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id])
+  usuario    usuario?  @relation(fields: [id_usuario], references: [id])
 }
 
 model usuario {
@@ -115,7 +122,7 @@ model dados_bancarios {
   numero_conta String  @db.VarChar(20)
   tipo_conta   String  @db.VarChar(15)
   chave_pix    String? @db.VarChar(50)
-  usuario      usuario @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  usuario      usuario @relation(fields: [id_usuario], references: [id])
 }
 
 model lista_favoritos_personalizada {
@@ -124,7 +131,7 @@ model lista_favoritos_personalizada {
   id_anuncio Int?
   nome       String?   @db.VarChar(20)
   criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
-  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id])
   usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
@@ -143,8 +150,8 @@ model reserva {
   multa            Boolean?          @default(false)
   cancelamento     Boolean?          @default(false)
   criado_em        DateTime?         @default(dbgenerated("CURRENT_DATE")) @db.Date
-  anuncio          anuncio?          @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
-  usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  anuncio          anuncio?          @relation(fields: [id_anuncio], references: [id])
+  usuario          usuario?          @relation(fields: [id_usuario], references: [id])
 }
 
 enum comodidades {
