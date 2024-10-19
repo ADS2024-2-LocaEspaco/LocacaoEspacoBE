@@ -184,7 +184,7 @@ model usuario {
   ag                        BigInt?
   cc                        String?                 @db.VarChar(12)
   admin                     Boolean?                @default(false)
-  criado_em                 DateTime?               @default(now()) //@db.Timestamptz(6)
+  criado_em                 DateTime               @default(now()) //@db.Timestamptz(6)
   ativo                     Boolean?                @default(true)
   url_documento             String?                 @db.VarChar(500)
   bloqueado                 Boolean?                @default(false)

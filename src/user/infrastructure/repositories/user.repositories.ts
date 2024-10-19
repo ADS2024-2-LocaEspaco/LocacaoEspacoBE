@@ -8,10 +8,7 @@ const prisma = new PrismaClient();
 export class UserRepository {
     async getUserById(id: number): Promise</*CreateUserDto | null*/any> {
         const comentario = prisma.usuario.findUnique({
-            where: {
-                // When you're using id
-                id: String(id), // Convert to string
-            },
+            where: { id },
             select: {
                 id: true,
                 nome: true,
@@ -25,10 +22,7 @@ export class UserRepository {
 
     async getUserHost(id: number): Promise</*createHostDto | null*/any> {
         const getHostData = prisma.usuario.findUnique({
-            where: {
-                // When you're using id
-                id: String(id), // Convert to string
-            },
+            where: { id },
             select: {
                 nome: true,
                 nome_completo: true,

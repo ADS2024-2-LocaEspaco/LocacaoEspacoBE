@@ -44,27 +44,58 @@ export async function getReservasById(id: number): Promise<getReservaDto[] | nul
 
     return reservas;
 }
-
 export async function getUsuarioByUsuarioId(id: number): Promise<getUsuarioDto | null> {
     const usuario = await prisma.usuario.findUnique({
-        where: { id: String(id) },
+        where: { id },
         select: {
             id: true,
             nome: true,
             img: true,
+            criado_em: true
         },
     });
+
     // Verifica se o usuário foi encontrado
     if (!usuario) {
         return null;
     }
 
+    const tempoCadastro = calcularTempoCadastro(usuario.criado_em); // Call the function directly
 
     const anfitriao: getUsuarioDto = {
         id: Number(usuario.id),
         nome: usuario.nome,
-        foto: usuario.img
+        foto: usuario.img,
+        tempoCadastro: tempoCadastro
     }
 
-    return anfitriao
+    return anfitriao;
+}
+
+
+function calcularTempoCadastro(criadoEm: Date ): string {
+    const agora = new Date();
+    const tempoCadastro = agora.getTime() - criadoEm.getTime(); // Diferença em milissegundos
+
+    const segundos = Math.floor(tempoCadastro / 1000);
+    const minutos = Math.floor(segundos / 60);
+    const horas = Math.floor(minutos / 60);
+    const dias = Math.floor(horas / 24);
+    const meses = Math.floor(dias / 30); // Aproximando um mês como 30 dias
+    const anos = Math.floor(meses / 12);
+
+    // Retornando um formato legível
+    if (anos > 0) {
+        return `${anos} ano(s)`;
+    } else if (meses > 0) {
+        return `${meses} mês(es)`;
+    } else if (dias > 0) {
+        return `${dias} dia(s)`;
+    } else if (horas > 0) {
+        return `${horas} hora(s)`;
+    } else if (minutos > 0) {
+        return `${minutos} minuto(s)`;
+    } else {
+        return `${segundos} segundo(s)`;
+    }
 }
