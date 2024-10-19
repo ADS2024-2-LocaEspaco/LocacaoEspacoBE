@@ -13,14 +13,24 @@ export class AnuncioController {
     return await this.anuncioService.getReservas(id);
   }
 
-  @Get(':id')
-  async getAnuncioById(@Param('id') id: number): Promise<getAnuncioDto  | null> {
-    const anuncioId = Number(id); // Convert the ID to a number
-    return this.anuncioService.getAnuncioById(anuncioId);
-  }
 
-  @Get(':id/:user')
-  async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto  | null> {
-    return this.anuncioService.getUserFromAnuncio(id);
+  @Get(':id')
+  async getNomeEFotoDoUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
+      const anuncioId = Number(id); 
+      const anuncio = await this.anuncioService.getAnuncioById(anuncioId); 
+  
+      if (!anuncio) {
+          return null; 
+      }
+  
+      const usuario_id = anuncio.usuario_id; 
+      if (!usuario_id) {
+          return null; 
+      }
+  
+      const usuario = await this.anuncioService.getUserFromAnuncio(usuario_id); 
+  
+      return usuario; 
   }
+  
 }

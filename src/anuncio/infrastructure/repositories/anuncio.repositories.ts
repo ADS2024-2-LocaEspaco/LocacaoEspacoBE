@@ -51,13 +51,7 @@ export async function getUsuarioByUsuarioId(id: number): Promise<getUsuarioDto |
         select: {
             id: true,
             nome: true,
-            endereco: {
-                take:1,
-                select: {
-                    latitude: true,
-                    longitude: true,
-                },
-            },
+            img: true,
         },
     });
     // Verifica se o usuário foi encontrado
@@ -65,16 +59,11 @@ export async function getUsuarioByUsuarioId(id: number): Promise<getUsuarioDto |
         return null;
     }
 
-    const endereco: getEnderecoDto = {
-        latitude: usuario.endereco[0].latitude,
-        longitude: usuario.endereco[0].longitude
-
-    }
 
     const anfitriao: getUsuarioDto = {
         id: Number(usuario.id),
         nome: usuario.nome,
-        endereco: endereco
+        foto: usuario.img
     }
 
     return anfitriao
