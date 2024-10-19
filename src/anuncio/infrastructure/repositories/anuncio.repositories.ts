@@ -13,7 +13,8 @@ export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> 
         select: {
             id: true,
             titulo: true,
-            usuario_id: true
+            usuario_id: true,
+            
         },
     });
 
