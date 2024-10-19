@@ -33,6 +33,7 @@ export class HostReservasRepo implements HostReservasRepository {
         criado_em: true
       }
     })
+
     
     return dadosReserva.map((dadosReserva) => ({
       id: Number(dadosReserva.id ),
@@ -60,13 +61,17 @@ export class HostReservasRepo implements HostReservasRepository {
   async atualizarStatusDeReserva(data: {id: number, status_reserva: number}): Promise<Boolean> {
     
     const statusAtt = await this.prisma.reservas.update({
-      where:{id: data.id},
+
+      where:{
+        id: data.id
+      },
       data:{
         status_reserva: data.status_reserva
       }
-    })
+    });
 
-    if(Number(statusAtt.status_pagamento) === data.status_reserva){
+    if(Number(statusAtt.status_reserva) === data.status_reserva){
+
       return true;
     }
 
@@ -90,7 +95,7 @@ export class HostReservasRepo implements HostReservasRepository {
       return true;
     }
 
-    return true;
+    return false;
   }
   
 }

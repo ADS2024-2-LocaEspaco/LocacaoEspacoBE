@@ -78,16 +78,35 @@ export class HostReservas {
   }
 
   @Put('pagamento')
-  async attReservas(@Query() query: DadosDeAttStatus) {
+  async attPagamento(@Query() query: DadosDeAttStatus) {
 
     const data = { 
+
       id: query.id, 
       status_pagamento: query.status
+
     };
 
     const result = await this.reservas.attPagamento(data)
 
     return result;
+
+  }
+
+  @Put('status')
+  async attReservas(@Query() query: DadosDeAttStatus) {
+
+    const data = { 
+
+      id: query.id,
+      status_reserva: query.status
+
+    };
+
+    const result = await this.reservas.attStatusReserva(data);
+
+    return result;
+
   }
 
 }

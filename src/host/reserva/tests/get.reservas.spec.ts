@@ -3,7 +3,7 @@ import { ReservaService } from '../reserva.service'
 import { HostReservasRepo } from '../../database/dto/host.reserva.dto';
 
 
-describe('Teste do Host Service: recebendo ID e enviando qtd suportadas a este ID', () => {
+describe('Testando o retorno do array de reservas', () => {
   let service: ReservaService;
   let repository: HostReservasRepo;
 
@@ -16,7 +16,7 @@ describe('Teste do Host Service: recebendo ID e enviando qtd suportadas a este I
     service = module.get<ReservaService>(ReservaService);
   });
 
-  it('Testando o retorno de ', async () => {
+  it('Espera um array de reservas como retorneste do Host Service: recebendo ID e enviando qtd suportadas a este IDo', async () => {
     const mockReservas = [
       {
         id: 1,
