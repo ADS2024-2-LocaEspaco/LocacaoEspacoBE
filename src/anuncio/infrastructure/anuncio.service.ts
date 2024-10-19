@@ -67,5 +67,3 @@ private readonly prisma = new PrismaClient();
   // }
 
 }
-
-

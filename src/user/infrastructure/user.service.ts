@@ -50,13 +50,13 @@ export class UserService {
   //     return 'Nenhum usuário';
   //   }
     
-  //   const user: userAuth = {
-  //     accessToken: req.user.accessToken,
-  //     email: req.user.email,
-  //     name: req.user.firstName,
-  //     fullName: req.user.firstName + req.user.lastName,
-  //     picture: req.user.picture,
-  //   };
+    // const user: userAuth = {
+    //   accessToken: req.user.accessToken,
+    //   email: req.user.email,
+    //   name: req.user.firstName,
+    //   fullName: req.user.firstName + ' ' + req.user.lastName,
+    //   picture: req.user.picture,
+    // };
     
   //   try {
   //     if (!(await this.userSaveRepository.userExists(user.email))) {
