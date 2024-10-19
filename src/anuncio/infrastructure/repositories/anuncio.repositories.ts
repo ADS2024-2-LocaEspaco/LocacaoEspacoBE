@@ -7,8 +7,9 @@ import { getUsuarioDto } from "../database/dto/get-anuncio-usuario.dto";
 const prisma = new PrismaClient();
 
 export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> {
+    
     const anuncio = await prisma.anuncio.findUnique({
-        where: { id },
+        where: { id: Number(id) },
         select: {
             id: true,
             titulo: true,
@@ -19,7 +20,8 @@ export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> 
     const getAnuncio: getAnuncioDto = {
         id: anuncio?.id || null,
         titulo: anuncio?.titulo || null,
-        usuario_id: anuncio?.usuario_id || null
+        usuario_id: anuncio?.usuario_id ? Number(anuncio.usuario_id) : null
+
     }
 
     return getAnuncio
@@ -45,7 +47,7 @@ export async function getReservasById(id: number): Promise<getReservaDto[] | nul
 
 export async function getUsuarioByUsuarioId(id: number): Promise<getUsuarioDto | null> {
     const usuario = await prisma.usuario.findUnique({
-        where: { id },
+        where: { id: String(id) },
         select: {
             id: true,
             nome: true,
@@ -70,7 +72,7 @@ export async function getUsuarioByUsuarioId(id: number): Promise<getUsuarioDto |
     }
 
     const anfitriao: getUsuarioDto = {
-        id: usuario.id,
+        id: Number(usuario.id),
         nome: usuario.nome,
         endereco: endereco
     }

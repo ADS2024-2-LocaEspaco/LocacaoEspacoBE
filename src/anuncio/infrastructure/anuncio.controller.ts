@@ -15,7 +15,8 @@ export class AnuncioController {
 
   @Get(':id')
   async getAnuncioById(@Param('id') id: number): Promise<getAnuncioDto  | null> {
-    return this.anuncioService.getAnuncioById(id);
+    const anuncioId = Number(id); // Convert the ID to a number
+    return this.anuncioService.getAnuncioById(anuncioId);
   }
 
   @Get(':id/:user')

@@ -4,11 +4,11 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:aluno@localhost:3306/stayeasy"
+  url      = "mysql://root:root@localhost:3306/locaespaco"
 }
 
 model anuncio {
-  id                      Int                  @id
+  id                      Int                  @id 
   usuario_id              Int
   tipo_espaco_id          Int
   tipo_imoveis_id         Int

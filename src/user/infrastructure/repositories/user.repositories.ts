@@ -5,13 +5,14 @@ import { CreateUserDto } from '../database/dto/create-user.dto';
 
 const prisma = new PrismaClient();
 @Injectable()
-export class UserRepository{
-    async getUserById(id: number): Promise</*CreateUserDto | null*/any>{
+export class UserRepository {
+    async getUserById(id: number): Promise</*CreateUserDto | null*/any> {
         const comentario = prisma.usuario.findUnique({
-            where:{
-                id: id
+            where: {
+                // When you're using id
+                id: String(id), // Convert to string
             },
-            select:{
+            select: {
                 id: true,
                 nome: true,
                 nome_completo: true,
@@ -21,18 +22,19 @@ export class UserRepository{
 
         return comentario
     };
-    
-    async getUserHost(id: number): Promise</*createHostDto | null*/any>{
+
+    async getUserHost(id: number): Promise</*createHostDto | null*/any> {
         const getHostData = prisma.usuario.findUnique({
-            where:{
-                id
+            where: {
+                // When you're using id
+                id: String(id), // Convert to string
             },
-            select:{
+            select: {
                 nome: true,
                 nome_completo: true,
                 img: true,
             }
         })
         return getHostData
-    }    
+    }
 }
