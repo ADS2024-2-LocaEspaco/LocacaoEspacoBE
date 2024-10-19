@@ -44,7 +44,7 @@ export async function getReservasById(id: number): Promise<getReservaDto[] | nul
 
     return reservas;
 }
-export async function getUsuarioByUsuarioId(id: number): Promise<getUsuarioDto | null> {
+export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<getUsuarioDto | null> {
     const usuario = await prisma.usuario.findUnique({
         where: { id },
         select: {

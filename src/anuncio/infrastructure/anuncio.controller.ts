@@ -15,7 +15,7 @@ export class AnuncioController {
 
 
   @Get(':id')
-  async getNomeEFotoDoUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
+  async getDadosUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
       const anuncioId = Number(id); 
       const anuncio = await this.anuncioService.getAnuncioById(anuncioId); 
   
