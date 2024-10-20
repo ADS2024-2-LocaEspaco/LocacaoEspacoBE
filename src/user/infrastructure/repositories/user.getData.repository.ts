@@ -17,7 +17,7 @@ export class UserDataRepository implements UserDataRepository {
         email: true,
         nome: true,
         nome_completo: true,
-        img: true,
+        foto: true,
       },
     });
 
@@ -27,7 +27,7 @@ export class UserDataRepository implements UserDataRepository {
         email: user.email,
         name: user.nome,
         fullName: user.nome_completo,
-        picture: user.img,
+        picture: user.foto,
       };
 
       return userSaved;

@@ -7,9 +7,7 @@ const prisma = new PrismaClient();
 export class UserSaveRepository implements UserSaveRepository {
   async userExists(email: string): Promise<boolean> {
     const user = await prisma.usuario.findUnique({
-      where: {
-        email,
-      },
+      where: { email },
       select: {
         id: true,
         nome: true,
@@ -31,14 +29,14 @@ export class UserSaveRepository implements UserSaveRepository {
         nome_completo: user.fullName,
         email: user.email,
         token_acesso: user.accessToken,
-        img: user.picture,
+        foto: user.picture,
       },
       select: {
         token_acesso: true,
         email: true,
         nome: true,
         nome_completo: true,
-        img: true,
+        foto: true,
       },
     });
 
@@ -47,7 +45,7 @@ export class UserSaveRepository implements UserSaveRepository {
       email: result.email,
       name: result.nome,
       fullName: result.nome_completo,
-      picture: result.img,
+      picture: result.foto,
     };
 
     return userSaved;
@@ -66,7 +64,7 @@ export class UserSaveRepository implements UserSaveRepository {
         email: true,
         nome: true,
         nome_completo: true,
-        img: true,
+        foto: true,
         token_acesso: true,
       },
     });
@@ -76,7 +74,7 @@ export class UserSaveRepository implements UserSaveRepository {
       email: result.email,
       name: result.nome,
       fullName: result.nome_completo,
-      picture: result.img,
+      picture: result.foto,
     };
 
     return userSaved;
