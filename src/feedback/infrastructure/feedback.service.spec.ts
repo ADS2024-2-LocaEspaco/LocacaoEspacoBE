@@ -15,7 +15,7 @@ describe('FeedbackService', () => {
   });
 
   it('Retornar feedback valido', async () => {
-    const data = '1'
+    const data = 1
 
     // Mock the expected result if necessary
     const expectedFeedback = new CreateFeedbackDto();
@@ -29,7 +29,7 @@ describe('FeedbackService', () => {
   });
 
   it('Retornar feedback com id inexistente', async () => {
-    const data = '0'
+    const data = 0
 
     // Define um usuário mock para o teste
     const mockUser: Array<Feedback> = [];

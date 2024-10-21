@@ -1,8 +1,6 @@
-import { User } from "@prisma/client";
-
 export class userAuthProperty{
     email: string;
-    firstName: string;
-    lastName: string | null;
+    name: string;
+    fullName: string;
     picture: string;
 }

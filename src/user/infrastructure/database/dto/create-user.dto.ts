@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { usuario } from "@prisma/client";
 
 export class CreateUserDto{
     id:       string;

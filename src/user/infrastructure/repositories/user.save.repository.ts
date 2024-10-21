@@ -1,4 +1,4 @@
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { userAuth } from '../database/dto/user.auth.dto';
 
@@ -6,14 +6,14 @@ const prisma = new PrismaClient();
 @Injectable()
 export class UserSaveRepository implements UserSaveRepository{
   async userExists(email: string): Promise<boolean> {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.usuario.findUnique({
       where: {
         email,
       },
       select: {
         id: true,
-        firstName: true,
-        lastName: true,
+        nome: true,
+        nome_completo: true,
         email: true,
       },
     });
@@ -25,29 +25,36 @@ export class UserSaveRepository implements UserSaveRepository{
     return false;
   }
   async save(user: userAuth): Promise<userAuth> {
-    const result = await prisma.user.create({
+    const result = await prisma.usuario.create({
           data: {
-            accessToken: user.accessToken,
+            nome: user.name,
+            nome_completo: user.fullName,
             email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            picture: user.picture,
+            token_acesso: user.accessToken,
+            img: user.picture
           },
           select: {
-            id: true,
+            token_acesso: true,
             email: true,
-            lastName: true,
-            firstName: true,
-            picture: true,
-            accessToken: true,
+            nome: true,
+            nome_completo: true,
+            img: true,
           },
         });
 
-      return result;
+    const userSaved: userAuth = {
+      accessToken: result.token_acesso,
+      email: result.email,
+      name: result.nome,
+      fullName: result.nome + ' ' + result.nome_completo,
+      picture: result.img
+    }
+
+    return userSaved;
   }
 
   async updateToken(user: userAuth): Promise<userAuth> {
-    const result = await prisma.user.update({
+    const result = await prisma.usuario.update({
       where: {
         email: user.email
       },
@@ -55,13 +62,21 @@ export class UserSaveRepository implements UserSaveRepository{
       select: {
         id: true,
         email: true,
-        firstName: true,
-        lastName: true,
-        picture: true,
-        accessToken: true,
+        nome: true,
+        nome_completo: true,
+        img: true,
+        token_acesso: true,
       }
     });
 
-    return result;
+    const userSaved: userAuth = {
+      accessToken: result.token_acesso,
+      email: result.email,
+      name: result.nome,
+      fullName: result.nome + ' ' + result.nome_completo,
+      picture: result.img
+    }
+
+    return userSaved;
   };
 }

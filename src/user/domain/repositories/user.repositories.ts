@@ -1,15 +1,15 @@
 // src/user/domain/repositories
-import { User } from "@prisma/client";
+import { usuario } from "@prisma/client";
 
 export interface UserRepository {
     //Find user by attribute
-    getUserbyId(id: string): Promise<User>;
-    getUserbyEmail(email: string): Promise<User>;
+    getUserbyId(id: string): Promise<usuario>;
+    getUserbyEmail(email: string): Promise<usuario>;
 
     //CRUD
-    createUser(email: string, username: string, photo: string): Promise<User>;
-    deleteUser(email: string): Promise<User>;
-    updateUser(user: User): Promise<User>;
+    createUser(email: string, username: string, photo: string): Promise<usuario>;
+    deleteUser(email: string): Promise<usuario>;
+    updateUser(user: usuario): Promise<usuario>;
 
     // average classification
     getAvgClassification(id: string): Number;

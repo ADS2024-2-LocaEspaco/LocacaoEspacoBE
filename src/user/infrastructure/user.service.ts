@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Feedback, PrismaClient, User } from '@prisma/client';
-import { getComentariosAnuncio } from '../../feedback/infrastructure/repositories/Feedback.repositories';
+import { PrismaClient } from '@prisma/client';
+// import { getComentariosAnuncio } from '../../feedback/infrastructure/repositories/Feedback.repositories';
 import { UserRepository } from './repositories/user.repositories';
 import { createHostDto } from './database/dto/create-user-host.dto';
 import { CreateFeedbackDto } from 'src/feedback/infrastructure/database/dto/create-feedback.dto';
@@ -17,12 +17,12 @@ export class UserService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  
-  async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
-    return getComentariosAnuncio(id);
-  }
+  // Criar outra função chamada getComentariosUser
+  // async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
+  //   return getComentariosAnuncio(id);
+  // }
 
-  async getDataAnfitriao(id: string): Promise<createHostDto | null> {
+  async getDataAnfitriao(id: number): Promise<createHostDto | null> {
     let data: createHostDto | any 
 
     try {
@@ -58,8 +58,8 @@ export class UserService {
     const user: userAuth = {
       accessToken: req.user.accessToken,
       email: req.user.email,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
+      name: req.user.firstName,
+      fullName: req.user.firstName + ' ' + req.user.lastName,
       picture: req.user.picture,
     };
     
