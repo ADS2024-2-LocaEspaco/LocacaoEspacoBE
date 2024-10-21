@@ -173,7 +173,7 @@ model tipo_imoveis {
 }
 
 model usuario {
-  id                        String                  @id @default(uuid())
+  id                        String                  @id @default(dbgenerated("nextval('usuario_id_seq'::regclass)"))
   instituicao_financeira_id Int?
   nome                      String                  @db.VarChar(100)
   img                       String?                 @db.VarChar(500)
