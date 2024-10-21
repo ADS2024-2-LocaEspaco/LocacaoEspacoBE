@@ -3,195 +3,211 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "mysql://root:aluno@localhost:3306/stayeasy"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model anuncio {
-  id                      Int                  @id
-  usuario_id              Int
-  tipo_espaco_id          Int
-  tipo_imoveis_id         Int
-  titulo                  String               @db.VarChar(40)
-  descricao               String               @db.VarChar(500)
-  quant_quartos           BigInt
-  quant_banheiro          BigInt
-  quant_cama              BigInt
-  quant_hospede           Int
-  url_imgs                String               @db.VarChar(500)
-  cftv                    Boolean?             @default(false)
-  monitoramento_ruido     Boolean?             @default(false)
-  armas                   Boolean?             @default(false)
-  aprovacao_reserva       Boolean?             @default(false)
-  aceita_crianca          Boolean?             @default(false)
-  aceita_bebe             Boolean?             @default(false)
-  aceita_pet              Boolean?             @default(false)
-  quant_pet               BigInt?              @default(0)
-  valor_diaria            String               @db.VarChar(255)
-  quant_diaria_min        BigInt?              @default(1)
-  quant_diaria_max        BigInt?              @default(1)
-  permite_eventos         Boolean?             @default(false)
-  permite_fumar           Boolean?             @default(false)
-  horario_silencio        Boolean?             @default(false)
-  horario_silencio_inicio DateTime?            @db.Time(6)
-  horario_silencio_fim    DateTime?            @db.Time(6)
-  fotografia_comercial    Boolean?             @default(false)
-  checkin_inicio          DateTime?            @db.Date
-  checkin_fim             DateTime?            @db.Date
-  checkout                DateTime?            @db.Date
-  polit_cancelamento      BigInt
-  regras_adicionais       String?              @db.VarChar(500)
-  criado_em               DateTime?            @default(now()) //@db.Timestamptz(6)
-  publicado               Boolean?             @default(false)
-  temp_antec_reserva      BigInt?
-  usuario                 usuario              @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "anuncio_fk1")
-  tipo_espaco             tipo_espaco          @relation(fields: [tipo_espaco_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "anuncio_fk2")
-  tipo_imoveis            tipo_imoveis         @relation(fields: [tipo_imoveis_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "anuncio_fk3")
-  comodidade_anuncio      comodidade_anuncio[]
-  endereco                endereco[]
-  favoritos               favoritos[]
-  reservas                reservas[]
+  id                            Int                             @id @default(autoincrement())
+  fotos                         String[]                        @db.VarChar
+  titulo                        String?                         @db.VarChar(50)
+  hospedes                      Int
+  quartos                       Int
+  banheiros                     Int
+  descricao                     String?                         @db.VarChar(500)
+  valor_diaria                  Decimal                         @db.Decimal
+  publicado                     Boolean
+  data_checkin                  DateTime                        @db.Date
+  data_checkout                 DateTime                        @db.Date
+  tipo_imovel_atual             tipo_imovel
+  tipo_espaco_atual             tipo_espaco
+  comodidades_atual             comodidades
+  comodidades_especiais_atual   comodidades_especiais
+  cameras                       Boolean
+  seguranca_atual               seguranca?
+  regra_da_casa                 String                          @db.VarChar(100)
+  politica_cancelamento         String                          @db.VarChar(100)
+  tipo_hospede_atual            tipo_hospede
+  tipo_reserva_atual            tipo_reserva
+  anfitriao                     Int
+  usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
+  favoritos                     favoritos[]
+  lista_favoritos_personalizada lista_favoritos_personalizada[]
+  reserva                       reserva[]
 }
 
 model avaliacao {
-  id                    Int       @id @default(autoincrement())
-  reservas_id           Int
-  avaliado              BigInt
-  nota_limpeza          String?   @db.VarChar(255)
-  nota_exatidao_anuncio String?   @db.VarChar(255)
-  nota_custo_beneficio  String?   @db.VarChar(255)
-  nota_localizacao      String?   @db.VarChar(255)
-  comentario            String    @db.VarChar(350)
-  nota_seguiu_regras    String?   @db.VarChar(255)
-  nota_pontualidade     String?   @db.VarChar(255)
-  nota_cordialidade     String?   @db.VarChar(255)
-  criado_em             DateTime? @default(now()) @db.Timestamp(6)
-  reservas              reservas  @relation(fields: [reservas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "avaliacao_fk1")
-}
-
-model categorias_comodidade {
-  id          Int           @id @default(autoincrement())
-  tipo        String        @unique(map: "tipo_cat_comod") @db.VarChar(100)
-  comodidades comodidades[]
-}
-
-model comodidade_anuncio {
-  id             Int         @id @default(autoincrement())
-  comodidades_id Int
-  anuncio_id     Int
-  comodidades    comodidades @relation(fields: [comodidades_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk1")
-  anuncio        anuncio     @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk2")
-}
-
-model comodidades {
-  id                       Int                   @id @default(autoincrement())
-  categorias_comodidade_id Int
-  nome                     String                @db.VarChar(100)
-  icone                    String?               @db.VarChar(500)
-  comodidade_anuncio       comodidade_anuncio[]
-  categorias_comodidade    categorias_comodidade @relation(fields: [categorias_comodidade_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidades_fk1")
+  id                                              Int       @id @default(autoincrement())
+  id_usuario_avaliador                            Int
+  id_usuario_avaliado                             Int?
+  id_anuncio_avaliado                             Int?
+  nota_limpeza                                    Decimal?  @db.Decimal
+  nota_exatidao_anuncio                           Decimal?  @db.Decimal
+  nota_custo_beneficio                            Decimal?  @db.Decimal
+  nota_localizacao                                Decimal?  @db.Decimal
+  comentario                                      String    @db.VarChar(255)
+  nota_seguiu_regras                              Decimal?  @db.Decimal
+  nota_pontualidade                               Decimal?  @db.Decimal
+  nota_cordialidade                               Decimal?  @db.Decimal
+  criado_em                                       DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
+  usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
+  usuario_usuario_avaliacao_idToavaliacao         usuario[] @relation("usuario_avaliacao_idToavaliacao")
 }
 
 model endereco {
-  id          Int      @id @default(autoincrement())
-  anuncio_id  Int
-  usuario_id  Int
-  logradouro  String   @db.VarChar(255)
-  bairro      String   @db.VarChar(255)
-  cidade      String   @db.VarChar(255)
-  estado      String   @db.VarChar(2)
-  numero      String   @db.VarChar(10)
-  complemento String?  @db.VarChar(255)
-  cep         String   @db.VarChar(10)
-  longitude   String?  @db.VarChar(50)
-  latitude    String?  @db.VarChar(50)
-  criado_em   DateTime @default(now()) @db.Timestamp(6)
-  anuncio     anuncio  @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "endereco_fk1")
-  usuario     usuario  @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "endereco_fk2")
+  id          Int       @id @default(autoincrement())
+  id_usuario  Int?
+  id_anuncio  Int?
+  cep         String    @db.VarChar(10)
+  estado      String    @db.VarChar(2)
+  cidade      String    @db.VarChar(50)
+  bairro      String    @db.VarChar(50)
+  rua         String    @db.VarChar(100)
+  numero      String?   @db.VarChar(4)
+  complemento String?   @db.VarChar(255)
+  latitude    String?   @db.VarChar(50)
+  longitude   String?   @db.VarChar(50)
+  criado_em   DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
 model favoritos {
-  id                 Int             @id @default(autoincrement())
-  lista_favoritos_id Int
-  anuncio_id         Int
-  criado_em          DateTime?       @default(now()) @db.Timestamp(6)
-  lista_favoritos    lista_favoritos @relation(fields: [lista_favoritos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_fk1")
-  anuncio            anuncio         @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_fk2")
-}
-
-model instituicao_financeira {
-  id                 Int       @id @default(autoincrement())
-  codigo_instituicao BigInt    @unique(map: "codigo")
-  nome_instituicao   String    @unique(map: "instituicao") @db.VarChar(150)
-  usuario            usuario[]
-}
-
-model lista_favoritos {
-  id         Int         @id @default(autoincrement())
-  usuario_id Int
-  nome_lista String      @db.VarChar(120)
-  criado_em  DateTime?   @default(now()) @db.Timestamp(6)
-  favoritos  favoritos[]
-  usuario    usuario     @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lista_favoritos_fk1")
-}
-
-model reservas {
-  id                       Int         @id @default(autoincrement())
-  anuncio_id               Int
-  usuario_id               Int
-  data_inicial             DateTime    @db.Date
-  data_final               DateTime    @db.Date
-  num_adultos              BigInt?
-  num_criancas             BigInt?
-  num_bebes                BigInt?
-  num_pets                 BigInt?
-  valor_reserva            String      @db.VarChar(255)
-  num_cartao               String      @db.VarChar(16)
-  checkin                  DateTime?   //@db.Timestamptz(6)
-  checkout                 DateTime?   //@db.Timestamptz(6)
-  status_reserva           BigInt?
-  status_pagamento         BigInt?
-  multa                    Boolean?
-  cancelamento             Boolean?
-  solicitante_cancelamento String?     @db.VarChar(25)
-  criado_em                DateTime    @default(now()) @db.Timestamp(6)
-  avaliacao                avaliacao[]
-  anuncio                  anuncio     @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "reservas_fk1")
-  usuario                  usuario     @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "reservas_fk2")
-}
-
-model tipo_espaco {
-  id      Int       @id @default(autoincrement())
-  tipo    String    @unique(map: "tipo_espaco_un") @db.VarChar(100)
-  anuncio anuncio[]
-}
-
-model tipo_imoveis {
-  id      Int       @id @default(autoincrement())
-  tipo    String    @unique(map: "tipo_imovel") @db.VarChar(100)
-  anuncio anuncio[]
+  id         Int       @id @default(autoincrement())
+  id_usuario Int?
+  id_anuncio Int?
+  criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
+  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
 model usuario {
-  id                        Int                     @id @default(autoincrement())
-  instituicao_financeira_id Int?
-  nome                      String                  @db.VarChar(100)
-  img                       String                  @db.VarChar(500)
-  nome_completo             String                  @db.VarChar(250)
-  email                     String                  @unique(map: "email_unq") @db.VarChar(250)
-  fone                      BigInt?
-  cpf                       String?                 @db.VarChar(14)
-  ag                        BigInt?
-  cc                        String?                 @db.VarChar(12)
-  admin                     Boolean?                @default(false)
-  criado_em                 DateTime?               @default(now()) //@db.Timestamptz(6)
-  ativo                     Boolean?                @default(true)
-  url_documento             String?                 @db.VarChar(500)
-  bloqueado                 Boolean?                @default(false)
-  token_acesso              String                  @db.VarChar(255)
-  anuncio                   anuncio[]
-  endereco                  endereco[]
-  lista_favoritos           lista_favoritos[]
-  reservas                  reservas[]
-  instituicao_financeira    instituicao_financeira? @relation(fields: [instituicao_financeira_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usuario_fk1")
+  id                                                Int                             @id @default(autoincrement())
+  foto                                              String?                         @db.VarChar(255)
+  nome                                              String                          @db.VarChar(50)
+  nome_completo                                     String?                         @db.VarChar(150)
+  email                                             String                          @unique @db.VarChar(100)
+  cpf                                               String?                         @db.VarChar(14)
+  telefone                                          String?                         @db.VarChar(14)
+  admin                                             Boolean?                        @default(false)
+  criado_em                                         DateTime?                       @default(dbgenerated("CURRENT_DATE")) @db.Date
+  ativo                                             Boolean?                        @default(true)
+  url_documento                                     String?                         @db.VarChar(255)
+  bloqueado                                         Boolean?                        @default(false)
+  token_acesso                                      String                          @db.VarChar(255)
+  avaliacao_id                                      Int?
+  anuncio                                           anuncio[]
+  avaliacao_avaliacao_id_usuario_avaliadoTousuario  avaliacao[]                     @relation("avaliacao_id_usuario_avaliadoTousuario")
+  avaliacao_avaliacao_id_usuario_avaliadorTousuario avaliacao[]                     @relation("avaliacao_id_usuario_avaliadorTousuario")
+  dados_bancarios                                   dados_bancarios[]
+  endereco                                          endereco[]
+  favoritos                                         favoritos[]
+  lista_favoritos_personalizada                     lista_favoritos_personalizada[]
+  reserva                                           reserva[]
+  avaliacao_usuario_avaliacao_idToavaliacao         avaliacao?                      @relation("usuario_avaliacao_idToavaliacao", fields: [avaliacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_avaliacao")
+}
+
+model dados_bancarios {
+  id           Int     @id @default(autoincrement())
+  id_usuario   Int
+  banco        String  @db.VarChar(50)
+  agencia      String  @db.VarChar(50)
+  numero_conta String  @db.VarChar(20)
+  tipo_conta   String  @db.VarChar(15)
+  chave_pix    String? @db.VarChar(50)
+  usuario      usuario @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+}
+
+model lista_favoritos_personalizada {
+  id         Int       @id @default(autoincrement())
+  id_usuario Int?
+  id_anuncio Int?
+  nome       String?   @db.VarChar(20)
+  criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
+  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+}
+
+model reserva {
+  id               Int               @id @default(autoincrement())
+  id_usuario       Int?
+  id_anuncio       Int?
+  qtd_adultos      Int?
+  qtd_criancas     Int?
+  qtd_bebes        Int?
+  qtd_pets         Int?
+  data_inicial     DateTime?         @db.Date
+  data_final       DateTime?         @db.Date
+  status_reserva   status_reserva?
+  status_pagamento status_pagamento?
+  multa            Boolean?          @default(false)
+  cancelamento     Boolean?          @default(false)
+  criado_em        DateTime?         @default(dbgenerated("CURRENT_DATE")) @db.Date
+  anuncio          anuncio?          @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
+  usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+}
+
+enum comodidades {
+  Wi_fi               @map("Wi-fi")
+  TV
+  Cozinha
+  M_quina_de_lavar    @map("Máquina de lavar")
+  Ar_Condicionado     @map("Ar-Condicionado")
+  Estacionamento
+  Estacionamento_Pago @map("Estacionamento Pago")
+  Espa_o_de_Trabalho  @map("Espaço de Trabalho")
+  Ventilador
+}
+
+enum comodidades_especiais {
+  Piscina
+  Churrasqueira
+  Acesso___Praia @map("Acesso à Praia")
+  Mesa_de_Bilhar @map("Mesa de Bilhar")
+}
+
+enum seguranca {
+  Detector_de_fuma_a     @map("Detector de fumaça")
+  Extintor_de_inc_ndio   @map("Extintor de incêndio")
+  Kit_primeiros_socorros @map("Kit primeiros socorros")
+  Alarme_de_carbono      @map("Alarme de carbono")
+}
+
+enum status_pagamento {
+  Conclu_do  @map("Concluído")
+  Aguardando
+}
+
+enum status_reserva {
+  Reservado
+  Processando
+}
+
+enum tipo_espaco {
+  Espaco_Inteiro       @map("Espaco Inteiro")
+  Quarto_Privativo     @map("Quarto Privativo")
+  Quarto_Compartilhado @map("Quarto Compartilhado")
+}
+
+enum tipo_hospede {
+  Adulto
+  Crian_a @map("Criança")
+  Beb_    @map("Bebê")
+}
+
+enum tipo_imovel {
+  Casa
+  Apartamento
+  Cabana
+  Cont_iner        @map("Contêiner")
+  Fazenda
+  Casa_ecol_gica   @map("Casa ecológica")
+  Casa_de_h_spedes @map("Casa de hóspedes")
+  Casa_de__rvore   @map("Casa de Árvore")
+  Tenda
+}
+
+enum tipo_reserva {
+  Instant_nea     @map("Instantânea")
+  N_o_instant_nea @map("Não instantânea")
 }

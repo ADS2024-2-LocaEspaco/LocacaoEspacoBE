@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Body } from '@nestjs/common';
 import { AnuncioService } from './anuncio.service';
-import { anuncio, reservas, usuario } from '@prisma/client';
+import { anuncio, reserva, usuario } from '@prisma/client';
 
 @Controller('anuncio')
 export class AnuncioController {
