@@ -1,12 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-<<<<<<< HEAD
-import { UserService } from '../../infrastructure/user.service';
-=======
 import { UserService } from 'src/user/infrastructure/user.service';
 import { Request, Response } from 'express';
-import { use } from 'passport';
->>>>>>> feature/login
 
 @Controller('google')
 export class UserLoginController {

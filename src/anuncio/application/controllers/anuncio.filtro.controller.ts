@@ -10,11 +10,11 @@ export class AnuncioFiltroController {
     async getAnuncios(@Req() req: Request, @Res() res: Response) {
         const { destino, checkin, checkout, hospedes } = req.query;
 
-        let checkinDate, checkoutDate: Date | null;
+        let checkinDate, checkoutDate: Date | string;
 
-        checkinDate = !checkin ? null : new Date(<string>checkin);
+        checkinDate = !checkin ? '' : new Date(<string>checkin);
 
-        checkoutDate = !checkout ? null : new Date(<string>checkout);
+        checkoutDate = !checkout ? '' : new Date(<string>checkout);
 
         await this.anuncioService.getAnunciosService(<string> destino, checkinDate, checkoutDate, parseInt(<string>hospedes));
 

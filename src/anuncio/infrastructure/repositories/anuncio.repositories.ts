@@ -1,4 +1,4 @@
-import { anuncio, PrismaClient, reservas } from "@prisma/client";
+import { anuncio, PrismaClient, reserva } from "@prisma/client";
 import { getReservaDto } from "../database/dto/get-reserva.dto";
 
 const prisma = new PrismaClient();

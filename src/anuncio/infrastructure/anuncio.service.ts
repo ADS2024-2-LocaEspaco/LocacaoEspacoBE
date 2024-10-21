@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { anuncio, /*Feedback,*/ PrismaClient, reservas, usuario } from '@prisma/client';
+import { anuncio, /*Feedback,*/ PrismaClient, reserva, usuario } from '@prisma/client';
 import { error } from 'console';
 //import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
@@ -64,7 +64,7 @@ constructor(
     }
   }*/
 
-  async getAnunciosService(destino: string, checkin: Date | null, checkout: Date | null, hospedes: number) {
+  async getAnunciosService(destino: string, checkin: Date | string, checkout: Date | string, hospedes: number) {
     const anuncios = await this.anuncioFiltroRepository.searchAnuncios(destino, checkin, checkout, hospedes)
     
     anuncios.map((anuncio: any) => {
