@@ -5,82 +5,59 @@ import { UserRepository } from './repositories/user.repositories';
 import { createHostDto } from './database/dto/create-user-host.dto';
 import { CreateFeedbackDto } from 'src/feedback/infrastructure/database/dto/create-feedback.dto';
 import { UserSaveRepository } from './repositories/user.save.repository';
-import { userAuthProperty } from './database/dto/user.auth.property.dto';
+import { UserDataRepository } from './repositories/user.getData.repository';
 import { userAuth } from './database/dto/user.auth.dto';
-
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient()
 @Injectable()
 export class UserService {
   constructor(
     private readonly userSaveRepository: UserSaveRepository,
-    private readonly userRepository: UserRepository,
+    private readonly userGetDataRepository: UserDataRepository,
   ) {}
 
-  
-  /*async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
-    return getComentariosAnuncio(id);
-  }*/
-
-  async getDataAnfitriao(id: number): Promise<createHostDto | null> {
-    let data: createHostDto | any 
-
-    try {
-      data = await this.userRepository.getUserHost(id)
-
-      if(data == null){
-        data = {
-          "message": "usuario não encontrado"
-        }
-
-      }
-
-    } catch (error) {
-      data = {
-        "erro": `${error}`
-      }
-    }
-
-    return data
-  }
-
-  // async getUserById(id: string): Promise<User | null> {
-  //   return this.prisma.user.findUnique({
-  //     where: { id },
-  //   });
-  // }
-
   async googleLogin(req: any) {
+    let userData: userAuth;
+
     if (!req.user) {
-      return 'Nenhum usuário';
+      const user = null;
+      return user;
     }
-    
+
+    const hashToken = await bcrypt.hash(req.user.accessToken, 10);
     const user: userAuth = {
-      accessToken: req.user.accessToken,
+      accessToken: hashToken,
       email: req.user.email,
       name: req.user.firstName,
       fullName: req.user.firstName + ' ' + req.user.lastName,
       picture: req.user.picture,
     };
-    
+
     try {
       if (!(await this.userSaveRepository.userExists(user.email))) {
-        await this.userSaveRepository.save(user);
-      
-      }else {
-        await this.userSaveRepository.updateToken(user);
+        userData = await this.userSaveRepository.save(user);
+      } else {
+        userData = await this.userSaveRepository.updateToken(user);
       }
 
       return {
         message: 'Usuário logado',
-        user: user,
+        user: userData,
       };
-    }catch(error) {
+    } catch (error) {
       return {
-        message: error
-      }
+        message: error,
+      };
     }
-    
   }
 
+  async getUserData(token: string) {
+    try {
+      const data = await this.userGetDataRepository.getUser(token);
+      return data;
+    } catch (error) {
+      return error;
+    }
+  }
 }

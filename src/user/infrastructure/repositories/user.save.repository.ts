@@ -4,12 +4,10 @@ import { userAuth } from '../database/dto/user.auth.dto';
 
 const prisma = new PrismaClient();
 @Injectable()
-export class UserSaveRepository implements UserSaveRepository{
+export class UserSaveRepository implements UserSaveRepository {
   async userExists(email: string): Promise<boolean> {
     const user = await prisma.usuario.findUnique({
-      where: {
-        email,
-      },
+      where: { email },
       select: {
         id: true,
         nome: true,
@@ -26,29 +24,29 @@ export class UserSaveRepository implements UserSaveRepository{
   }
   async save(user: userAuth): Promise<userAuth> {
     const result = await prisma.usuario.create({
-          data: {
-            nome: user.name,
-            nome_completo: user.fullName,
-            email: user.email,
-            token_acesso: user.accessToken,
-            img: user.picture
-          },
-          select: {
-            token_acesso: true,
-            email: true,
-            nome: true,
-            nome_completo: true,
-            img: true,
-          },
-        });
+      data: {
+        nome: user.name,
+        nome_completo: user.fullName,
+        email: user.email,
+        token_acesso: user.accessToken,
+        foto: user.picture,
+      },
+      select: {
+        token_acesso: true,
+        email: true,
+        nome: true,
+        nome_completo: true,
+        foto: true,
+      },
+    });
 
     const userSaved: userAuth = {
       accessToken: result.token_acesso,
       email: result.email,
       name: result.nome,
-      fullName: result.nome + ' ' + result.nome_completo,
-      picture: result.img
-    }
+      fullName: result.nome_completo,
+      picture: result.foto,
+    };
 
     return userSaved;
   }
@@ -56,27 +54,29 @@ export class UserSaveRepository implements UserSaveRepository{
   async updateToken(user: userAuth): Promise<userAuth> {
     const result = await prisma.usuario.update({
       where: {
-        email: user.email
+        email: user.email,
       },
-      data: user,
+      data: {
+        token_acesso: user.accessToken,
+      },
       select: {
         id: true,
         email: true,
         nome: true,
         nome_completo: true,
-        img: true,
+        foto: true,
         token_acesso: true,
-      }
+      },
     });
 
     const userSaved: userAuth = {
       accessToken: result.token_acesso,
       email: result.email,
       name: result.nome,
-      fullName: result.nome + ' ' + result.nome_completo,
-      picture: result.img
-    }
+      fullName: result.nome_completo,
+      picture: result.foto,
+    };
 
     return userSaved;
-  };
+  }
 }
