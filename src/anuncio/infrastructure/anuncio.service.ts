@@ -66,7 +66,7 @@ export class AnuncioService {
     }
   }
 
-  async getAnunciosService(destino: string, checkin: Date | null, checkout: Date | null, hospedes: number) {
+  async getAnunciosService(destino: string, checkin: Date | string, checkout: Date | string, hospedes: number) {
     const anuncios = await this.anuncioFiltroRepository.searchAnuncios(destino, checkin, checkout, hospedes)
     
     anuncios.map((anuncio: any) => {

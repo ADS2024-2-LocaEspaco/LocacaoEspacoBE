@@ -34,6 +34,7 @@ model anuncio {
   favoritos                     favoritos[]
   lista_favoritos_personalizada lista_favoritos_personalizada[]
   reserva                       reserva[]
+  endereco                      endereco[]
 }
 
 model avaliacao {
@@ -69,7 +70,9 @@ model endereco {
   latitude    String?   @db.VarChar(50)
   longitude   String?   @db.VarChar(50)
   criado_em   DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+
   usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  anuncio     anuncio?  @relation(fields: [id_anuncio], references: [id])
 }
 
 model favoritos {
