@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { anuncio, /*Feedback,*/ PrismaClient, reservas, usuario } from '@prisma/client';
+import { anuncio, Feedback, PrismaClient, reservas, usuario } from '@prisma/client';
 import { error } from 'console';
-import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
+import { getReservasById, getAnuncioById, getUsuarioByUsuarioId  } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
+import { getAnuncioDto } from './database/dto/get-anuncio.dto';
+import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 
 
 @Injectable()
@@ -11,12 +13,12 @@ export class AnuncioService {
 private readonly prisma = new PrismaClient();
 
   
-  async getAnuncioById(id: number): Promise<anuncio | null> {
+  async getAnuncioById(id: number): Promise<getAnuncioDto  | null> {
     return getAnuncioById(id);
   }
 
-  async getReservas(id: string): Promise<getReservaDto[] | object> {
-    if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
+  async getReservas(id: number): Promise<getReservaDto[] | object> {
+    if(!Number.isNaN(id) && (id) > 0){
       let data = await getReservasById(id);
 
       // Verifica se 'data' é null, undefined ou uma lista vazia
@@ -40,13 +42,13 @@ private readonly prisma = new PrismaClient();
   }
 
 
-  async getUserFromAnuncio(id: number): Promise<usuario | null> {
+  async getUserFromAnuncio(id: number): Promise<getUsuarioDto | null> {
     try {
       const anuncio = await this.getAnuncioById(id);
   
       if (anuncio && anuncio.usuario_id) {
         return this.prisma.usuario.findUnique({
-          where: { id: anuncio.usuario_id},
+          where: { id: anuncio.usuario_id },
         });
       } else {
         throw new Error('Usuário não encontrado');
@@ -54,10 +56,8 @@ private readonly prisma = new PrismaClient();
   
       return null;
     } catch (error) {
-      // Handle errors gracefully, e.g., log the error and return null
-      console.error('Error fetching user:', error);
-      return null;
+        console.error('Error fetching user from anuncio:', error);
+        return null; // Retorna null em caso de erro
     }
-  }
-
+  } 
 }

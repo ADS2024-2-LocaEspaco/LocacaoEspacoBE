@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Feedback } from '@prisma/client';
+import { avaliacao } from '@prisma/client';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { AnuncioService } from './anuncio.service';
 
@@ -15,7 +15,7 @@ describe('FeedbackService', () => {
   });
 
   it('Retornar reserva valido', async () => {
-    const data = '1'
+    const data = 1
 
     // Mock the expected result if necessary
     const expectedReserva = new getReservaDto();
@@ -28,7 +28,7 @@ describe('FeedbackService', () => {
   });
 
   it('Retornar reserva com id inexistente', async () => {
-    const data = '0'
+    const data = 0
 
     // Define um usuário mock para o teste
     const mockUser: Object = {
