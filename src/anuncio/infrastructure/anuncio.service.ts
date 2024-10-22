@@ -1,18 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
-import { error } from 'console';
-import { getReservasById, getAnuncioById, getUsuarioByUsuarioId  } from './repositories/anuncio.repositories';
+import { getReservasById, getAnuncioById, getUsuarioByUsuarioId, createAnuncio } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
-
+import CreateAnuncioDto  from './database/dto/create-anuncio.dto';
 
 @Injectable()
 export class AnuncioService {
-
-private readonly prisma = new PrismaClient();
-
-  
   async getAnuncioById(id: number): Promise<getAnuncioDto  | null> {
     return getAnuncioById(id);
   }
@@ -44,18 +38,22 @@ private readonly prisma = new PrismaClient();
 
   async getUserFromAnuncio(id: number): Promise<getUsuarioDto | null> {
     try {
-        const anuncio = await this.getAnuncioById(id);
+      const anuncio = await this.getAnuncioById(id);
 
-        if (anuncio && anuncio.usuario_id) {
-            // Agora chamamos o método correto para buscar o usuário pelo usuario_id
-            const usuario = await getUsuarioByUsuarioId(id);
-            return usuario; // Retorna o usuário encontrado
-        } else {
-            throw new Error('Anúncio ou usuário não encontrado');
+      if (anuncio && anuncio.usuario_id) {
+        // Agora chamamos o método correto para buscar o usuário pelo usuario_id
+        const usuario = await getUsuarioByUsuarioId(id);
+        return usuario; // Retorna o usuário encontrado
+      } else {
+        throw new Error('Anúncio ou usuário não encontrado');
         }
     } catch (error) {
-        console.error('Error fetching user from anuncio:', error);
-        return null; // Retorna null em caso de erro
+      console.error('Error fetching user from anuncio:', error);
+      return null; // Retorna null em caso de erro
     }
+  }
+
+  create(createAnuncioDto: CreateAnuncioDto) {
+    return createAnuncio(createAnuncioDto);
   } 
 }

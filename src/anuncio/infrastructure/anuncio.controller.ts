@@ -1,8 +1,8 @@
-import { Controller, Get, Param, Body } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post } from '@nestjs/common';
 import { AnuncioService } from './anuncio.service';
-import { anuncio, reservas, usuario } from '@prisma/client';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
+import CreateAnuncioDto from './database/dto/create-anuncio.dto';
 
 @Controller('anuncio')
 export class AnuncioController {
@@ -18,8 +18,13 @@ export class AnuncioController {
     return this.anuncioService.getAnuncioById(id);
   }
 
-  @Get(':id/:user')
+  @Get(':id/user')
   async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto  | null> {
     return this.anuncioService.getUserFromAnuncio(id);
+  }
+
+  @Post()
+  create(@Body() createAnuncioDto: CreateAnuncioDto) {
+    return this.anuncioService.create(createAnuncioDto);
   }
 }

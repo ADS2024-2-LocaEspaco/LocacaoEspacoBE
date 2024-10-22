@@ -77,3 +77,7 @@ export async function getUsuarioByUsuarioId(id: number): Promise<getUsuarioDto |
 
     return anfitriao
 }
+
+export async function createAnuncio(data: any): Promise<any> {
+    //
+}
