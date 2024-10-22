@@ -13,7 +13,7 @@ export class UserRepository{
                 id: true,
                 nome: true,
                 nome_completo: true,
-                img: true,
+                foto: true,
             }
         })
 
@@ -28,7 +28,7 @@ export class UserRepository{
             select:{
                 nome: true,
                 nome_completo: true,
-                img: true,
+                foto: true,
             }
         })
         return getHostData
