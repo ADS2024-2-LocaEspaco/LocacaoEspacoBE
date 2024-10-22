@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { anuncio, Feedback, PrismaClient, reservas, usuario } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { error } from 'console';
 import { getReservasById, getAnuncioById, getUsuarioByUsuarioId  } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
@@ -44,20 +44,18 @@ private readonly prisma = new PrismaClient();
 
   async getUserFromAnuncio(id: number): Promise<getUsuarioDto | null> {
     try {
-      const anuncio = await this.getAnuncioById(id);
-  
-      if (anuncio && anuncio.usuario_id) {
-        return this.prisma.usuario.findUnique({
-          where: { id: anuncio.usuario_id },
-        });
-      } else {
-        throw new Error('Usuário não encontrado');
-      }
-  
-      return null;
+        const anuncio = await this.getAnuncioById(id);
+
+        if (anuncio && anuncio.usuario_id) {
+            // Agora chamamos o método correto para buscar o usuário pelo usuario_id
+            const usuario = await getUsuarioByUsuarioId(id);
+            return usuario; // Retorna o usuário encontrado
+        } else {
+            throw new Error('Anúncio ou usuário não encontrado');
+        }
     } catch (error) {
         console.error('Error fetching user from anuncio:', error);
         return null; // Retorna null em caso de erro
     }
-  } 
+  }
 }

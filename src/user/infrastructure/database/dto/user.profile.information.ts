@@ -1,16 +1,13 @@
+import { userAccountInformation } from "./user.profile.account.information";
+import { userBankInformation } from "./user.profile.bank.information";
+import { userBasicInformation } from "./user.profile.basic.information";
+import { userContactInformation } from "./user.profile.contact.information";
+import { userImg } from "./user.profile.img";
+
 export class userProfile {
-    firstName: string;
-    lastName?: string | null;
-    picture: string;
-    email: string;
-    cpf: string  | null;
-    phone: bigint | null;
-    agency: bigint | null;
-    account: string | null;
-    bankName: string | undefined;
-    bankCode: bigint | undefined;
-    state: string;
-    city: string;
-    address: string;
-    cep: string;
+    userImg: userImg;
+    userBasicInformation: userBasicInformation;
+    userAccountInformation: userAccountInformation;
+    userContactInformation: userContactInformation;
+    userBankInformation: userBankInformation;
 }

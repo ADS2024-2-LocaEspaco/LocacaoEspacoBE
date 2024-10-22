@@ -12,7 +12,7 @@ export class UserRepository implements UserRepository{
             },
             include: {
                 endereco: true,
-                instituicao_financeira: true
+                dados_bancarios: true
             },
         })
 
