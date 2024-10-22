@@ -1,6 +1,5 @@
 import { Controller, Get, Param, Body } from '@nestjs/common';
 import { AnuncioService } from './anuncio.service';
-import { anuncio, reservas, usuario } from '@prisma/client';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 

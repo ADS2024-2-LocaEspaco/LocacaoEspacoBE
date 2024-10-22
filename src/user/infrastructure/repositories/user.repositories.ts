@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { userProfile } from '../database/dto/user.profile.information';
+import { createHostDto } from '../database/dto/create-user-host.dto';
+import { CreateUserDto } from '../database/dto/create-user.dto';
 
 const prisma = new PrismaClient();
 @Injectable()
@@ -84,17 +85,10 @@ export class UserRepository implements UserRepository{
                 id: id
             },
             select:{
-                instituicao_financeira_id: true
-            },
-            data: {
-                nome: user.firstName,
-                nome_completo: user.lastName || "",
-                img: user.picture,
-                email: user.email,
-                cpf: user.cpf,
-                fone: user.phone,
-                ag: user.agency,
-                cc: user.account,
+                id: true,
+                nome: true,
+                nome_completo: true,
+                img: true,
             }
         })
 
@@ -134,7 +128,7 @@ export class UserRepository implements UserRepository{
             select:{
                 nome: true,
                 nome_completo: true,
-                img: true,
+                foto: true,
             }
         })
         return getHostData

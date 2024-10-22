@@ -12,27 +12,29 @@ export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> 
         select: {
             id: true,
             titulo: true,
-            usuario_id: true
+            anfitriao: true
         },
     });
 
     const getAnuncio: getAnuncioDto = {
         id: anuncio?.id || null,
         titulo: anuncio?.titulo || null,
-        usuario_id: anuncio?.usuario_id || null
+        usuario_id: anuncio?.anfitriao || null
     }
 
     return getAnuncio
 }
 
 export async function getReservasById(id: number): Promise<getReservaDto[] | null> {
-    const reservas = await prisma.reservas.findMany({
+    const reservas = await prisma.reserva.findMany({
         where: { 
-            anuncio_id: id,
-            status_reserva: 1
+            id_anuncio: id,
+            status_reserva: 'Reservado'
         },
         select:{
             id: true,
+            id_usuario: true,
+            id_anuncio: true,
             status_reserva: true,
             data_inicial: true,
             data_final: true,

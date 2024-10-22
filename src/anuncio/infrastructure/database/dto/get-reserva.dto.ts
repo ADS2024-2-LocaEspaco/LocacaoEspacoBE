@@ -1,11 +1,11 @@
-import { reservas } from "@prisma/client";
+import { reserva } from "@prisma/client";
 
 export class getReservaDto {
-    id: number
-    usuario_id?: String
-    anuncio_id?: String
-    status_reserva: bigint | null
-    data_inicial: Date
-    data_final: Date
-    criado_em?: Date
+    id: number | null
+    id_usuario: number | null
+    id_anuncio: number | null
+    status_reserva: string | null
+    data_inicial: Date | null
+    data_final: Date | null
+    criado_em: Date | null
 }
