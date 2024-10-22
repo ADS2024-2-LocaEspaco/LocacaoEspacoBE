@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AvaliacaoService } from './avaliacao.service';
 import { avaliacao } from '@prisma/client';
-import { GetComentariosDto } from "./database/dto/get-comentarios.dto";
+import { GetComentariosDto } from "../../anuncio/infrastructure/database/dto/get-comentarios.dto";
 
 describe('FeedbackService', () => {
   let service: AvaliacaoService;

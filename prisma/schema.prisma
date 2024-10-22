@@ -57,14 +57,14 @@ model avaliacao {
   id                    Int       @id @default(autoincrement())
   reservas_id           Int
   avaliado              BigInt
-  nota_limpeza          String?   @db.VarChar(255)
-  nota_exatidao_anuncio String?   @db.VarChar(255)
-  nota_custo_beneficio  String?   @db.VarChar(255)
-  nota_localizacao      String?   @db.VarChar(255)
+  nota_limpeza          BigInt
+  nota_exatidao_anuncio BigInt
+  nota_custo_beneficio  BigInt
+  nota_localizacao      BigInt
   comentario            String    @db.VarChar(350)
-  nota_seguiu_regras    String?   @db.VarChar(255)
-  nota_pontualidade     String?   @db.VarChar(255)
-  nota_cordialidade     String?   @db.VarChar(255)
+  nota_seguiu_regras    BigInt
+  nota_pontualidade     BigInt
+  nota_cordialidade     BigInt
   criado_em             DateTime? @default(now()) @db.Timestamp(6)
   reservas              reservas  @relation(fields: [reservas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "avaliacao_fk1")
 }

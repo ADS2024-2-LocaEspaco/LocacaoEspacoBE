@@ -5,5 +5,6 @@ import { AvaliacaoService } from './avaliacao.service';
   imports: [],
   controllers: [],
   providers: [AvaliacaoService],
+  exports: [AvaliacaoService],
 })
 export class AvaliacaoModule {}

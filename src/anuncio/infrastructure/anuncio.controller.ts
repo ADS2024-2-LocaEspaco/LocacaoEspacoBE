@@ -1,32 +1,38 @@
 import { Controller, Get, Param, Body } from '@nestjs/common';
 import { AnuncioService } from './anuncio.service';
 import { anuncio, reservas, usuario } from '@prisma/client';
-import { GetComentariosDto } from 'src/avaliacao/infrastructure/database/dto/get-comentarios.dto';
-import { AvaliacaoService } from 'src/avaliacao/infrastructure/avaliacao.service';
+import { GetComentariosDto } from 'src/anuncio/infrastructure/database/dto/get-comentarios.dto';
 
 @Controller('anuncio')
 export class AnuncioController {
   constructor(
     private readonly anuncioService: AnuncioService,
-    private readonly avaliacaoService: AvaliacaoService
   ) {}
 
   
   @Get('comentarios')
-  async getComentarioUser(@Body('id') data: any): Promise<any[]> {
+  async getComentarioUser(@Body('id') data: any): Promise<GetComentariosDto[] | object> {
     return this.anuncioService.getComentarioUser(data);
   }
   
-}
-// @Get('reservas')
-// async getReservas(@Body('id') id: string): Promise<Object> {
-//   return await this.anuncioService.getReservas(id);
-// }
+  @Get('reservas/media-avaliacao')
+  async getAnuncioHospedeDataMediaAv(@Body('id') id: string): Promise<Object> {
+    return await this.anuncioService.getAnuncioHospedeDataMediaAv(id);
+  }
 
-// @Get(':id')
-// async getAnuncioById(@Param('id') id: string): Promise<anuncio | null> {
-//   return this.anuncioService.getAnuncioById(id);
-// }
+  @Get('reservas/qtd-max-min-diaria')
+  async getQuantMaxEMinDiaria(@Body('id') id: string): Promise<Object> {
+    return await this.anuncioService.getQuantMaxEMinDiaria(id);
+  }
+
+  @Get(':id')
+  async getAnuncio(@Param('id') id: string): Promise<anuncio | object> {
+    console.log('aqui')
+    return this.anuncioService.getAnuncio(id);
+  }
+}
+
+
 
 // @Get(':id/:user')
 // async getUserFromAnuncio(@Param('id') id: string): Promise<usuario | null> {
