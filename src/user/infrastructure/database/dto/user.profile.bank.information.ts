@@ -3,5 +3,4 @@ export class userBankInformation {
     account: string;
     bankName: string;
     bankCode: string;
-    pixCode: string | null;
 }

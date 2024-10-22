@@ -2,6 +2,12 @@ import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { createHostDto } from '../database/dto/create-user-host.dto';
 import { CreateUserDto } from '../database/dto/create-user.dto';
+import { userProfile } from '../database/dto/user.profile.information';
+import { userImg } from '../database/dto/user.profile.img';
+import { userBasicInformation } from '../database/dto/user.profile.basic.information';
+import { userAccountInformation } from '../database/dto/user.profile.account.information';
+import { userBankInformation } from '../database/dto/user.profile.bank.information';
+import { userContactInformation } from '../database/dto/user.profile.contact.information';
 
 const prisma = new PrismaClient();
 @Injectable()
@@ -18,26 +24,46 @@ export class UserRepository implements UserRepository{
         })
 
         if (!result) {
-            // Retornar uma mensagem ou outro valor caso o usuário não seja encontrado
             return null;
         }
     
-        const user: userProfile = {
+        const img: userImg = {
+            img: result.foto
+        }
+
+        const basicInformation: userBasicInformation = {
             firstName: result.nome,
+            userAvaliation: 4.5 //temporario
+        }
+
+        const accountInformation: userAccountInformation = {
             lastName: result.nome_completo,
-            picture: result.img,
             email: result.email,
-            cpf: result.cpf,
-            phone: result.fone,
-            agency: result.ag,
-            account: result.cc,
-            bankName: result.instituicao_financeira?.nome_instituicao,
-            bankCode: result.instituicao_financeira?.codigo_instituicao,
-            state: result.endereco[0]?.estado,
-            city: result.endereco[0]?.cidade,
-            address: result.endereco[0]?.bairro,
-            cep: result.endereco[0]?.cep
-        };
+            cpf: result.cpf
+        }
+
+        const contact: userContactInformation = {
+            phone: result.telefone,
+            state: result.endereco[0].estado,
+            city: result.endereco[0].cidade,
+            address: result.endereco[0].rua,
+            cep: result.endereco[0].cep
+        }
+
+        const bank: userBankInformation = {
+            bankName: result.dados_bancarios[0].banco,
+            agency: result.dados_bancarios[0].agencia,
+            bankCode: result.dados_bancarios[0].numero_conta,
+            account: result.dados_bancarios[0].tipo_conta
+        }
+
+        const user: userProfile = {
+            userImg: img,
+            userBasicInformation: basicInformation,
+            userAccountInformation: accountInformation,
+            userContactInformation: contact,
+            userBankInformation: bank
+        }
     
         // Aqui você pode retornar o objeto user ou qualquer outro valor
         return user;
@@ -50,7 +76,7 @@ export class UserRepository implements UserRepository{
             },
             include: {
                 endereco: true,
-                instituicao_financeira: true
+                dados_bancarios: true
             },
         })
 
@@ -58,64 +84,84 @@ export class UserRepository implements UserRepository{
             return null;
         }
     
-        const user: userProfile = {
+        const img: userImg = {
+            img: result.foto
+        }
+
+        const basicInformation: userBasicInformation = {
             firstName: result.nome,
+            userAvaliation: 4.5 //temporario
+        }
+
+        const accountInformation: userAccountInformation = {
             lastName: result.nome_completo,
-            picture: result.img,
             email: result.email,
-            cpf: result.cpf,
-            phone: result.fone,
-            agency: result.ag,
-            account: result.cc,
-            bankName: result.instituicao_financeira?.nome_instituicao,
-            bankCode: result.instituicao_financeira?.codigo_instituicao,
-            state: result.endereco[0]?.estado,
-            city: result.endereco[0]?.cidade,
-            address: result.endereco[0]?.bairro,
-            cep: result.endereco[0]?.cep
-        };
+            cpf: result.cpf
+        }
+
+        const contact: userContactInformation = {
+            phone: result.telefone,
+            state: result.endereco[0].estado,
+            city: result.endereco[0].cidade,
+            address: result.endereco[0].rua,
+            cep: result.endereco[0].cep
+        }
+
+        const bank: userBankInformation = {
+            bankName: result.dados_bancarios[0].banco,
+            agency: result.dados_bancarios[0].agencia,
+            bankCode: result.dados_bancarios[0].numero_conta,
+            account: result.dados_bancarios[0].tipo_conta
+        }
+
+        const user: userProfile = {
+            userImg: img,
+            userBasicInformation: basicInformation,
+            userAccountInformation: accountInformation,
+            userContactInformation: contact,
+            userBankInformation: bank
+        }
     
         // Aqui você pode retornar o objeto user ou qualquer outro valor
         return user;
     };
 
-    async updateUserProfile(user: userProfile, id: number): Promise<string>{
+    async updateUserProfile(userBasicInformation: userBasicInformation, id: number): Promise<string | null>{
         const result = await prisma.usuario.update({
             where: {
                 id: id
             },
             select:{
-                id: true,
                 nome: true,
-                nome_completo: true,
-                img: true,
+            }, data:{
+                nome: userBasicInformation.firstName
             }
         })
+
+        if (!result) {
+            return null
+        }
 
         return "Sucesso ao atualizar usuário"
     }
 
-    async updateBankInformation(id: number, user: userProfile): Promise<string | null>{
-        const result = await prisma.usuario.update({
+    async updateBankInformation(id: number, userBank: userBankInformation): Promise<string | null>{
+        const result = await prisma.dados_bancarios.update({
             where: {
-                id: id
+                id_usuario: id
             },
             data: {
-                nome: user.firstName,
-                nome_completo: user.lastName || "",
-                img: user.picture,
-                email: user.email,
-                cpf: user.cpf,
-                fone: user.phone,
-                ag: user.agency,
-                cc: user.account,
+                id_usuario: id,
+                agencia: userBank.agency,
+                banco: userBank.bankName,
+                tipo_conta: userBank.account,
+                numero_conta: userBank.bankCode
             }
         })
 
         if (!result) {
             return null;
         }
-
 
         return "Sucesso ao atualizar usuário"
     }

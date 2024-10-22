@@ -160,7 +160,7 @@ model usuario {
 
 model dados_bancarios {
   id           Int     @id @default(autoincrement())
-  id_usuario   Int
+  id_usuario   Int     @unique
   banco        String  @db.VarChar(50)
   agencia      String  @db.VarChar(50)
   numero_conta String  @db.VarChar(20)

@@ -1,3 +1,3 @@
 export class userImg {
-    img: string;
+    img: string | null;
 }
