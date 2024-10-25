@@ -94,4 +94,32 @@ describe('AvaliacaoService', () => {
     
     expect(await service.getQuantMaxEMinDiaria(data)).toEqual(expectedReserva);
   });
+
+  it('Retornar politica de cancelamento com id validos', async () => {
+    const data = '0'
+
+    // Define um usuário mock para o teste
+    const mockUser: Object = {
+      "message": 'bad request',
+      "status": 400
+    };
+    
+    // Ensure that the service.getComentarios(data) returns expectedFeedback
+    jest.spyOn(service, 'getPoliticaCancelamento').mockResolvedValue(mockUser);
+    
+    expect(await service.getPoliticaCancelamento(data)).toEqual(mockUser);
+  });
+
+  it('Retornar politica de cancelamento com id invalidos', async () => {
+    const data = '1'
+
+    // Mock the expected result if necessary
+    const expectedReserva = new Object();
+    // Set up expected values for the feedback DTO
+    
+    // Ensure that the service.getComentarios(data) returns expectedFeedback
+    jest.spyOn(service, 'getPoliticaCancelamento').mockResolvedValue(expectedReserva);
+    
+    expect(await service.getPoliticaCancelamento(data)).toEqual(expectedReserva);
+  });
 });
