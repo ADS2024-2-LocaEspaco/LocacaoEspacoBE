@@ -27,6 +27,20 @@ export async function getAnuncio(id: number): Promise<any | null> {
     return dataAnuncio;
 }
 
+export async function getPoliticaCancelamento(id: number): Promise<any | null> {
+    let anuncio = await prisma.anuncio.findUnique({
+        where: { 
+            id 
+        },
+    });
+
+    let dataAnuncio = {
+        polit_cancelamento:  Number(anuncio?.polit_cancelamento),
+    }
+    
+    return dataAnuncio;
+}
+
 export async function getMediaNotaAnuncio(id: number): Promise<any | null> {
     const reservas = await prisma.avaliacao.aggregate({
         where: { 

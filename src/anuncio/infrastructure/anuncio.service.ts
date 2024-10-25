@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { anuncio, avaliacao, PrismaClient, reservas, usuario } from '@prisma/client';
 import { error } from 'console';
-import { getMediaNotaAnuncio, getReservas, getQtdMaxHospede, getComentariosAnuncio, getAnuncio } from './repositories/anuncio.repositories';
+import { getMediaNotaAnuncio, getReservas, getQtdMaxHospede, getPoliticaCancelamento, getComentariosAnuncio, getAnuncio } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { GetComentariosDto } from 'src/anuncio/infrastructure/database/dto/get-comentarios.dto';
 
@@ -50,6 +50,31 @@ private readonly prisma = new PrismaClient();
         return {
           quant_diaria_min : result.quant_diaria_min,
           quant_diaria_max : result.quant_diaria_max,
+        };
+      }
+
+    }else{
+      return {
+        'message': 'bad request',
+        'status': 400
+      }
+    }
+  }
+
+  async getPoliticaCancelamento(id: string): Promise<object> {
+    if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
+      let result = await getPoliticaCancelamento(+id)
+
+      // Verifica se 'data' é null, undefined ou uma lista vazia
+      if (Number.isNaN(result.polit_cancelamento)) {
+        return {
+          'message': 'not content',
+          'status': 204
+        }
+
+      } else {
+        return {
+          politica_cancelamento : result.polit_cancelamento,
         };
       }
 

@@ -15,14 +15,19 @@ export class AnuncioController {
     return this.anuncioService.getComentarioUser(data);
   }
   
-  @Get('reservas/media-avaliacao')
+  @Get('media-avaliacao/data-reservas')
   async getAnuncioHospedeDataMediaAv(@Body('id') id: string): Promise<Object> {
     return await this.anuncioService.getAnuncioHospedeDataMediaAv(id);
   }
 
-  @Get('reservas/qtd-max-min-diaria')
+  @Get('qtd-max-min-diaria')
   async getQuantMaxEMinDiaria(@Body('id') id: string): Promise<Object> {
     return await this.anuncioService.getQuantMaxEMinDiaria(id);
+  }
+
+  @Get('politica-cancelamento')
+  async getPoliticaCancelamento(@Body('id') id: string): Promise<Object> {
+    return await this.anuncioService.getPoliticaCancelamento(id);
   }
 
   @Get(':id')
