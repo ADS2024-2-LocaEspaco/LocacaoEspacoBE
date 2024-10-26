@@ -1,29 +1,37 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import {
+  Controller,
+  Get,
+  Req,
+  Res,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from 'src/user/infrastructure/user.service';
 import { Request, Response } from 'express';
-import { use } from 'passport';
+import { AuthGuard } from '@nestjs/passport';
+import { UnauthorizedFilter } from './unauthorized.filter';
 
 @Controller('google')
+@UseFilters(UnauthorizedFilter)
 export class UserLoginController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
+  @Get('')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req: Request) {}
 
-  @Get('redirect')
+  @Get('callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    try {
-      const userData = await this.userService.googleLogin(req);
+    const userData = await this.userService.googleLogin(req);
 
-      res.redirect(
+    console.log(userData);
+    try {
+      return res.redirect(
         `http://localhost:3000?token=${userData?.user?.accessToken}`,
       );
     } catch (error) {
       console.log(error);
-      res.status(500).send('Usuário não informado');
     }
   }
 }
