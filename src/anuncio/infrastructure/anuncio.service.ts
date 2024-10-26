@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { error } from 'console';
-import { getReservasById, getAnuncioById, getUsuarioByUsuarioId  } from './repositories/anuncio.repositories';
+import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio  } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
@@ -47,15 +47,14 @@ private readonly prisma = new PrismaClient();
         const anuncio = await this.getAnuncioById(id);
 
         if (anuncio && anuncio.usuario_id) {
-            // Agora chamamos o método correto para buscar o usuário pelo usuario_id
-            const usuario = await getUsuarioByUsuarioId(id);
-            return usuario; // Retorna o usuário encontrado
+            const usuario = await getDadosUsuarioAnfitriaoPorIdAnuncio(id);
+            return usuario; 
         } else {
             throw new Error('Anúncio ou usuário não encontrado');
         }
     } catch (error) {
         console.error('Error fetching user from anuncio:', error);
-        return null; // Retorna null em caso de erro
+        return null; 
     }
   } 
 }

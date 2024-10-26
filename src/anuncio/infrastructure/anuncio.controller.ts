@@ -21,4 +21,25 @@ export class AnuncioController {
   async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto  | null> {
     return this.anuncioService.getUserFromAnuncio(id);
   }
+
+  @Get(':id')
+  async getDadosUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
+      const anuncioId = Number(id); 
+      const anuncio = await this.anuncioService.getAnuncioById(anuncioId); 
+
+      if (!anuncio) {
+          return null; 
+      }
+
+      const usuario_id = anuncio.usuario_id; 
+      if (!usuario_id) {
+          return null; 
+      }
+
+      const usuario = await this.anuncioService.getUserFromAnuncio(usuario_id); 
+
+      return usuario; 
+  }
+
+
 }

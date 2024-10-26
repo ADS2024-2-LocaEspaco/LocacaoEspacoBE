@@ -7,8 +7,10 @@ import { getUsuarioDto } from "../database/dto/get-anuncio-usuario.dto";
 const prisma = new PrismaClient();
 
 export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> {
+    const anuncioId = parseInt(id.toString(), 10);
+
     const anuncio = await prisma.anuncio.findUnique({
-        where: { id },
+        where: { id:anuncioId },
         select: {
             id: true,
             titulo: true,
@@ -27,11 +29,11 @@ export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> 
 
 export async function getReservasById(id: number): Promise<getReservaDto[] | null> {
     const reservas = await prisma.reserva.findMany({
-        where: { 
+        where: {
             id_anuncio: id,
             status_reserva: 'Reservado'
         },
-        select:{
+        select: {
             id: true,
             id_usuario: true,
             id_anuncio: true,
@@ -45,37 +47,63 @@ export async function getReservasById(id: number): Promise<getReservaDto[] | nul
     return reservas;
 }
 
-export async function getUsuarioByUsuarioId(id: number): Promise<getUsuarioDto | null> {
+
+export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<getUsuarioDto | null> {
+
+    
     const usuario = await prisma.usuario.findUnique({
-        where: { id },
+        where: {
+            id: id,
+        },
         select: {
             id: true,
             nome: true,
-            endereco: {
-                take:1,
-                select: {
-                    latitude: true,
-                    longitude: true,
-                },
-            },
+            foto: true,
+            criado_em: true
         },
     });
+
     // Verifica se o usuário foi encontrado
     if (!usuario) {
         return null;
     }
 
-    const endereco: getEnderecoDto = {
-        latitude: usuario.endereco[0].latitude,
-        longitude: usuario.endereco[0].longitude
-
-    }
+    // Verifica se 'criado_em' não é null antes de calcular
+    const tempoCadastro = usuario.criado_em ? calcularTempoCadastro(usuario.criado_em) : "Data de cadastro não disponível";
 
     const anfitriao: getUsuarioDto = {
-        id: usuario.id,
+        id: Number(usuario.id),
         nome: usuario.nome,
-        endereco: endereco
+        foto: usuario.foto,
+        tempoCadastro: tempoCadastro
     }
 
-    return anfitriao
+    return anfitriao;
+}
+
+function calcularTempoCadastro(criadoEm: Date): string {
+    const agora = new Date();
+    const tempoCadastro = agora.getTime() - criadoEm.getTime(); // Diferença em milissegundos
+
+    const segundos = Math.floor(tempoCadastro / 1000);
+    const minutos = Math.floor(segundos / 60);
+    const horas = Math.floor(minutos / 60);
+    const dias = Math.floor(horas / 24);
+    const meses = Math.floor(dias / 30); // Aproximando um mês como 30 dias
+    const anos = Math.floor(meses / 12);
+
+    // Retornando um formato legível
+    if (anos > 0) {
+        return `${anos} ano(s)`;
+    } else if (meses > 0) {
+        return `${meses} mês(es)`;
+    } else if (dias > 0) {
+        return `${dias} dia(s)`;
+    } else if (horas > 0) {
+        return `${horas} hora(s)`;
+    } else if (minutos > 0) {
+        return `${minutos} minuto(s)`;
+    } else {
+        return `${segundos} segundo(s)`;
+    }
 }
