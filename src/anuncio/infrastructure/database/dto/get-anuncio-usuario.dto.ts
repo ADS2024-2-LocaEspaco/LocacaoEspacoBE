@@ -1,7 +1,7 @@
-import { getEnderecoDto } from "./get-anuncio-endereco.dto"
+
 export class getUsuarioDto {
     id: number
     nome:String
-    foto:String
-    tempoCadastro: String
+    foto:String | null
+    tempoCadastro: string
 }

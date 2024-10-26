@@ -3,6 +3,9 @@ import { getEnderecoDto } from "../database/dto/get-anuncio-endereco.dto";
 import { getReservaDto } from "../database/dto/get-reserva.dto";
 import { getAnuncioDto } from "../database/dto/get-anuncio.dto";
 import { getUsuarioDto } from "../database/dto/get-anuncio-usuario.dto";
+import { status_reserva } from "../../../shared/enums/statusReservaEnum"
+import { share } from "rxjs";
+
 
 const prisma = new PrismaClient();
 
@@ -13,7 +16,7 @@ export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> 
         select: {
             id: true,
             titulo: true,
-            usuario_id: true,
+            anfitriao: true,
             
         },
     });
@@ -21,7 +24,7 @@ export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> 
     const getAnuncio: getAnuncioDto = {
         id: anuncio?.id || null,
         titulo: anuncio?.titulo || null,
-        usuario_id: anuncio?.usuario_id ? Number(anuncio.usuario_id) : null
+        usuario_id: anuncio?.anfitriao ? Number(anuncio.anfitriao) : null
 
     }
 
@@ -29,13 +32,16 @@ export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> 
 }
 
 export async function getReservasById(id: number): Promise<getReservaDto[] | null> {
-    const reservas = await prisma.reservas.findMany({
+    const status  = status_reserva.Processando;
+    const reservas = await prisma.reserva.findMany({
         where: { 
-            anuncio_id: id,
-            status_reserva: 1
+            id_anuncio: id,
+            status_reserva: status
         },
         select:{
             id: true,
+            id_usuario: true,
+            id_anuncio: true,
             status_reserva: true,
             data_inicial: true,
             data_final: true,
@@ -43,15 +49,25 @@ export async function getReservasById(id: number): Promise<getReservaDto[] | nul
         }
     });
 
-    return reservas;
+    return reservas.map(reserva => ({
+        id: reserva.id,
+        usuario_id: reserva.id_usuario ? String(reserva.id_usuario) : undefined,
+        anuncio_id: reserva.id_anuncio ? String(reserva.id_anuncio) : undefined,
+        status_reserva: reserva.status_reserva,
+        data_inicial: reserva.data_inicial || null,
+        data_final: reserva.data_final || null,
+        criado_em: reserva.criado_em || null
+    })) || null;
 }
+
+
 export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<getUsuarioDto | null> {
     const usuario = await prisma.usuario.findUnique({
         where: { id },
         select: {
             id: true,
             nome: true,
-            img: true,
+            foto: true,
             criado_em: true
         },
     });
@@ -61,20 +77,20 @@ export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<
         return null;
     }
 
-    const tempoCadastro = calcularTempoCadastro(usuario.criado_em); // Call the function directly
+    // Verifica se 'criado_em' não é null antes de calcular
+    const tempoCadastro = usuario.criado_em ? calcularTempoCadastro(usuario.criado_em) : "Data de cadastro não disponível"; 
 
     const anfitriao: getUsuarioDto = {
         id: Number(usuario.id),
         nome: usuario.nome,
-        foto: usuario.img,
+        foto: usuario.foto,
         tempoCadastro: tempoCadastro
     }
 
     return anfitriao;
 }
 
-
-function calcularTempoCadastro(criadoEm: Date ): string {
+function calcularTempoCadastro(criadoEm: Date): string {
     const agora = new Date();
     const tempoCadastro = agora.getTime() - criadoEm.getTime(); // Diferença em milissegundos
 
