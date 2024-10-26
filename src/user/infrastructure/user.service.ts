@@ -1,23 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
-// import { getComentariosAnuncio } from '../../feedback/infrastructure/repositories/Feedback.repositories';
+import { UserSaveRepository } from './repositories/user.save.repository';
+import { UserDataRepository } from './repositories/user.getData.repository';
 import { UserRepository } from './repositories/user.repositories';
 import { createHostDto } from './database/dto/create-user-host.dto';
-import { CreateFeedbackDto } from 'src/feedback/infrastructure/database/dto/create-feedback.dto';
-import { UserSaveRepository } from './repositories/user.save.repository';
-import { userAuthProperty } from './database/dto/user.auth.property.dto';
 import { userAuth } from './database/dto/user.auth.dto';
+import * as bcrypt from 'bcrypt';
 
-
-const prisma = new PrismaClient()
 @Injectable()
 export class UserService {
   constructor(
     private readonly userSaveRepository: UserSaveRepository,
     private readonly userRepository: UserRepository,
+    private readonly userGetDataRepository: UserDataRepository,
   ) {}
 
-  // Criar outra função chamada getComentariosUser
+   // Criar outra função chamada getComentariosUser
   // async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
   //   return getComentariosAnuncio(id);
   // }
@@ -45,36 +42,46 @@ export class UserService {
   }
 
   async googleLogin(req: any) {
+    let userData: userAuth;
+
     if (!req.user) {
-      return 'Nenhum usuário';
+      const user = null;
+      return user;
     }
-    
+
+    const hashToken = await bcrypt.hash(req.user.accessToken, 10);
     const user: userAuth = {
-      accessToken: req.user.accessToken,
+      accessToken: hashToken,
       email: req.user.email,
       name: req.user.firstName,
       fullName: req.user.firstName + ' ' + req.user.lastName,
       picture: req.user.picture,
     };
-    
+
     try {
       if (!(await this.userSaveRepository.userExists(user.email))) {
-        await this.userSaveRepository.save(user);
-      
-      }else {
-        await this.userSaveRepository.updateToken(user);
+        userData = await this.userSaveRepository.save(user);
+      } else {
+        userData = await this.userSaveRepository.updateToken(user);
       }
 
       return {
         message: 'Usuário logado',
-        user: user,
+        user: userData,
       };
-    }catch(error) {
+    } catch (error) {
       return {
-        message: error
-      }
+        message: error,
+      };
     }
-    
   }
 
+  async getUserData(token: string) {
+    try {
+      const data = await this.userGetDataRepository.getUser(token);
+      return data;
+    } catch (error) {
+      return error;
+    }
+  }
 }
