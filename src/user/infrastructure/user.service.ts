@@ -14,31 +14,29 @@ export class UserService {
     private readonly userGetDataRepository: UserDataRepository,
   ) {}
 
-   // Criar outra função chamada getComentariosUser
+  // Criar outra função chamada getComentariosUser
   // async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
   //   return getComentariosAnuncio(id);
   // }
 
   async getDataAnfitriao(id: number): Promise<createHostDto | null> {
-    let data: createHostDto | any
+    let data: createHostDto | any;
 
     try {
-      data = await this.userRepository.getUserHost(id)
+      data = await this.userRepository.getUserHost(id);
 
-      if(data == null){
+      if (data == null) {
         data = {
-          "message": "usuario não encontrado"
-        }
-
+          message: 'usuario não encontrado',
+        };
       }
-
     } catch (error) {
       data = {
-        "erro": `${error}`
-      }
+        erro: `${error}`,
+      };
     }
 
-    return data
+    return data;
   }
 
   async googleLogin(req: any) {

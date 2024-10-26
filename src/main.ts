@@ -8,6 +8,6 @@ async function bootstrap() {
     origin: ['http://localhost:3000'],
     methods: ['GET', 'POST'],
   });
-  await app.listen(3001);
+  await app.listen(3000);
 }
 bootstrap();
