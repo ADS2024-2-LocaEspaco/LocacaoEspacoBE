@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Body } from '@nestjs/common';
+import { Controller, Get, Param, Body, NotFoundException } from '@nestjs/common';
 import { AnuncioService } from './anuncio.service';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
@@ -12,11 +12,6 @@ export class AnuncioController {
     return await this.anuncioService.getReservas(id);
   }
 
-  @Get(':id')
-  async getAnuncioById(@Param('id') id: number): Promise<getAnuncioDto  | null> {
-    return this.anuncioService.getAnuncioById(id);
-  }
-
   @Get(':id/:user')
   async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto  | null> {
     return this.anuncioService.getUserFromAnuncio(id);
@@ -24,20 +19,20 @@ export class AnuncioController {
 
   @Get(':id')
   async getDadosUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
-      const anuncioId = Number(id); 
+     const anuncioId = Number(id); // Certifique-se de que `id` é um número
+
       const anuncio = await this.anuncioService.getAnuncioById(anuncioId); 
 
       if (!anuncio) {
-          return null; 
+        throw new NotFoundException('Anúncio não encontrado'); 
       }
 
       const usuario_id = anuncio.usuario_id; 
       if (!usuario_id) {
-          return null; 
+        throw new NotFoundException('Usuário não encontrado');  
       }
 
       const usuario = await this.anuncioService.getUserFromAnuncio(usuario_id); 
-
       return usuario; 
   }
 

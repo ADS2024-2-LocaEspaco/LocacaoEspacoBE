@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { error } from 'console';
-import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio  } from './repositories/anuncio.repositories';
+import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
@@ -10,15 +10,15 @@ import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 @Injectable()
 export class AnuncioService {
 
-private readonly prisma = new PrismaClient();
+  private readonly prisma = new PrismaClient();
 
-  
-  async getAnuncioById(id: number): Promise<getAnuncioDto  | null> {
+
+  async getAnuncioById(id: number): Promise<getAnuncioDto | null> {
     return getAnuncioById(id);
   }
 
   async getReservas(id: number): Promise<getReservaDto[] | object> {
-    if(!Number.isNaN(id) && (id) > 0){
+    if (!Number.isNaN(id) && (id) > 0) {
       let data = await getReservasById(id);
 
       // Verifica se 'data' é null, undefined ou uma lista vazia
@@ -32,29 +32,20 @@ private readonly prisma = new PrismaClient();
         return data;
       }
 
-    }else{
+    } else {
       return {
         'message': 'bad request',
         'status': 400
       }
     }
-    
+
   }
 
 
   async getUserFromAnuncio(id: number): Promise<getUsuarioDto | null> {
-    try {
-        const anuncio = await this.getAnuncioById(id);
+    const anuncio = await this.getAnuncioById(id);
+    const usuario = await getDadosUsuarioAnfitriaoPorIdAnuncio(id);
+    return usuario;
 
-        if (anuncio && anuncio.usuario_id) {
-            const usuario = await getDadosUsuarioAnfitriaoPorIdAnuncio(id);
-            return usuario; 
-        } else {
-            throw new Error('Anúncio ou usuário não encontrado');
-        }
-    } catch (error) {
-        console.error('Error fetching user from anuncio:', error);
-        return null; 
-    }
-  } 
+  }
 }

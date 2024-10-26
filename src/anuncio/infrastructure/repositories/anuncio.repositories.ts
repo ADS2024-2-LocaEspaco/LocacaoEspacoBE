@@ -49,11 +49,11 @@ export async function getReservasById(id: number): Promise<getReservaDto[] | nul
 
 
 export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<getUsuarioDto | null> {
+    const anuncioId = parseInt(id.toString(), 10); 
 
-    
     const usuario = await prisma.usuario.findUnique({
         where: {
-            id: id,
+            id: anuncioId,
         },
         select: {
             id: true,
