@@ -1,9 +1,9 @@
 import { Controller, Get, Put, Query } from '@nestjs/common';
-import { AnuncioService } from '../../anuncio/host.anuncio.service';
+//import { AnuncioService } from '../../anuncio/host.anuncio.service';
 import { ReservaValidator, AnuncioValidator, DadosDeAttStatus } from 'src/host/database/validator/host.validator.dto';
 import { ReservaService } from 'src/host/reserva/reserva.service';
 import { queryObjects } from 'v8';
-@Controller('anuncio')
+/*@Controller('anuncio')
 export class HostController {
   constructor(private readonly host: AnuncioService) {}
 
@@ -61,7 +61,7 @@ export class HostController {
     return result;
   }
 
-}
+}*/
 
 @Controller('reservas')
 export class HostReservas {
@@ -86,6 +86,7 @@ export class HostReservas {
       status_pagamento: query.status
 
     };
+
 
     const result = await this.reservas.attPagamento(data)
 

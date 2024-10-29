@@ -1,17 +1,16 @@
 // src/user/domain/repositories
+import { usuario } from "@prisma/client";
 
-// import { UserEntity } from "../entities/user.entity.js"
+export interface UserRepository {
+    //Find user by attribute
+    getUserbyId(id: string): Promise<usuario>;
+    getUserbyEmail(email: string): Promise<usuario>;
 
-// export interface UserRepository {
-//     //Find user by attribute
-//     getUserbyId(id: string): Promise<UserEntity>;
-//     getUserbyEmail(email: string): Promise<UserEntity>;
-
-//     //CRUD
-//     createUser(email: string, username: string, photo: string): Promise<UserEntity>;
-//     deleteUser(email: string): Promise<UserEntity>;
-//     updateUser(user: UserEntity): Promise<UserEntity>;
+    //CRUD
+    createUser(email: string, username: string, photo: string): Promise<usuario>;
+    deleteUser(email: string): Promise<usuario>;
+    updateUser(user: usuario): Promise<usuario>;
 
 //     // average classification
 //     getAvgClassification(id: string): Number;
-// }
+}

@@ -24,29 +24,36 @@ export class UserSaveRepository implements UserSaveRepository {
 
     return false;
   }
-  async save(user: userAuth): Promise<any> {
+  async save(user: userAuth): Promise<userAuth> {
     const result = await prisma.usuario.create({
-      data: {
-        token_acesso: user.accessToken,
-        email: user.email,
-        nome: user.nome,
-        nome_completo: user.nome_completo,
-        img: user.img,
-      },
-      select: {
-        id: true,
-        email: true,
-        nome: true,
-        nome_completo: true,
-        img: true,
-        token_acesso: true,
-      },
-    });
+          data: {
+            nome: user.name,
+            nome_completo: user.fullName,
+            email: user.email,
+            token_acesso: user.accessToken,
+            foto: user.picture
+          },
+          select: {
+            token_acesso: true,
+            email: true,
+            nome: true,
+            nome_completo: true,
+            foto: true,
+          },
+        });
 
-    return result;
+    const userSaved: userAuth = {
+      accessToken: result.token_acesso,
+      email: result.email,
+      name: result.nome,
+      fullName: result.nome + ' ' + result.nome_completo,
+      picture: result.foto
+    }
+
+    return userSaved;
   }
 
-  async updateToken(user: userAuth): Promise<any> {
+  async updateToken(user: userAuth): Promise<userAuth> {
     const result = await prisma.usuario.update({
       where: {
         email: user.email,
@@ -57,11 +64,19 @@ export class UserSaveRepository implements UserSaveRepository {
         email: true,
         nome: true,
         nome_completo: true,
-        img: true,
+        foto: true,
         token_acesso: true,
-      },
+      }
     });
 
-    return result;
-  }
+    const userSaved: userAuth = {
+      accessToken: result.token_acesso,
+      email: result.email,
+      name: result.nome,
+      fullName: result.nome + ' ' + result.nome_completo,
+      picture: result.foto
+    }
+
+    return userSaved;
+  };
 }

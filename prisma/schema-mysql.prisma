@@ -4,10 +4,8 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@localhost:3306/locacaoEspaco"
+  url      = "mysql://root:aluno@localhost:3306/stayeasy"
 }
-
-
 
 model anuncio {
   id                            Int                             @id @default(autoincrement())
@@ -101,7 +99,7 @@ model avaliacao {
   nota_seguiu_regras                              Decimal?  @db.Decimal
   nota_pontualidade                               Decimal?  @db.Decimal
   nota_cordialidade                               Decimal?  @db.Decimal
-  criado_em                                       DateTime? @default(now()) @db.Timestamp(0)
+  criado_em                                       DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
   usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
   usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
   usuario_usuario_avaliacao_idToavaliacao         usuario[] @relation("usuario_avaliacao_idToavaliacao")
@@ -120,7 +118,7 @@ model endereco {
   complemento String?   @db.VarChar(255)
   latitude    String?   @db.VarChar(50)
   longitude   String?   @db.VarChar(50)
-  criado_em   DateTime? @default(now()) @db.Timestamp(0)//@default(dbgenerated("CURRENT_DATE")) @db.Date
+  criado_em   DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
   anuncio     anuncio?  @relation(fields: [id_anuncio], references: [id])
   usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -129,7 +127,7 @@ model favoritos {
   id         Int       @id @default(autoincrement())
   id_usuario Int?
   id_anuncio Int?
-  criado_em  DateTime? @default(now()) @db.Timestamp(0)//@default(dbgenerated("CURRENT_DATE")) @db.Date
+  criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
   anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction)
   usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -143,7 +141,7 @@ model usuario {
   cpf                                               String?                         @db.VarChar(14)
   telefone                                          String?                         @db.VarChar(14)
   admin                                             Boolean?                        @default(false)
-  criado_em                                         DateTime?                       @default(now()) @db.Timestamp(0)
+  criado_em                                         DateTime?                       @default(dbgenerated("CURRENT_DATE")) @db.Date
   ativo                                             Boolean?                        @default(true)
   url_documento                                     String?                         @db.VarChar(255)
   bloqueado                                         Boolean?                        @default(false)
@@ -176,7 +174,7 @@ model lista_favoritos_personalizada {
   id_usuario Int?
   id_anuncio Int?
   nome       String?   @db.VarChar(20)
-  criado_em  DateTime? @default(now()) @db.Timestamp(0)
+  criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
   anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction)
   usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -195,7 +193,7 @@ model reserva {
   status_pagamento status_pagamento?
   multa            Boolean?          @default(false)
   cancelamento     Boolean?          @default(false)
-  criado_em        DateTime?         @default(now()) @db.Timestamp(0)
+  criado_em        DateTime?         @default(dbgenerated("CURRENT_DATE")) @db.Date
   anuncio          anuncio?          @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
   usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }

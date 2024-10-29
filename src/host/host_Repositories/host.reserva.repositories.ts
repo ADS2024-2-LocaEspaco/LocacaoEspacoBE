@@ -1,33 +1,31 @@
+import { StatusPagamento, StatusReserva } from "src/shared/enum/enums"
+
+
 export interface HostReservaDados {
   id: number,
-  anuncio_id: number,
-  usuario_id: number,
-  data_inicial: Date,
-  data_final: Date,
-  num_adultos: number | null,
-  num_criancas: number | null,
-  num_bebes: number | null,
-  num_pets: number | null,
-  valor_reserva: number | null,
-  num_cartao: number | null,
-  checkin: number | null,
-  checkout: number | null,
-  status_reserva: number | null,
-  status_pagamento: number | null,
+  id_usuario: number,
+  id_anuncio: number,
+  qtd_adultos: number | null,
+  qtd_criancas: number | null,
+  qtd_bebes: number | null,
+  qtd_pets: number | null,
+  data_inicial: Date | null,
+  data_final: Date | null,
+  status_reserva: StatusReserva | null,
+  status_pagamento: StatusPagamento | null,
   multa: number | null,
   cancelamento: number | null,
-  solicitante_cancelamento: number | null,
-  criado_em: Date
+  criado_em: Date | null
 }
 
 export interface AttStatusReserva{
   id: number,
-  status_reserva: number
+  status_reserva: StatusReserva | null
 }
 
 export interface AttStatusPagamento{
   id: number,
-  status_pagamento: number
+  status_pagamento: StatusPagamento | null
 }
 
 export interface HostReservasRepository {

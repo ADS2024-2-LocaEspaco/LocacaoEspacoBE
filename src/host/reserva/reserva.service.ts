@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { HostReservasRepo } from '../database/dto/host.reserva.dto';
-import e from 'express';
+import { StatusReserva, StatusPagamento } from 'src/shared/enum/enums';
 
 @Injectable()
 export class ReservaService {
@@ -8,6 +8,9 @@ export class ReservaService {
 
   async getReservas(id_anuncio: number, id_usuario: number){
     try{
+
+      console.log('passando em getReserva');
+
       const result = await this.reserva.getDadosReserva(id_anuncio, id_usuario);
 
       if(!result || result.length === 0){
@@ -31,49 +34,78 @@ export class ReservaService {
     }
   }
 
-  async attStatusReserva(data: {id: number, status_reserva: number}){
+  async attStatusReserva(dados: {id: number, status_reserva: number}){
     try{
 
-      const resultadoAttStatusReserva = await this.reserva.atualizarStatusDeReserva(data);
+      const { id, status_reserva} = dados;
 
-      if(!resultadoAttStatusReserva) {
-        throw new NotFoundException('Reservas não encontradas!');
+      if(status_reserva === 0) {
+
+        const data = {id, status_reserva: StatusReserva.Processando};
+
+        const resultadoAttStatusReserva = await this.reserva.atualizarStatusDeReserva(data);
+
+        return resultadoAttStatusReserva
+
+      }else  if(status_reserva === 1) {
         
+        const data = {id, status_reserva: StatusReserva.reservado}
+
+        const resultadoAttStatusReserva = await this.reserva.atualizarStatusDeReserva(data);
+
+        return resultadoAttStatusReserva
+        
+      }else{
+        throw new BadRequestException('Opção inválida para status do pagamento!')
       }
 
-      return resultadoAttStatusReserva;
 
     } catch (err) {
 
-      if(err instanceof NotFoundException) {
+      if(err instanceof BadRequestException) {
           throw err;
       }
 
-      throw new BadRequestException('Erro ao atualizar status da reserva');
+      throw new NotFoundException('Erro ao atualizar status da reserva');
     }
   }
 
-  async attPagamento(data: {id:number, status_pagamento: number}){
+  async attPagamento(dados: {id:number, status_pagamento: number}){
     try {
-      const resultadoAttStatusPagamento = await this.reserva.atualizarStatusDePagamento(data);
+      const {id, status_pagamento} = dados 
 
-      if(!resultadoAttStatusPagamento){
+      if(status_pagamento === 0){
+        const data = {id, status_pagamento: StatusPagamento.Conclu_do};
 
-        throw new NotFoundException('Reservas não encontradas');
+        const resultadoAttStatusPagamento = await this.reserva.atualizarStatusDePagamento(data);
 
+        return resultadoAttStatusPagamento;
+
+      }else if(status_pagamento === 1){
+
+        const data = {id, status_pagamento: StatusPagamento.Aguardando}
+
+        const resultadoAttStatusPagamento = await this.reserva.atualizarStatusDePagamento(data); 
+
+        return resultadoAttStatusPagamento;
+
+      }else {
+
+        throw new BadRequestException('Opção status do pagamento inválida!')
+        
       }
 
-      return resultadoAttStatusPagamento;
       
     } catch (err) {
       
-      if(err instanceof NotFoundException) {
+      if(err instanceof BadRequestException) {
         
         throw err;
 
       }
 
-      throw new BadRequestException('Erro ao atualizar status do pagamento');
+      throw new NotFoundException('Erro ao atualizar pagamento')
+
 
     }
   }

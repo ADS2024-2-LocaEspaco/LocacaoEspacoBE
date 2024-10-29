@@ -1,6 +1,6 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { UserService } from 'src/user/infrastructure/user.service';
+import { UserService } from '../../infrastructure/user.service';
 
 @Controller('google')
 export class UserLoginController {
