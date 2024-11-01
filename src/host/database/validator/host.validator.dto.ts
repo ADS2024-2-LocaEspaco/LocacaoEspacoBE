@@ -1,5 +1,6 @@
-import { IsInt, IsNotEmpty } from 'class-validator';
+import { Contains, IsBoolean, IsDate, IsIn, IsInt, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
+import { StatusReserva } from 'src/shared/enum/enums';
 
 export class AnuncioValidator {
   @IsNotEmpty()
@@ -16,6 +17,7 @@ export class ReservaValidator {
   
   @IsNotEmpty()
   @IsInt()
+  @IsIn([0, 1], { message: 'Status inválido!'})
   @Type(() => Number)
   id_usuario: number;
 
@@ -30,7 +32,27 @@ export class DadosDeAttStatus {
 
   @IsNotEmpty()
   @IsInt()
+  @IsIn([0, 1], { message: 'Status inválido!'})
   @Type(() => Number)
   status: number;
 
+}
+
+export class HistoricoDados {
+
+  @IsNotEmpty()
+  @IsInt()
+  @IsIn([0, 1], { message: 'Status inválido!'})
+  @Type(() => Number)
+  status: number;
+
+  @IsNotEmpty()
+  @IsDate()
+  @Type(() => Date)
+  dataInicial: Date;
+
+  @IsNotEmpty()
+  @IsDate()
+  @Type(() => Date)
+  dataFinal: Date
 }

@@ -95,4 +95,60 @@ export class HostReservasRepo implements HostReservasRepository {
 
   }
   
+  async getHistorico(status_reserva: StatusReserva, de: Date, ate: Date): Promise<HostReservaDados[]> {
+   
+    console.log("Status Reserva:", status_reserva);
+    console.log("Data Inicial:", de);
+    console.log("Data Final:", ate);
+
+    const dados = await this.prisma.reserva.findMany({
+      where: {
+        data_final:{
+          gte: de,
+          lte: ate
+        },
+        status_reserva: status_reserva
+      }, 
+      select:{
+        id: true,
+        id_anuncio: true,
+        id_usuario: true,
+        qtd_adultos: true,
+        qtd_criancas: true,
+        qtd_bebes: true,
+        qtd_pets: true,
+        data_inicial: true,
+        data_final: true,
+        status_reserva: true,
+        status_pagamento: true,
+        multa: true,
+        cancelamento: true,
+        criado_em: true
+
+      }
+    })
+    
+    console.log("Dados retornados:", dados);
+    
+    if(dados.length === 0) {
+        console.log("Nenhuma reserva encontrada.");
+    }
+
+    return dados.map((dados) => ({
+      id: Number(dados.id ),
+      id_anuncio: Number(dados.id_anuncio ),
+      id_usuario: Number(dados.id_usuario) ,
+      data_inicial: dados.data_inicial,
+      data_final: dados.data_final ,
+      qtd_adultos: Number(dados.qtd_adultos),
+      qtd_criancas: Number(dados.qtd_criancas ),
+      qtd_bebes: Number(dados.qtd_bebes ),
+      qtd_pets: Number(dados.qtd_pets ),
+      status_reserva: dados.status_reserva as StatusReserva,
+      status_pagamento: dados.status_pagamento as StatusPagamento,
+      multa: Number(dados.multa ),
+      cancelamento: Number(dados.cancelamento ),
+      criado_em: dados.criado_em
+    }));
+  }
 }

@@ -28,9 +28,12 @@ export interface AttStatusPagamento{
   status_pagamento: StatusPagamento | null
 }
 
+
 export interface HostReservasRepository {
 
   getDadosReserva (id_anuncio: number, id_usuario: number): Promise<HostReservaDados[]>
+
+  getHistorico (status_reserva: StatusReserva, de: Date, ate: Date): Promise<HostReservaDados[]>
   
   atualizarStatusDeReserva(data: AttStatusReserva): Promise<Boolean>
 

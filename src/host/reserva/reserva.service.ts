@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { HostReservasRepo } from '../database/dto/host.reserva.dto';
 import { StatusReserva, StatusPagamento } from 'src/shared/enum/enums';
+import { isDate } from 'util/types';
 
 @Injectable()
 export class ReservaService {
@@ -110,5 +111,59 @@ export class ReservaService {
     }
   }
 
+  async getHistorico(status: number, de: Date, ate: Date){
+    try{
+
+      const inicial = new Date(de)
+      const final = new Date(ate)
+      
+
+      if(status === 0){
+        const stats = StatusReserva.Processando
+
+        const result = await this.reserva.getHistorico(stats, inicial, final)
+
+        if(!result || result.length === 0){
+        
+          throw new NotFoundException('Reservas não encontradas para esta data');
+  
+        }
+
+        return result
+        
+      }else if(status === 1) {
+        const stats = StatusReserva.reservado
+
+        const result = await this.reserva.getHistorico(stats, inicial, final)
+
+        if(!result || result.length === 0){
+        
+          throw new NotFoundException('Reservas não encontradas para esta data');
+  
+        }
+
+        return result;
+
+      }else {
+        throw new BadRequestException('Status inválido')
+      }
+
+    }catch (err) {
+      
+      if(err instanceof NotFoundException){
+
+        throw err
+        
+      }else if( err instanceof BadRequestException){
+
+        throw err
+
+      }
+      
+      console.log("Código do erro " + err)
+
+      throw new BadRequestException('Erro ao procurar por reservas entre estas datas')
+    }
+  }
 }
 

@@ -1,8 +1,8 @@
 import { Controller, Get, Put, Query } from '@nestjs/common';
 //import { AnuncioService } from '../../anuncio/host.anuncio.service';
-import { ReservaValidator, AnuncioValidator, DadosDeAttStatus } from 'src/host/database/validator/host.validator.dto';
+import { ReservaValidator, DadosDeAttStatus, HistoricoDados } from 'src/host/database/validator/host.validator.dto';
 import { ReservaService } from 'src/host/reserva/reserva.service';
-import { queryObjects } from 'v8';
+
 /*@Controller('anuncio')
 export class HostController {
   constructor(private readonly host: AnuncioService) {}
@@ -110,4 +110,15 @@ export class HostReservas {
 
   }
 
+  @Get('historico')
+  async getHistoricosReserva(@Query() query: HistoricoDados) {
+
+    const { status, dataInicial, dataFinal} = query
+
+    const result = await this.reservas.getHistorico(status, dataInicial, dataFinal)
+
+    console.log("log do controller", result)
+
+    return result;
+  }
 }
