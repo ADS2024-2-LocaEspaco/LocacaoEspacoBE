@@ -32,20 +32,20 @@ export class UserProfileController {
         return await this.userProfileService.updateBankInformation(req);
     }
 
-    // @Put("/image")
-    // async updateProfileImage(@Body() req: Request): Promise<{message: string, success: boolean}>{
-    //     return await this.userProfileService.updateProfileImage(req)
-    // }
+    @Put("/image")
+    async updateProfileImage(@Body() req: Request): Promise<{message: string, success: boolean}>{
+        return await this.userProfileService.updateProfileImage(req)
+    }
 
-    // @Put("/account")
-    // async updateAccountInformation(@Body() req: Request): Promise<{message: string, success: boolean}>{
-    //     return await this.userProfileService.updateAccountInformation(req)
-    // }
+    @Put("/account")
+    async updateAccountInformation(@Body() req: Request): Promise<{message: string, success: boolean}>{
+        return await this.userProfileService.updateAccountInformation(req)
+    }
 
-    // @Put("/contact")
-    // async updateContactInformation(@Body() req: Request): Promise<{message: string, success: boolean}>{
-    //     return await this.userProfileService.updateContactInformation(req)
-    // }
+    @Put("/contact")
+    async updateContactInformation(@Body() req: Request): Promise<{message: string, success: boolean}>{
+        return await this.userProfileService.updateContactInformation(req)
+    }
 
     // @Delete(":id")
     // async deleteUser(@Param() id: string): Promise<string>  {
