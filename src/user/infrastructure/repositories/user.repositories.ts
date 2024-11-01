@@ -1,7 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { createHostDto } from '../database/dto/create-user-host.dto';
-import { CreateUserDto } from '../database/dto/create-user.dto';
 import { userProfile } from '../database/dto/user.profile.information';
 import { userImg } from '../database/dto/user.profile.img';
 import { userBasicInformation } from '../database/dto/user.profile.basic.information';
@@ -145,13 +143,28 @@ export class UserRepository implements UserRepository{
         return "Sucesso ao atualizar usuário"
     }
 
+    async updateProfileImage(id: number, userImg: userImg): Promise<string | null>{
+        const result = await prisma.usuario.update({
+            where: {
+                id
+            }, data:{
+                foto: userImg.img
+            }
+        })
+        
+        if (!result) {
+            return null
+        }
+
+        return "Sucesso ao atualizar a foto de usuario"
+    }
+
     async updateBankInformation(id: number, userBank: userBankInformation): Promise<string | null>{
         const result = await prisma.dados_bancarios.update({
             where: {
                 id_usuario: id
             },
             data: {
-                id_usuario: id,
                 agencia: userBank.agency,
                 banco: userBank.bankName,
                 tipo_conta: userBank.account,
@@ -164,6 +177,61 @@ export class UserRepository implements UserRepository{
         }
 
         return "Sucesso ao atualizar usuário"
+    }
+
+    async updateAccountInformation(id: number, user: userAccountInformation): Promise<string | null>{
+        const result = await prisma.usuario.update({
+            where: {
+                id
+            },
+            data: {
+                cpf: user.cpf,
+                email: user.email,
+                nome_completo: user.lastName
+            }
+        })
+
+        if (!result) {
+            return null
+        }
+
+        return "Sucesso ao atualizar as informações da conta"
+    }
+
+    async updateContactInformation(id: number, id_user: number, user: userContactInformation): Promise<string | null>{
+        const result = await prisma.endereco.update({
+            where: {
+                id,
+                id_usuario: id_user
+            },
+            include:{
+                usuario: {
+                    where: {
+                        id: id_user
+                    },
+                    select: {
+                        telefone: true
+                    }
+                }
+            },
+            data: {
+                usuario: {
+                    update: {
+                        telefone: user.phone
+                    }
+                },
+                estado: user.state,
+                cep: user.cep,
+                cidade: user.city,
+                rua: user.address
+            }
+        })
+
+        if (!result) {
+            return null
+        }
+
+        return "Sucesso ao atualizar as informações da conta"
     }
     
     async getUserHost(id: number): Promise</*createHostDto | null*/any>{
