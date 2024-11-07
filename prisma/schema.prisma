@@ -4,7 +4,8 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:password@localhost:3306/locacaoEspaco"
+  
 }
 
 model anuncio {
@@ -155,6 +156,7 @@ model usuario {
   favoritos                                         favoritos[]
   lista_favoritos_personalizada                     lista_favoritos_personalizada[]
   reserva                                           reserva[]
+  notificacao                                       notificacao[] // <<<<< ADICIONEI ESTÁ LINHA @PEDRO
   avaliacao_usuario_avaliacao_idToavaliacao         avaliacao?                      @relation("usuario_avaliacao_idToavaliacao", fields: [avaliacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_avaliacao")
 }
 
@@ -188,7 +190,8 @@ model reserva {
   qtd_bebes        Int?
   qtd_pets         Int?
   data_inicial     DateTime?         
-  data_final       DateTime?         
+  data_final       DateTime?      
+  status_aceite    status_aceite_reserva @default(Aguardando_resposta_anfitiao) // <<<< LINHA ADICIONADA @PEDRO   
   status_reserva   status_reserva?
   status_pagamento status_pagamento?
   multa            Boolean?          @default(false)
@@ -196,7 +199,33 @@ model reserva {
   criado_em        DateTime?         @default(now()) 
   anuncio          anuncio?          @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
   usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+
+  notificacao      notificacao[] // <<<< LINHA ADICIONADA @PEDRO
 }
+
+// TABELA ADICIONADA @PEDRO
+model notificacao {
+  id         Int      @id @default(autoincrement())
+  usuario_id Int
+  reserva_id Int? 
+  tipo       String   @db.VarChar(50) 
+  mensagem   String   @db.VarChar(255) 
+  status     String   @db.VarChar(20) 
+  data_envio DateTime @default(now()) 
+
+  usuario usuario  @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  reserva reserva? @relation(fields: [reserva_id], references: [id])
+
+  @@index([usuario_id])
+}
+
+// TABELA DE ENUM ADICIONADA @PEDRO
+enum status_aceite_reserva {
+  Aceita
+  Negada
+  Aguardando_resposta_anfitiao @map("Aguardando resposta")
+}
+
 
 enum status_pagamento {
   Conclu_do  @map("Concluído")
@@ -206,6 +235,8 @@ enum status_pagamento {
 enum status_reserva {
   Reservado
   Processando
+  Finalizado // <<<< LINHA ADICIONADA @PEDRO
+  Checkou_pendente @map("Confirmação de checkout pendente") // LINHA ADICIONADA @PEDRO
 }
 
 enum tipo_reserva {

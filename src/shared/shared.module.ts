@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ValidateUuid } from './validators/uuid.validator';
-import { validate } from 'uuid';
+import { StatusPagamento, StatusReserva, TipoReserva } from './enum/enums';
+
 
 @Module({
-    providers: [ValidateUuid],
-    exports: [ValidateUuid]
+  providers: [],
+  exports: [],
 })
 export class SharedModule {}
