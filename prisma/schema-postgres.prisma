@@ -4,132 +4,113 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://user:password@localhost:5432/locaespaco"
 }
 
 model anuncio {
-  id                      Int                  @id @default(autoincrement())
-  usuario_id              Int
-  tipo_espaco_id          Int
-  tipo_imoveis_id         Int
-  titulo                  String               @db.VarChar(40)
-  descricao               String               @db.VarChar(500)
-  quant_quartos           BigInt
-  quant_banheiro          BigInt
-  quant_cama              BigInt
-  quant_hospede           Int
-  url_imgs                String               @db.VarChar(500)
-  cftv                    Boolean?             @default(false)
-  monitoramento_ruido     Boolean?             @default(false)
-  armas                   Boolean?             @default(false)
-  aprovacao_reserva       Boolean?             @default(false)
-  aceita_crianca          Boolean?             @default(false)
-  aceita_bebe             Boolean?             @default(false)
-  aceita_pet              Boolean?             @default(false)
-  quant_pet               BigInt?              @default(0)
-  valor_diaria            String               @db.VarChar(255)
-  quant_diaria_min        BigInt?              @default(1)
-  quant_diaria_max        BigInt?              @default(1)
-  permite_eventos         Boolean?             @default(false)
-  permite_fumar           Boolean?             @default(false)
-  horario_silencio        Boolean?             @default(false)
-  horario_silencio_inicio DateTime?            @db.Time(6)
-  horario_silencio_fim    DateTime?            @db.Time(6)
-  fotografia_comercial    Boolean?             @default(false)
-  checkin_inicio          DateTime             @db.Time(6)
-  checkin_fim             DateTime?            @db.Time(6)
-  checkout                DateTime             @db.Time(6)
-  polit_cancelamento      BigInt
-  regras_adicionais       String?              @db.VarChar(500)
-  criado_em               DateTime?            @default(now()) //@db.Timestamptz(6)
-  publicado               Boolean?             @default(false)
-  temp_antec_reserva      BigInt?
-  usuario                 usuario              @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "anuncio_fk1")
-  tipo_espaco             tipo_espaco          @relation(fields: [tipo_espaco_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "anuncio_fk2")
-  tipo_imoveis            tipo_imoveis         @relation(fields: [tipo_imoveis_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "anuncio_fk3")
-  comodidade_anuncio      comodidade_anuncio[]
-  endereco                endereco[]
-  favoritos               favoritos[]
-  reservas                reservas[]
   id                            Int                             @id @default(autoincrement())
-  fotos                         String[]                        @db.VarChar
-  titulo                        String?                         @db.VarChar(50)
+  foto_id                       Int
+  titulo                        String?                         @db.String(50)
   hospedes                      Int
   quartos                       Int
   banheiros                     Int
-  descricao                     String?                         @db.VarChar(500)
-  valor_diaria                  Decimal                         @db.Decimal
+  descricao                     String?                         @db.String(500)
+  valor_diaria                  Decimal
   publicado                     Boolean
-  data_checkin                  DateTime                        @db.Date
-  data_checkout                 DateTime                        @db.Date
+  data_checkin                  DateTime                        
+  data_checkout                 DateTime                        
   cameras                       Boolean
-  regra_da_casa                 String                          @db.VarChar(100)
-  politica_cancelamento         String                          @db.VarChar(100)
+  regra_da_casa                 String                          @db.String(100)
+  politica_cancelamento         String                          @db.String(100)
   tipo_reserva_atual            tipo_reserva
   anfitriao                     Int
-  comodidades                   String[]
-  tipo_imovel                   String[]
-  tipo_espaco                   String[]
-  seguranca                     String[]
-  tipo_hospede                  String[]
+  tipo_imovel_id                Int
+  tipo_espaco_id                Int
+  seguranca_id                  Int
+  tipo_hospede_id               Int
+
+  fotos                         fotos                           @relation(fields: [foto_id], references: [id])
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
+  tipo_imovel                   tipo_imovel                     @relation(fields: [tipo_imovel_id], references: [id])
+  tipo_espaco                   tipo_espaco                     @relation(fields: [tipo_espaco_id], references: [id])
+  seguranca                     seguranca                       @relation(fields: [seguranca_id], references: [id])
+  tipo_hospede                  tipo_hospede                    @relation(fields: [tipo_hospede_id], references: [id])
+
   endereco                      endereco[]
   favoritos                     favoritos[]
   lista_favoritos_personalizada lista_favoritos_personalizada[]
   reserva                       reserva[]
+  anuncioComodidades            anuncioComodidades[]
 }
 
-model avaliacao {
-  id                    Int       @id @default(autoincrement())
-  reservas_id           Int
-  avaliado              BigInt
-  nota_limpeza          String?   @db.VarChar(255)
-  nota_exatidao_anuncio String?   @db.VarChar(255)
-  nota_custo_beneficio  String?   @db.VarChar(255)
-  nota_localizacao      String?   @db.VarChar(255)
-  comentario            String    @db.VarChar(350)
-  nota_seguiu_regras    String?   @db.VarChar(255)
-  nota_pontualidade     String?   @db.VarChar(255)
-  nota_cordialidade     String?   @db.VarChar(255)
-  criado_em             DateTime? @default(now()) @db.Timestamp(6)
+model fotos {
+  id                  Int       @id @default(autoincrement())
+  url                 String    @db.String(255)
 
-  reserva              reserva  @relation(fields: [reservas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "avaliacao_fk1")
-}
-
-model categorias_comodidade {
-  id          Int           @id @default(autoincrement())
-  tipo        String        @unique(map: "tipo_cat_comod") @db.VarChar(100)
-  comodidades comodidades[]
-}
-
-model comodidade_anuncio {
-  id             Int         @id @default(autoincrement())
-  comodidades_id Int
-  anuncio_id     Int
-  comodidades    comodidades @relation(fields: [comodidades_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk1")
-  anuncio        anuncio     @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk2")
+  anuncio             anuncio[]  // Relacionamento com 'anuncio'
 }
 
 model comodidades {
-  id                       Int                   @id @default(autoincrement())
-  categorias_comodidade_id Int
-  nome                     String                @db.VarChar(100)
-  icone                    String?               @db.VarChar(500)
-  comodidade_anuncio       comodidade_anuncio[]
-  categorias_comodidade    categorias_comodidade @relation(fields: [categorias_comodidade_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidades_fk1")
+  id                  Int       @id @default(autoincrement())
+  comodidade          String    @db.String(50)
+  icone               String    @db.String(50)
+
+  anuncioComodidades anuncioComodidades[]   
+}
+
+model anuncioComodidades {
+  anuncio_id    Int
+  comodidade_id Int
+
+  anuncio       anuncio    @relation(fields: [anuncio_id], references: [id], map: "fk_anuncio_comodidades_anuncio")
+  comodidade    comodidades @relation(fields: [comodidade_id], references: [id], map: "fk_anuncio_comodidades_comodidade")
+
+  @@id([anuncio_id, comodidade_id])
+  @@map("anuncio_comodidades")  // Nome da tabela de junção
+}
+
+model tipo_imovel {
+  id                  Int       @id @default(autoincrement())
+  imovel              String    @db.String(50)
+
+  anuncio             anuncio[]          
+}
+
+model tipo_espaco {
+  id                  Int       @id @default(autoincrement())
+  espaco              String    @db.String(50)
+
+  anuncio             anuncio[]          
+}
+
+model seguranca {
+  id                  Int       @id @default(autoincrement())
+  item_seguranca      String    @db.String(50)
+
+  anuncio             anuncio[]          
+}
+
+model tipo_hospede {
+  id                  Int       @id @default(autoincrement())
+  hospede             String    @db.String(50)
+
+  anuncio             anuncio[]          
+}
+
+model avaliacao {
   id                                              Int       @id @default(autoincrement())
   id_usuario_avaliador                            Int
   id_usuario_avaliado                             Int?
   id_anuncio_avaliado                             Int?
-  nota_limpeza                                    Decimal?  @db.Decimal
-  nota_exatidao_anuncio                           Decimal?  @db.Decimal
-  nota_custo_beneficio                            Decimal?  @db.Decimal
-  nota_localizacao                                Decimal?  @db.Decimal
-  comentario                                      String    @db.VarChar(255)
-  nota_seguiu_regras                              Decimal?  @db.Decimal
-  nota_pontualidade                               Decimal?  @db.Decimal
-  nota_cordialidade                               Decimal?  @db.Decimal
-  criado_em                                       DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  nota_limpeza                                    Decimal?  
+  nota_exatidao_anuncio                           Decimal?  
+  nota_custo_beneficio                            Decimal?  
+  nota_localizacao                                Decimal?  
+  comentario                                      String    @db.String(255)
+  nota_seguiu_regras                              Decimal?  
+  nota_pontualidade                               Decimal?  
+  nota_cordialidade                               Decimal?  
+  criado_em                                       DateTime? @default(now()) 
   usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
   usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
   usuario_usuario_avaliacao_idToavaliacao         usuario[] @relation("usuario_avaliacao_idToavaliacao")
@@ -139,74 +120,74 @@ model endereco {
   id          Int       @id @default(autoincrement())
   id_usuario  Int?
   id_anuncio  Int?
-  cep         String    @db.VarChar(10)
-  estado      String    @db.VarChar(2)
-  cidade      String    @db.VarChar(50)
-  bairro      String    @db.VarChar(50)
-  rua         String    @db.VarChar(100)
-  numero      String?   @db.VarChar(4)
-  complemento String?   @db.VarChar(255)
-  latitude    String?   @db.VarChar(50)
-  longitude   String?   @db.VarChar(50)
-  criado_em   DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  cep         String    @db.String(10)
+  estado      String    @db.String(2)
+  cidade      String    @db.String(50)
+  bairro      String    @db.String(50)
+  rua         String    @db.String(100)
+  numero      String?   @db.String(4)
+  complemento String?   @db.String(255)
+  latitude    String?   @db.String(50)
+  longitude   String?   @db.String(50)
+  criado_em   DateTime? @default(now()) 
   anuncio     anuncio?  @relation(fields: [id_anuncio], references: [id])
-  usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model favoritos {
   id         Int       @id @default(autoincrement())
   id_usuario Int?
   id_anuncio Int?
-  criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
-  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
-  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  criado_em  DateTime? @default(now()) 
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model usuario {
   id                                                Int                             @id @default(autoincrement())
-  foto                                              String?                         @db.VarChar(255)
-  nome                                              String                          @db.VarChar(50)
-  nome_completo                                     String?                         @db.VarChar(150)
-  email                                             String                          @unique @db.VarChar(100)
-  cpf                                               String?                         @db.VarChar(14)
-  telefone                                          String?                         @db.VarChar(14)
+  foto                                              String?                         @db.String(255)
+  nome                                              String                          @db.String(50)
+  nome_completo                                     String?                         @db.String(150)
+  email                                             String                          @unique @db.String(100)
+  cpf                                               String?                         @db.String(14)
+  telefone                                          String?                         @db.String(14)
   admin                                             Boolean?                        @default(false)
-  criado_em                                         DateTime?                       @default(dbgenerated("CURRENT_DATE")) @db.Date
+  criado_em                                         DateTime?                       @default(now()) 
   ativo                                             Boolean?                        @default(true)
-  url_documento                                     String?                         @db.VarChar(255)
+  url_documento                                     String?                         @db.String(255)
   bloqueado                                         Boolean?                        @default(false)
-  token_acesso                                      String                          @db.VarChar(255)
+  token_acesso                                      String                          @db.String(255)
   avaliacao_id                                      Int?
-  anuncio                                           anuncio[]
-  avaliacao_avaliacao_id_usuario_avaliadoTousuario  avaliacao[]                     @relation("avaliacao_id_usuario_avaliadoTousuario")
-  avaliacao_avaliacao_id_usuario_avaliadorTousuario avaliacao[]                     @relation("avaliacao_id_usuario_avaliadorTousuario")
-  dados_bancarios                                   dados_bancarios[]
-  endereco                                          endereco[]
-  favoritos                                         favoritos[]
-  lista_favoritos_personalizada                     lista_favoritos_personalizada[]
-  reserva                                           reserva[]
-  avaliacao_usuario_avaliacao_idToavaliacao         avaliacao?                      @relation("usuario_avaliacao_idToavaliacao", fields: [avaliacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_avaliacao")
+  anuncio                                           anuncio[]  // Relacionamento 1:N com 'anuncio'
+  avaliacao_avaliacao_id_usuario_avaliadoTousuario  avaliacao[]                     
+  avaliacao_avaliacao_id_usuario_avaliadorTousuario avaliacao[]                     
+  dados_bancarios                                   dados_bancarios[]  // Relacionamento 1:N com 'dados_bancarios'
+  endereco                                          endereco[]  // Relacionamento 1:N com 'endereco'
+  favoritos                                         favoritos[]  // Relacionamento 1:N com 'favoritos'
+  lista_favoritos_personalizada                     lista_favoritos_personalizada[]  // Relacionamento 1:N com 'lista_favoritos_personalizada'
+  reserva                                           reserva[]  // Relacionamento 1:N com 'reserva'
+  avaliacao_usuario_avaliacao_idToavaliacao         avaliacao?  @relation("usuario_avaliacao_idToavaliacao", fields: [avaliacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_avaliacao")
 }
 
 model dados_bancarios {
   id           Int     @id @default(autoincrement())
   id_usuario   Int
-  banco        String  @db.VarChar(50)
-  agencia      String  @db.VarChar(50)
-  numero_conta String  @db.VarChar(20)
-  tipo_conta   String  @db.VarChar(15)
-  chave_pix    String? @db.VarChar(50)
-  usuario      usuario @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  banco        String  @db.String(50)
+  agencia      String  @db.String(50)
+  numero_conta String  @db.String(20)
+  tipo_conta   String  @db.String(15)
+  chave_pix    String? @db.String(50)
+  usuario      usuario @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model lista_favoritos_personalizada {
   id         Int       @id @default(autoincrement())
   id_usuario Int?
   id_anuncio Int?
-  nome       String?   @db.VarChar(20)
-  criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
-  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
-  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  nome       String?   @db.String(20)
+  criado_em  DateTime? @default(now()) 
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model reserva {
@@ -217,18 +198,15 @@ model reserva {
   qtd_criancas     Int?
   qtd_bebes        Int?
   qtd_pets         Int?
-  data_inicial     DateTime?         @db.Date
-  data_final       DateTime?         @db.Date
+  data_inicial     DateTime?         
+  data_final       DateTime?         
   status_reserva   status_reserva?
   status_pagamento status_pagamento?
   multa            Boolean?          @default(false)
   cancelamento     Boolean?          @default(false)
-  criado_em        DateTime?         @default(dbgenerated("CURRENT_DATE")) @db.Date
-
+  criado_em        DateTime?         @default(now()) 
   anuncio          anuncio?          @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
   usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
-
-  avaliacao     avaliacao[]
 }
 
 enum status_pagamento {

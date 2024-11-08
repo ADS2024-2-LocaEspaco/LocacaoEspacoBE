@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:root@localhost:3306/locaespaco"
 }
 
 model anuncio {
@@ -24,7 +24,6 @@ model anuncio {
   politica_cancelamento         String                          @db.VarChar(100)
   tipo_reserva_atual            tipo_reserva
   anfitriao                     Int
-  comodidade_id                 Int
   tipo_imovel_id                Int
   tipo_espaco_id                Int
   seguranca_id                  Int
@@ -32,7 +31,6 @@ model anuncio {
 
   fotos                         fotos                           @relation(fields: [foto_id], references: [id])
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
-  comodidades                   comodidades                     @relation(fields: [comodidade_id], references: [id])
   tipo_imovel                   tipo_imovel                     @relation(fields: [tipo_imovel_id], references: [id])
   tipo_espaco                   tipo_espaco                     @relation(fields: [tipo_espaco_id], references: [id])
   seguranca                     seguranca                       @relation(fields: [seguranca_id], references: [id])
@@ -42,6 +40,7 @@ model anuncio {
   favoritos                     favoritos[]
   lista_favoritos_personalizada lista_favoritos_personalizada[]
   reserva                       reserva[]
+  anuncioComodidades            anuncioComodidades[]
 }
 
 model fotos {
@@ -54,9 +53,23 @@ model fotos {
 model comodidades {
   id                  Int       @id @default(autoincrement())
   comodidade          String    @db.VarChar(50)
+  icone               String    @db.VarChar(50)
 
-  anuncio             anuncio[]          
+  anuncioComodidades           anuncioComodidades[]   
+        
 }
+model anuncioComodidades {
+  anuncio_id    Int
+  comodidade_id Int
+
+  // Relacionamento com 'anuncio' e 'comodidade'
+  anuncio       anuncio    @relation(fields: [anuncio_id], references: [id], map: "fk_anuncio_comodidades_anuncio")
+  comodidade    comodidades @relation(fields: [comodidade_id], references: [id], map: "fk_anuncio_comodidades_comodidade")
+
+  @@id([anuncio_id, comodidade_id])
+  @@map("anuncio_comodidades")  // Nome da tabela de junção
+}
+
 
 model tipo_imovel {
   id                  Int       @id @default(autoincrement())

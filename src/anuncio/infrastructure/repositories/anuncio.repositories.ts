@@ -3,7 +3,7 @@ import { getEnderecoDto } from "../database/dto/get-anuncio-endereco.dto";
 import { getReservaDto } from "../database/dto/get-reserva.dto";
 import { getAnuncioDto } from "../database/dto/get-anuncio.dto";
 import { getUsuarioDto } from "../database/dto/get-anuncio-usuario.dto";
-
+import { getComodidadesAnuncioDto } from "../database/dto/get-comodidade-anuncio.dto"
 const prisma = new PrismaClient();
 
 export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> {
@@ -80,6 +80,40 @@ export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<
 
     return anfitriao;
 }
+
+export async function getComodidadesByAnuncioId(id:number): Promise<getComodidadesAnuncioDto[]> {
+
+    const anuncioId = Number(id); 
+
+    const comodidadesId = await prisma.anuncioComodidades.findMany({
+        where:{
+            anuncio_id: anuncioId
+        },
+        select: {
+            comodidade_id:true
+        }
+    })
+    
+    const comodidades = await prisma.comodidades.findMany({
+        where: {
+            
+            id:{
+                in: comodidadesId.map(c => c.comodidade_id)
+            }
+        }
+
+    })
+
+    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map(c =>({
+        id: c.id,
+        comodidades:c.comodidade,
+        icone: c.icone
+        
+    })) 
+
+    return listaDTOs
+}
+
 
 function calcularTempoCadastro(criadoEm: Date): string {
     const agora = new Date();
