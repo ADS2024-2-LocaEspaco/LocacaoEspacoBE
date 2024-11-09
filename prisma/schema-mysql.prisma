@@ -54,7 +54,7 @@ model fotos {
 model comodidades {
   id                  Int       @id @default(autoincrement())
   comodidade          String    @db.VarChar(50)
-
+  especial            Boolean   @default(false)
   anuncio             anuncio[]          
 }
 
@@ -64,6 +64,7 @@ model tipo_imovel {
 
   anuncio             anuncio[]          
 }
+
 
 model tipo_espaco {
   id                  Int       @id @default(autoincrement())
