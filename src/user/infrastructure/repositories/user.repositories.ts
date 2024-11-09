@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, PrismaPromise } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { userProfile } from '../database/dto/user.profile.information';
 import { userImg } from '../database/dto/user.profile.img';
@@ -10,7 +10,7 @@ import { userContactInformation } from '../database/dto/user.profile.contact.inf
 const prisma = new PrismaClient();
 @Injectable()
 export class UserRepository implements UserRepository{
-    async getUserById(id: number): Promise<userProfile | null>{
+    async getUserById(id: number, avaliation: number): Promise<userProfile | null>{
         const result = await prisma.usuario.findUnique({
             where:{
                 id: id
@@ -31,7 +31,7 @@ export class UserRepository implements UserRepository{
 
         const basicInformation: userBasicInformation = {
             firstName: result.nome,
-            userAvaliation: 4.5 //temporario
+            userAvaliation: avaliation
         }
 
         const accountInformation: userAccountInformation = {
@@ -88,7 +88,7 @@ export class UserRepository implements UserRepository{
 
         const basicInformation: userBasicInformation = {
             firstName: result.nome,
-            userAvaliation: 4.5 //temporario
+            userAvaliation: 0 //temporario
         }
 
         const accountInformation: userAccountInformation = {
@@ -123,6 +123,26 @@ export class UserRepository implements UserRepository{
         // Aqui você pode retornar o objeto user ou qualquer outro valor
         return user;
     };
+
+    async disableUser(id: number): Promise<string | null>{
+        const result = await prisma.usuario.update({
+            where:{
+                id
+            }, 
+            select: {
+                ativo: true
+            },
+            data: {
+                ativo: true
+            }
+        })
+
+        if (!result) {
+            return null
+        }
+
+        return "Perfil desativado com sucesso"
+    }
 
     async updateUserProfile(userBasicInformation: userBasicInformation, id: number): Promise<string | null>{
         const result = await prisma.usuario.update({
@@ -246,5 +266,28 @@ export class UserRepository implements UserRepository{
             }
         })
         return getHostData
-    }    
+    }
+    
+    async avgAvaliation(id_user: number): Promise<any> {
+        const result = prisma.avaliacao.findMany({
+            where:{
+                id_usuario_avaliado: id_user
+            },
+            select: {
+                nota_cordialidade: true,
+                nota_custo_beneficio: true,
+                nota_exatidao_anuncio: true,
+                nota_limpeza: true,
+                nota_localizacao: true,
+                nota_pontualidade: true,
+                nota_seguiu_regras: true
+            }
+        })
+
+        if (!result) {
+            return null
+        }
+
+        return result
+    }
 }

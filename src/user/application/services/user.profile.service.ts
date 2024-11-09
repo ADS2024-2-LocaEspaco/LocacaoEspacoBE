@@ -31,7 +31,9 @@ export class UserProfileService {
             throw error("Nenhuma informação identificada")
         }
 
-        const resService = await this.userRepository.getUserById(req.id)
+        const resGrades = await this.userRepository.avgAvaliation(req.id)
+
+        const resService = await this.userRepository.getUserById(req.id, resGrades)
 
         if (!resService) {
             throw error("Nenhuma informação retornada")
@@ -40,34 +42,35 @@ export class UserProfileService {
         return resService
     }
 
-    // async getUserClassification(req: any): Promise<any> {
-    //     if (!req) {
-    //         throw error("Nenhuma informação identificada")
-    //     }
+    async avgAvaliation(req: any): Promise<any> {
+        if (!req.id_user) {
+            throw error("Usuario não identificado")
+        }
 
-    //     const resService = await this.userRepositoryImp.getUserClassification(req.idUser)
+        const resService = await this.userRepository.avgAvaliation(req.id_user)
 
-    //     if (!resService) {
-    //         throw error("Nenhuma informação retornada")
-    //     }
+        if (!resService) {
+            return {
+                message: "Erro ao carregar as avaliações",
+                success: false
+            }
+        }
 
-    //     const classifications = resService.map((service: { id: string, classification: number }) => {
-    //         if (service.classification < 0 || service.classification > 5) {
-    //             throw error("Nota está errada")
-    //         }
-    //         return service.classification
-    //     });
+        const averageGrades: number[] = resService.map((grades: number[]) => {
+            return this.avgGrades(grades);
+        });
 
-    //     const sum = classifications.reduce((accumulator: number, currentValue: number) => accumulator + currentValue, 0);
+        return this.avgGrades(averageGrades)
+    }
 
-    //     if (sum < 0) {
-    //         throw error("Erro durante o calculo das classificações")
-    //     }
-
-    //     const avg = (sum/classifications.length).toFixed(1);
-
-    //     return avg
-    // }
+    async avgGrades(grades: number[]): Promise<number> {
+        if (!grades.length) {
+            return 0;
+        }
+    
+        const sum = grades.reduce((total, grade) => total + grade, 0);
+        return sum / grades.length;
+    }
 
     async updateUserProfile(req: any): Promise<{ message: string, success: boolean }> {
         if (!req.username) {
@@ -197,17 +200,17 @@ export class UserProfileService {
         };
     }
 
-    // async deleteUser(req: any): Promise<string> {
-    //     if (!req) {
-    //         throw error("Nenhuma informação.");
-    //     }
+    async disableUser(req: any): Promise<string> {
+        if (!req) {
+            throw error("Nenhuma informação.");
+        }
 
-    //     const resService = await this.userRepositoryImp.deleteUser(req.id);
+        const resService = await this.userRepository.disableUser(req.id);
 
-    //     if (!resService) {
-    //         throw error("Nenhuma conta encontrada");
-    //     }
+        if (!resService) {
+            throw error("Nenhuma conta encontrada");
+        }
 
-    //     return resService
-    // }
+        return resService
+    }
 }

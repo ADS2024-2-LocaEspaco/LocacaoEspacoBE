@@ -47,8 +47,8 @@ export class UserProfileController {
         return await this.userProfileService.updateContactInformation(req)
     }
 
-    // @Delete(":id")
-    // async deleteUser(@Param() id: string): Promise<string>  {
-    //     return await this.userProfileService.deleteUser(id);
-    // }
+    @Delete(":id")
+    async disableUser(@Param() id: number): Promise<string>  {
+        return await this.userProfileService.disableUser(id);
+    }
 }
