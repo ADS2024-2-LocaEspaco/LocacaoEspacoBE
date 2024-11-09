@@ -38,7 +38,27 @@ export class AnuncioController {
   }
 
   @Post()
-  async createAnuncio(@Body() anuncio: createAnuncioDto): Promise<createAnuncioDto> {
-    return {}
+  async createAnuncio(@Body() anuncio: createAnuncioDto): Promise<{}> {
+    return {};
+  }
+
+  @Get('/get-tipo-imovel')
+  async getTipoImovel(): Promise<Object> {
+    return await this.anuncioService.getTipoImovel();
+  }
+
+  @Get('/get-tipo-espaco')
+  async getTipoEspaco(): Promise<Object> {
+    return await this.anuncioService.getTipoEspaco();
+  }
+
+  @Get('/get-comodidades')
+  async getComodidades(): Promise<Object> {
+    return await this.anuncioService.getComodidades();
+  }
+
+  @Get('/get-seguranca')
+  async getSeguranca(): Promise<Object> {
+    return await this.anuncioService.getSeguranca();
   }
 }

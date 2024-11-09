@@ -107,3 +107,19 @@ function calcularTempoCadastro(criadoEm: Date): string {
         return `${segundos} segundo(s)`;
     }
 }
+
+export async function getTipoImovel(): Promise<Object> {
+    return await prisma.tipo_imovel.findMany()
+}
+
+export async function getTipoEspaco(): Promise<Object> {
+    return await prisma.tipo_espaco.findMany()
+}
+
+export async function getComodidades(): Promise<Object> {
+    return await prisma.comodidades.findMany()
+}
+
+export async function getSeguranca(): Promise<Object> {
+    return await prisma.seguranca.findMany()
+}
