@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { anuncio, /*Feedback,*/ PrismaClient, reserva, usuario } from '@prisma/client';
-import { error } from 'console';
+import {
+  /*anuncio, Feedback,*/ PrismaClient,
+  //reserva,
+  //usuario,
+} from '@prisma/client';
+//import { error } from 'console';
 //import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
-import { getReservaDto } from './database/dto/get-reserva.dto';
+//import { getReservaDto } from './database/dto/get-reserva.dto';
 import { AnuncioFiltroRepository } from './repositories/anuncio.filtro.repository';
-
 
 @Injectable()
 export class AnuncioService {
+  private readonly prisma = new PrismaClient();
 
-private readonly prisma = new PrismaClient();
-
-constructor(
-  private readonly anuncioFiltroRepository: AnuncioFiltroRepository
-){}
-  
+  constructor(
+    private readonly anuncioFiltroRepository: AnuncioFiltroRepository,
+  ) {}
   /*async getAnuncioById(id: string): Promise<Anuncio | null> {
     return getAnuncioById(id);
   }
@@ -64,11 +65,19 @@ constructor(
     }
   }*/
 
-  async getAnunciosService(destino: string, checkin: Date | string, checkout: Date | string, hospedes: number) {
-    const anuncios = await this.anuncioFiltroRepository.searchAnuncios(destino, checkin, checkout, hospedes)
-    
-    anuncios.map((anuncio: any) => {
-      console.log(anuncio);
-    })
+  async getAnunciosService(
+    destino: string | undefined,
+    checkin: Date | undefined,
+    checkout: Date | undefined,
+    hospedes: number,
+  ) {
+    const anuncios = await this.anuncioFiltroRepository.searchAnuncios(
+      destino,
+      checkin,
+      checkout,
+      hospedes,
+    );
+
+    return anuncios;
   }
 }

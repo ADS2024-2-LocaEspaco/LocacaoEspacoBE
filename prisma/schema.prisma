@@ -11,30 +11,29 @@ model anuncio {
   id                            Int                             @id @default(autoincrement())
   fotos                         String[]                        @db.VarChar
   titulo                        String?                         @db.VarChar(50)
-  hospedes                      Int
+  hospedes                      Int?
   quartos                       Int
   banheiros                     Int
   descricao                     String?                         @db.VarChar(500)
   valor_diaria                  Decimal                         @db.Decimal
   publicado                     Boolean
-  data_checkin                  DateTime                        @db.Date
-  data_checkout                 DateTime                        @db.Date
-  tipo_imovel_atual             tipo_imovel
-  tipo_espaco_atual             tipo_espaco
-  comodidades_atual             comodidades
-  comodidades_especiais_atual   comodidades_especiais
+  data_checkin                  DateTime?                        @db.Date
+  data_checkout                 DateTime?                        @db.Date
   cameras                       Boolean
-  seguranca_atual               seguranca?
   regra_da_casa                 String                          @db.VarChar(100)
   politica_cancelamento         String                          @db.VarChar(100)
-  tipo_hospede_atual            tipo_hospede
   tipo_reserva_atual            tipo_reserva
   anfitriao                     Int
+  comodidades                   String[]
+  tipo_imovel                   String[]
+  tipo_espaco                   String[]
+  seguranca                     String[]
+  tipo_hospede                  String[]
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
+  endereco                      endereco[]
   favoritos                     favoritos[]
   lista_favoritos_personalizada lista_favoritos_personalizada[]
   reserva                       reserva[]
-  endereco                      endereco[]
 }
 
 model avaliacao {
@@ -70,9 +69,8 @@ model endereco {
   latitude    String?   @db.VarChar(50)
   longitude   String?   @db.VarChar(50)
   criado_em   DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
-
-  usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
   anuncio     anuncio?  @relation(fields: [id_anuncio], references: [id])
+  usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
 model favoritos {
@@ -102,7 +100,7 @@ model usuario {
   anuncio                                           anuncio[]
   avaliacao_avaliacao_id_usuario_avaliadoTousuario  avaliacao[]                     @relation("avaliacao_id_usuario_avaliadoTousuario")
   avaliacao_avaliacao_id_usuario_avaliadorTousuario avaliacao[]                     @relation("avaliacao_id_usuario_avaliadorTousuario")
-  dados_bancarios                                   dados_bancarios[]
+  dados_bancarios                                   dados_bancarios?
   endereco                                          endereco[]
   favoritos                                         favoritos[]
   lista_favoritos_personalizada                     lista_favoritos_personalizada[]
@@ -112,7 +110,7 @@ model usuario {
 
 model dados_bancarios {
   id           Int     @id @default(autoincrement())
-  id_usuario   Int
+  id_usuario   Int     @unique
   banco        String  @db.VarChar(50)
   agencia      String  @db.VarChar(50)
   numero_conta String  @db.VarChar(20)
@@ -150,32 +148,6 @@ model reserva {
   usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
-enum comodidades {
-  Wi_fi               @map("Wi-fi")
-  TV
-  Cozinha
-  M_quina_de_lavar    @map("Máquina de lavar")
-  Ar_Condicionado     @map("Ar-Condicionado")
-  Estacionamento
-  Estacionamento_Pago @map("Estacionamento Pago")
-  Espa_o_de_Trabalho  @map("Espaço de Trabalho")
-  Ventilador
-}
-
-enum comodidades_especiais {
-  Piscina
-  Churrasqueira
-  Acesso___Praia @map("Acesso à Praia")
-  Mesa_de_Bilhar @map("Mesa de Bilhar")
-}
-
-enum seguranca {
-  Detector_de_fuma_a     @map("Detector de fumaça")
-  Extintor_de_inc_ndio   @map("Extintor de incêndio")
-  Kit_primeiros_socorros @map("Kit primeiros socorros")
-  Alarme_de_carbono      @map("Alarme de carbono")
-}
-
 enum status_pagamento {
   Conclu_do  @map("Concluído")
   Aguardando
@@ -184,30 +156,6 @@ enum status_pagamento {
 enum status_reserva {
   Reservado
   Processando
-}
-
-enum tipo_espaco {
-  Espaco_Inteiro       @map("Espaco Inteiro")
-  Quarto_Privativo     @map("Quarto Privativo")
-  Quarto_Compartilhado @map("Quarto Compartilhado")
-}
-
-enum tipo_hospede {
-  Adulto
-  Crian_a @map("Criança")
-  Beb_    @map("Bebê")
-}
-
-enum tipo_imovel {
-  Casa
-  Apartamento
-  Cabana
-  Cont_iner        @map("Contêiner")
-  Fazenda
-  Casa_ecol_gica   @map("Casa ecológica")
-  Casa_de_h_spedes @map("Casa de hóspedes")
-  Casa_de__rvore   @map("Casa de Árvore")
-  Tenda
 }
 
 enum tipo_reserva {

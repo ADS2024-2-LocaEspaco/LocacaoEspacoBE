@@ -1,46 +1,40 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
-import { AnuncioFiltroRepositoryInterface } from "src/anuncio/domain/repositories/anuncio.filtro.repository";
+import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+import { AnuncioFiltroRepositoryInterface } from 'src/anuncio/domain/repositories/anuncio.filtro.repository';
 
 const prisma = new PrismaClient();
 
 @Injectable()
-export class AnuncioFiltroRepository implements AnuncioFiltroRepositoryInterface{
-    async searchAnuncios(destino: string, checkin: Date | string, checkout: Date | string, hospedes: number): Promise<any> {
-        const anuncios = await prisma.anuncio.findMany({
-            where: {
-                OR: [
-                    {endereco: {some: {cidade: destino}},
-                        AND: [
-                            {data_checkin: checkin},
-                            {data_checkout: checkout},
-                            {hospedes: hospedes}
-                    ]},
-                {
-                    AND: [
-                        {data_checkin: checkin},
-                        {data_checkout: checkout},
-                        {hospedes: hospedes}
-                    ]
-                },
-                {endereco: {some: {cidade: destino}}}
-            ] 
-            },
+export class AnuncioFiltroRepository
+  implements AnuncioFiltroRepositoryInterface
+{
+  async searchAnuncios(
+    destino: string | undefined,
+    checkin: Date | undefined,
+    checkout: Date | undefined,
+    hospedes: number,
+  ): Promise<any> {
+    const anuncios = await prisma.anuncio.findMany({
+      where: {
+        OR: [
+          { data_checkin: checkin },
+          { data_checkout: checkout },
+          { hospedes: hospedes },
+          ...(destino ? [{ endereco: { some: { cidade: destino } } }] : []),
+        ].filter(Boolean),
+      },
 
-            select: {
-                id: true,
-                titulo: true,
-                hospedes: true,
-                endereco: {
-                    select: {
-                        id_anuncio: true,
-                        cidade: true
-                    }
-                }
-            }
-        })
+      select: {
+        id: true,
+        titulo: true,
+        endereco: {
+          select: {
+            cidade: true,
+          },
+        },
+      },
+    });
 
-        return anuncios;
-    }
-
+    return anuncios;
+  }
 }
