@@ -54,7 +54,6 @@ model fotos {
 model comodidades {
   id                  Int       @id @default(autoincrement())
   comodidade          String    @db.VarChar(50)
-
   anuncio             anuncio[]          
 }
 
@@ -208,7 +207,14 @@ enum status_reserva {
   Processando
 }
 
-enum tipo_reserva {
-  Instant_nea     @map("Instantânea")
-  N_o_instant_nea @map("Não instantânea")
+enum tipo_reserva { // Opções de reserva
+  Instant_nea             @map("Instantânea")
+  N_o_instant_nea         @map("Não instantânea")
+  cancelamento_gratuito   @map("Cancelamento Gratuito")
+}
+
+enum tipo_accessibilidade { //Acessibilidade
+  cadeirantes         @map("Acessivel para cadeirantes")
+  banheiro_adaptado   @map("Banheiro adaptado")
+  alarmes_visuais     @map("Alarmes visuais")
 }
