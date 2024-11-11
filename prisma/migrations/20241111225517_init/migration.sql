@@ -1,120 +1,29 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE `anuncio` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `foto_id` INTEGER NOT NULL,
+    `titulo` VARCHAR(50) NULL,
+    `hospedes` INTEGER NOT NULL,
+    `quartos` INTEGER NOT NULL,
+    `banheiros` INTEGER NOT NULL,
+    `descricao` VARCHAR(500) NULL,
+    `valor_diaria` DECIMAL NOT NULL,
+    `publicado` BOOLEAN NOT NULL,
+    `data_checkin` DATETIME(3) NOT NULL,
+    `data_checkout` DATETIME(3) NOT NULL,
+    `cameras` BOOLEAN NOT NULL,
+    `regra_da_casa` VARCHAR(100) NOT NULL,
+    `politica_cancelamento` VARCHAR(100) NOT NULL,
+    `tipo_reserva_atual` ENUM('Instantânea', 'Não instantânea') NOT NULL,
+    `anfitriao` INTEGER NOT NULL,
+    `comodidade_id` INTEGER NOT NULL,
+    `tipo_imovel_id` INTEGER NOT NULL,
+    `tipo_espaco_id` INTEGER NOT NULL,
+    `seguranca_id` INTEGER NOT NULL,
+    `tipo_hospede_id` INTEGER NOT NULL,
 
-  - The primary key for the `anuncio` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - You are about to drop the column `bairro` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `cep` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `cidade` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `complement` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `createdAt` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `description` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `latitude` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `longitude` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `numero` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `qtdMaxHospedes` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `street` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `tipoEspacoId` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `tipoImovelId` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `title` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to drop the column `userId` on the `anuncio` table. All the data in the column will be lost.
-  - You are about to alter the column `id` on the `anuncio` table. The data in that column could be lost. The data in that column will be cast from `VarChar(191)` to `Int`.
-  - You are about to drop the `feedback` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `role` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `tipoespaco` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `tipoimovel` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `user` table. If the table is not empty, all the data it contains will be lost.
-  - Added the required column `anfitriao` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `banheiros` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `cameras` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `comodidade_id` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `data_checkin` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `data_checkout` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `foto_id` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `hospedes` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `politica_cancelamento` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `publicado` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `quartos` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `regra_da_casa` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `seguranca_id` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `tipo_espaco_id` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `tipo_hospede_id` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `tipo_imovel_id` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `tipo_reserva_atual` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `valor_diaria` to the `anuncio` table without a default value. This is not possible if the table is not empty.
-
-*/
--- DropForeignKey
-ALTER TABLE `anuncio` DROP FOREIGN KEY `Anuncio_tipoEspacoId_fkey`;
-
--- DropForeignKey
-ALTER TABLE `anuncio` DROP FOREIGN KEY `Anuncio_tipoImovelId_fkey`;
-
--- DropForeignKey
-ALTER TABLE `anuncio` DROP FOREIGN KEY `Anuncio_userId_fkey`;
-
--- DropForeignKey
-ALTER TABLE `feedback` DROP FOREIGN KEY `Feedback_anuncioId_fkey`;
-
--- DropForeignKey
-ALTER TABLE `feedback` DROP FOREIGN KEY `Feedback_userId_fkey`;
-
--- DropForeignKey
-ALTER TABLE `user` DROP FOREIGN KEY `User_roleId_fkey`;
-
--- AlterTable
-ALTER TABLE `anuncio` DROP PRIMARY KEY,
-    DROP COLUMN `bairro`,
-    DROP COLUMN `cep`,
-    DROP COLUMN `cidade`,
-    DROP COLUMN `complement`,
-    DROP COLUMN `createdAt`,
-    DROP COLUMN `description`,
-    DROP COLUMN `latitude`,
-    DROP COLUMN `longitude`,
-    DROP COLUMN `numero`,
-    DROP COLUMN `qtdMaxHospedes`,
-    DROP COLUMN `street`,
-    DROP COLUMN `tipoEspacoId`,
-    DROP COLUMN `tipoImovelId`,
-    DROP COLUMN `title`,
-    DROP COLUMN `userId`,
-    ADD COLUMN `anfitriao` INTEGER NOT NULL,
-    ADD COLUMN `banheiros` INTEGER NOT NULL,
-    ADD COLUMN `cameras` BOOLEAN NOT NULL,
-    ADD COLUMN `comodidade_id` INTEGER NOT NULL,
-    ADD COLUMN `data_checkin` DATETIME(3) NOT NULL,
-    ADD COLUMN `data_checkout` DATETIME(3) NOT NULL,
-    ADD COLUMN `descricao` VARCHAR(500) NULL,
-    ADD COLUMN `foto_id` INTEGER NOT NULL,
-    ADD COLUMN `hospedes` INTEGER NOT NULL,
-    ADD COLUMN `politica_cancelamento` VARCHAR(100) NOT NULL,
-    ADD COLUMN `publicado` BOOLEAN NOT NULL,
-    ADD COLUMN `quartos` INTEGER NOT NULL,
-    ADD COLUMN `regra_da_casa` VARCHAR(100) NOT NULL,
-    ADD COLUMN `seguranca_id` INTEGER NOT NULL,
-    ADD COLUMN `tipo_espaco_id` INTEGER NOT NULL,
-    ADD COLUMN `tipo_hospede_id` INTEGER NOT NULL,
-    ADD COLUMN `tipo_imovel_id` INTEGER NOT NULL,
-    ADD COLUMN `tipo_reserva_atual` ENUM('Instantânea', 'Não instantânea') NOT NULL,
-    ADD COLUMN `titulo` VARCHAR(50) NULL,
-    ADD COLUMN `valor_diaria` DECIMAL NOT NULL,
-    MODIFY `id` INTEGER NOT NULL AUTO_INCREMENT,
-    ADD PRIMARY KEY (`id`);
-
--- DropTable
-DROP TABLE `feedback`;
-
--- DropTable
-DROP TABLE `role`;
-
--- DropTable
-DROP TABLE `tipoespaco`;
-
--- DropTable
-DROP TABLE `tipoimovel`;
-
--- DropTable
-DROP TABLE `user`;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `fotos` (
