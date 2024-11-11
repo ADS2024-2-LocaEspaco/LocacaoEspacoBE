@@ -1,11 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { error, log } from "console";
+import { userAccountInformation } from "src/user/infrastructure/database/dto/user.profile.account.information";
+import { userBankInformation } from "src/user/infrastructure/database/dto/user.profile.bank.information";
+import { userBasicInformation } from "src/user/infrastructure/database/dto/user.profile.basic.information";
+import { userContactInformation } from "src/user/infrastructure/database/dto/user.profile.contact.information";
+import { userImg } from "src/user/infrastructure/database/dto/user.profile.img";
 import { userProfile } from "src/user/infrastructure/database/dto/user.profile.information";
 import { UserRepository } from "src/user/infrastructure/repositories/user.repositories";
 
 @Injectable()
 export class UserProfileService {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(private readonly userRepository: UserRepository) { }
 
     async getUserByEmail(req: any): Promise<userProfile> {
         if (!req.email) {
@@ -25,8 +30,10 @@ export class UserProfileService {
         if (!req) {
             throw error("Nenhuma informação identificada")
         }
-        
-        const resService = await this.userRepository.getUserById(req.id)
+
+        const resGrades = await this.userRepository.avgAvaliation(req.id)
+
+        const resService = await this.userRepository.getUserById(req.id, resGrades)
 
         if (!resService) {
             throw error("Nenhuma informação retornada")
@@ -35,170 +42,175 @@ export class UserProfileService {
         return resService
     }
 
-    // async getUserClassification(req: any): Promise<any> {
-    //     if (!req) {
-    //         throw error("Nenhuma informação identificada")
-    //     }
-        
-    //     const resService = await this.userRepositoryImp.getUserClassification(req.idUser)
+    async avgAvaliation(req: any): Promise<any> {
+        if (!req.id_user) {
+            throw error("Usuario não identificado")
+        }
 
-    //     if (!resService) {
-    //         throw error("Nenhuma informação retornada")
-    //     }
+        const resService = await this.userRepository.avgAvaliation(req.id_user)
 
-    //     const classifications = resService.map((service: { id: string, classification: number }) => {
-    //         if (service.classification < 0 || service.classification > 5) {
-    //             throw error("Nota está errada")
-    //         }
-    //         return service.classification
-    //     });
+        if (!resService) {
+            return {
+                message: "Erro ao carregar as avaliações",
+                success: false
+            }
+        }
 
-    //     const sum = classifications.reduce((accumulator: number, currentValue: number) => accumulator + currentValue, 0);
+        const averageGrades: number[] = resService.map((grades: number[]) => {
+            return this.avgGrades(grades);
+        });
 
-    //     if (sum < 0) {
-    //         throw error("Erro durante o calculo das classificações")
-    //     }
+        return this.avgGrades(averageGrades)
+    }
 
-    //     const avg = (sum/classifications.length).toFixed(1);
+    async avgGrades(grades: number[]): Promise<number> {
+        if (!grades.length) {
+            return 0;
+        }
+    
+        const sum = grades.reduce((total, grade) => total + grade, 0);
+        return sum / grades.length;
+    }
 
-    //     return avg
-    // }
-
-    async updateUserProfile(req: any): Promise<{message: string, success: boolean}>{
+    async updateUserProfile(req: any): Promise<{ message: string, success: boolean }> {
         if (!req.username) {
             throw error("username não identificado")
         }
 
-        const user: userProfile = {
-            firstName: req.nome,
-            lastName: req.nome_completo,
-            picture: req.img,
-            email: req.email,
-            cpf: req.cpf,
-            phone: req.fone,
-            agency: req.ag,
-            account: req.cc,
-            bankName: req.nome_instituicao,
-            bankCode: req.codigo_instituicao,
-            state: req.estado,
-            city: req.cidade,
-            address: req.bairro,
-            cep: req.cep
+        const user: userBasicInformation = {
+            firstName: req.firstName,
+            userAvaliation: req.userAvaliation
         }
 
         const resService = await this.userRepository.updateUserProfile(user, req.id);
 
         if (!resService) {
-            return {message: "Erro ao atualizar o usuário",
+            return {
+                message: "Erro ao atualizar o usuário",
                 success: false
             }
         }
 
-        return {message: "Sucesso ao atualizar o usuário",
+        return {
+            message: "Sucesso ao atualizar o usuário",
             success: true
         }
     }
 
-    async updateBankInformation(req: any): Promise<{message: string, success: boolean}>{
+    async updateBankInformation(req: any): Promise<{ message: string, success: boolean }> {
         if (!req) {
             throw error("Nenhuma informação.")
         }
 
-        const user: userProfile = {
-            firstName: req.nome,
-            lastName: req.nome_completo,
-            picture: req.img,
-            email: req.email,
-            cpf: req.cpf,
-            phone: req.fone,
-            agency: req.ag,
-            account: req.cc,
-            bankName: req.nome_instituicao,
-            bankCode: req.codigo_instituicao,
-            state: req.estado,
-            city: req.cidade,
-            address: req.bairro,
-            cep: req.cep
+        const user: userBankInformation = {
+            account: req.account,
+            agency: req.agency,
+            bankCode: req.bankCode,
+            bankName: req.bankName
         }
 
         const resService = await this.userRepository.updateBankInformation(req.id, user);
 
         if (!resService) {
-            return {message: "Erro ao atualizar as informações do banco",
+            return {
+                message: "Erro ao atualizar as informações do banco",
                 success: false
             }
         }
 
-        return {message: "Sucesso ao atualizar as informações do banco",
+        return {
+            message: "Sucesso ao atualizar as informações do banco",
             success: true
         }
     }
 
-    // async updateProfileImage(req: any): Promise<{message: string, success: boolean}> {
-    //     if (!req) {
-    //         throw error("Nenhuma informação.")
-    //     }
+    async updateProfileImage(req: any): Promise<{ message: string, success: boolean }> {
+        if (!req) {
+            throw error("Nenhuma informação.")
+        }
 
-    //     const resService = await this.userRepositoryImp.updateProfileImage(req.id, req.photo);
+        const user: userImg = {
+            img: req.img
+        }
 
-    //     if (!resService) {
-    //         return {message: "Erro ao atualizar a foto de usuário",
-    //             success: false
-    //         }
-    //     }
+        const resService = await this.userRepository.updateProfileImage(req.id, user);
 
-    //     return {message: "Sucesso ao enviar a foto de usuário",
-    //         success: true
-    //     }
-    // }
+        if (!resService) {
+            return {
+                message: "Erro ao atualizar a foto de usuário",
+                success: false
+            }
+        }
 
-    // async updateAccountInformation(req: any): Promise<{message: string, success: boolean}> {
-    //     if (!req) {
-    //         throw error("Nenhuma informação.");
-    //     }
+        return {
+            message: "Sucesso ao enviar a foto de usuário",
+            success: true
+        }
+    }
 
-    //     const resService = await this.userRepositoryImp.updateAccountInformation(req.id, req.cpf, req.fullname)
+    async updateAccountInformation(req: any): Promise<{message: string, success: boolean}> {
+        if (!req) {
+            throw error("Nenhuma informação.");
+        }
 
-    //     if (!resService) {
-    //         return {message: "Erro ao atualizar os dados da conta",
-    //             success: false
-    //         };
-    //     }
+        const user: userAccountInformation = {
+            cpf: req.cpf,
+            email: req.email,
+            lastName: req.lastName
+        }
 
-    //     return {message: "Sucesso ao atualizar os dados da conta",
-    //         success: true
-    //     };
-    // }
 
-    // async updateContactInformation(req: any): Promise<{message: string, success: boolean}> {
-    //     if (!req) {
-    //         throw error("Nenhuma informação.");
-    //     }
+        const resService = await this.userRepository.updateAccountInformation(req.id, user)
 
-    //     const resService = await this.userRepositoryImp.updateContactInformation(req.id, req.phone, req.address, req.state, req.city, req.cep);
+        if (!resService) {
+            return {message: "Erro ao atualizar os dados da conta",
+                success: false
+            };
+        }
 
-    //     if (!resService) {
-    //         return {message: "Erro ao atualizar as informações de contato",
-    //             success: false
-    //         };
-    //     }
+        return {message: "Sucesso ao atualizar os dados da conta",
+            success: true
+        };
+    }
 
-    //     return {message: "Sucesso ao atualizar as informações de contato",
-    //         success: false
-    //     };
-    // }
+    async updateContactInformation(req: any): Promise<{message: string, success: boolean}> {
+        if (!req) {
+            throw error("Nenhuma informação.");
+        }
 
-    // async deleteUser(req: any): Promise<string> {
-    //     if (!req) {
-    //         throw error("Nenhuma informação.");
-    //     }
+        const user: userContactInformation = {
+            address: req.address,
+            cep: req.cep,
+            city: req.city,
+            phone: req.phone,
+            state: req.state
+        }
 
-    //     const resService = await this.userRepositoryImp.deleteUser(req.id);
 
-    //     if (!resService) {
-    //         throw error("Nenhuma conta encontrada");
-    //     }
+        const resService = await this.userRepository.updateContactInformation(req.id, req.id_user, user);
 
-    //     return resService
-    // }
+        if (!resService) {
+            return {message: "Erro ao atualizar as informações de contato",
+                success: false
+            };
+        }
+
+        return {message: "Sucesso ao atualizar as informações de contato",
+            success: false
+        };
+    }
+
+    async disableUser(req: any): Promise<string> {
+        if (!req) {
+            throw error("Nenhuma informação.");
+        }
+
+        const resService = await this.userRepository.disableUser(req.id);
+
+        if (!resService) {
+            throw error("Nenhuma conta encontrada");
+        }
+
+        return resService
+    }
 }
