@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
+import { createAnuncioDto } from './database/dto/create-anuncio.dto';
 import { 
   getReservasById, 
   getAnuncioById, 
@@ -48,6 +49,14 @@ export class AnuncioService {
     const anuncio = await this.getAnuncioById(id);
     const usuario = await getDadosUsuarioAnfitriaoPorIdAnuncio(id);
     return usuario;
+  }
+
+  async createAnuncio(data: createAnuncioDto): Promise<void> {
+    try {
+      //
+    } catch (error) {
+      // 
+    }
   }
 
   async getTipoImovel(): Promise<Object> {
