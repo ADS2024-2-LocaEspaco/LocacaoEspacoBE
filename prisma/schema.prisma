@@ -91,14 +91,14 @@ model avaliacao {
   id_usuario_avaliador                            Int
   id_usuario_avaliado                             Int?
   id_anuncio_avaliado                             Int?
-  nota_limpeza                                    Decimal?  @db.Decimal
-  nota_exatidao_anuncio                           Decimal?  @db.Decimal
-  nota_custo_beneficio                            Decimal?  @db.Decimal
-  nota_localizacao                                Decimal?  @db.Decimal
-  comentario                                      String    @db.VarChar(255)
-  nota_seguiu_regras                              Decimal?  @db.Decimal
-  nota_pontualidade                               Decimal?  @db.Decimal
-  nota_cordialidade                               Decimal?  @db.Decimal
+  nota_limpeza                                    Decimal?  @db.Decimal @default(0)
+  nota_exatidao_anuncio                           Decimal?  @db.Decimal @default(0)
+  nota_custo_beneficio                            Decimal?  @db.Decimal @default(0)
+  nota_localizacao                                Decimal?  @db.Decimal @default(0)
+  comentario                                      String    @db.VarChar(255) 
+  nota_seguiu_regras                              Decimal?  @db.Decimal @default(0)
+  nota_pontualidade                               Decimal?  @db.Decimal @default(0)
+  nota_cordialidade                               Decimal?  @db.Decimal @default(0)
   criado_em                                       DateTime? @default(now()) 
   usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
   usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
