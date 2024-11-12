@@ -148,6 +148,7 @@ model usuario {
   token_acesso                                      String                          @db.VarChar(255)
   avaliacao_id                                      Int?
   anuncio                                           anuncio[]
+  notificacao                                       notificacao[] 
   avaliacao_avaliacao_id_usuario_avaliadoTousuario  avaliacao[]                     @relation("avaliacao_id_usuario_avaliadoTousuario")
   avaliacao_avaliacao_id_usuario_avaliadorTousuario avaliacao[]                     @relation("avaliacao_id_usuario_avaliadorTousuario")
   dados_bancarios                                   dados_bancarios[]
@@ -188,9 +189,12 @@ model reserva {
   qtd_bebes        Int?
   qtd_pets         Int?
   data_inicial     DateTime?         
-  data_final       DateTime?         
+  data_final       DateTime?    
+  prazo_cancelamento DateTime              @db.Date     
   status_reserva   status_reserva?
   status_pagamento status_pagamento?
+  status_aceite    status_aceite_reserva @default(Aguardando_resposta_anfitiao)
+  notificacao      notificacao[]
   multa            Boolean?          @default(false)
   cancelamento     Boolean?          @default(false)
   criado_em        DateTime?         @default(now()) 
@@ -211,4 +215,25 @@ enum status_reserva {
 enum tipo_reserva {
   Instant_nea     @map("Instantânea")
   N_o_instant_nea @map("Não instantânea")
+}
+
+model notificacao {
+  id         Int      @id @default(autoincrement())
+  usuario_id Int
+  reserva_id Int? 
+  tipo       String   @db.VarChar(50) 
+  mensagem   String   @db.VarChar(255) 
+  status     String   @db.VarChar(20) 
+  data_envio DateTime @default(now()) 
+
+  usuario usuario  @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  reserva reserva? @relation(fields: [reserva_id], references: [id])
+
+  @@index([usuario_id])
+}
+
+enum status_aceite_reserva {
+  Aceita
+  Negada
+  Aguardando_resposta_anfitiao @map("Aguardando resposta")
 }
