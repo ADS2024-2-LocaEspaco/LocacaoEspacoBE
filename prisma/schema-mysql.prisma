@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:root@localhost:3306/locaespaco"
+  url      = env("DATABASE_URL")
 }
 
 model anuncio {
@@ -55,9 +55,9 @@ model comodidades {
   comodidade          String    @db.VarChar(50)
   icone               String    @db.VarChar(50)
 
-  anuncioComodidades           anuncioComodidades[]   
-        
+  anuncioComodidades  anuncioComodidades[]   
 }
+
 model anuncioComodidades {
   anuncio_id    Int
   comodidade_id Int
@@ -104,14 +104,14 @@ model avaliacao {
   id_usuario_avaliador                            Int
   id_usuario_avaliado                             Int?
   id_anuncio_avaliado                             Int?
-  nota_limpeza                                    Decimal?  @db.Decimal
-  nota_exatidao_anuncio                           Decimal?  @db.Decimal
-  nota_custo_beneficio                            Decimal?  @db.Decimal
-  nota_localizacao                                Decimal?  @db.Decimal
-  comentario                                      String    @db.VarChar(255)
-  nota_seguiu_regras                              Decimal?  @db.Decimal
-  nota_pontualidade                               Decimal?  @db.Decimal
-  nota_cordialidade                               Decimal?  @db.Decimal
+  nota_limpeza                                    Decimal?  @db.Decimal @default(0)
+  nota_exatidao_anuncio                           Decimal?  @db.Decimal @default(0)
+  nota_custo_beneficio                            Decimal?  @db.Decimal @default(0)
+  nota_localizacao                                Decimal?  @db.Decimal @default(0)
+  comentario                                      String    @db.VarChar(255) 
+  nota_seguiu_regras                              Decimal?  @db.Decimal @default(0)
+  nota_pontualidade                               Decimal?  @db.Decimal @default(0)
+  nota_cordialidade                               Decimal?  @db.Decimal @default(0)
   criado_em                                       DateTime? @default(now()) 
   usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
   usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
@@ -161,6 +161,7 @@ model usuario {
   token_acesso                                      String                          @db.VarChar(255)
   avaliacao_id                                      Int?
   anuncio                                           anuncio[]
+  notificacao                                       notificacao[] 
   avaliacao_avaliacao_id_usuario_avaliadoTousuario  avaliacao[]                     @relation("avaliacao_id_usuario_avaliadoTousuario")
   avaliacao_avaliacao_id_usuario_avaliadorTousuario avaliacao[]                     @relation("avaliacao_id_usuario_avaliadorTousuario")
   dados_bancarios                                   dados_bancarios[]
@@ -201,9 +202,12 @@ model reserva {
   qtd_bebes        Int?
   qtd_pets         Int?
   data_inicial     DateTime?         
-  data_final       DateTime?         
+  data_final       DateTime?    
+  prazo_cancelamento DateTime              @db.Date     
   status_reserva   status_reserva?
   status_pagamento status_pagamento?
+  status_aceite    status_aceite_reserva @default(Aguardando_resposta_anfitiao)
+  notificacao      notificacao[]
   multa            Boolean?          @default(false)
   cancelamento     Boolean?          @default(false)
   criado_em        DateTime?         @default(now()) 
@@ -224,4 +228,40 @@ enum status_reserva {
 enum tipo_reserva {
   Instant_nea     @map("Instantânea")
   N_o_instant_nea @map("Não instantânea")
+}
+
+model notificacao {
+  id         Int      @id @default(autoincrement())
+  usuario_id Int
+  reserva_id Int? 
+  tipo       String   @db.VarChar(50) 
+  mensagem   String   @db.VarChar(255) 
+  status     String   @db.VarChar(20) 
+  data_envio DateTime @default(now()) 
+
+  usuario usuario  @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  reserva reserva? @relation(fields: [reserva_id], references: [id])
+
+  @@index([usuario_id])
+}
+
+model notificacao {
+  id         Int      @id @default(autoincrement())
+  usuario_id Int
+  reserva_id Int? 
+  tipo       String   @db.String(50)  // Usando String para o PostgreSQL
+  mensagem   String   @db.String(255) // Usando String para o PostgreSQL
+  status     String   @db.String(20)  // Usando String para o PostgreSQL
+  data_envio DateTime @default(now())
+
+  usuario usuario  @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  reserva reserva? @relation(fields: [reserva_id], references: [id])
+
+  @@index([usuario_id])
+}
+
+enum status_aceite_reserva {
+  Aceita
+  Negada
+  Aguardando_resposta_anfitiao @map("Aguardando resposta")
 }
