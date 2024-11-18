@@ -9,7 +9,6 @@ datasource db {
 
 model anuncio {
   id                            Int                             @id @default(autoincrement())
-  foto_id                       Int
   titulo                        String?                         @db.VarChar(50)
   hospedes                      Int
   quartos                       Int
@@ -29,7 +28,6 @@ model anuncio {
   seguranca_id                  Int
   tipo_hospede_id               Int
 
-  fotos                         fotos                           @relation(fields: [foto_id], references: [id])
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
   tipo_imovel                   tipo_imovel                     @relation(fields: [tipo_imovel_id], references: [id])
   tipo_espaco                   tipo_espaco                     @relation(fields: [tipo_espaco_id], references: [id])
@@ -41,14 +39,28 @@ model anuncio {
   lista_favoritos_personalizada lista_favoritos_personalizada[]
   reserva                       reserva[]
   anuncioComodidades            anuncioComodidades[]
+  anuncioFotos                  anuncioFotos[]
 }
 
 model fotos {
-  id                  Int       @id @default(autoincrement())
-  url                 String    @db.VarChar(255)
+  id                            Int       @id @default(autoincrement())
+  url                           String    @db.VarChar(255)
 
-  anuncio             anuncio[]
+  anuncioFotos                  anuncioFotos[]
 }
+
+model anuncioFotos {
+  anuncio_id    Int
+  foto_id Int
+
+  anuncio       anuncio    @relation(fields: [anuncio_id], references: [id], map: "fk_anuncio_fotos_anuncio")
+  fotos         fotos      @relation(fields: [foto_id], references: [id], map: "fk_anuncio_fotos_foto")
+
+  @@id([anuncio_id, foto_id])
+  @@map("anuncio_fotos")  
+}
+
+
 
 model comodidades {
   id                  Int       @id @default(autoincrement())
