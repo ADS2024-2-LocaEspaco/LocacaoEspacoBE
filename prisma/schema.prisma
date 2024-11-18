@@ -236,7 +236,7 @@ enum status_reserva {
   Reservado
   Processando
   Finalizado // <<<< LINHA ADICIONADA @PEDRO
-  Checkou_pendente @map("Confirmação de checkout pendente") // LINHA ADICIONADA @PEDRO
+  Checkout_pendente @map("Confirmação de checkout pendente") // LINHA ADICIONADA @PEDRO
 }
 
 enum tipo_reserva {

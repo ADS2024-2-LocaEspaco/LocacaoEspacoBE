@@ -17,17 +17,20 @@ export interface HostReservaDados {
   criado_em: Date | null
 }
 
+// export interface HostReservasRepository {
 
+//   getDadosReserva(id_anuncio: number, id_usuario: number): Promise<HostReservaDados[]>
 
+//   getHistorico(status_reserva: number, de: Date, ate: Date): Promise<HostReservaDados[]>
 
-export interface HostReservasRepository {
+//   atualizarStatusDeReserva(id: number, status_reserva: number): Promise<Boolean>
 
-  getDadosReserva(id_anuncio: number, id_usuario: number): Promise<HostReservaDados[]>
+//   atualizarStatusDePagamento(id: number, status_pagamento: number): Promise<Boolean>
 
-  getHistorico(status_reserva: number, de: Date, ate: Date): Promise<HostReservaDados[]>
+  
 
-  atualizarStatusDeReserva(id: number, status_reserva: number): Promise<Boolean>
+// }
 
-  atualizarStatusDePagamento(id: number, status_pagamento: number): Promise<Boolean>
-
-}
+// export interface HostGetDados{
+//   get
+// }

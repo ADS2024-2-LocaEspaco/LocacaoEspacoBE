@@ -16,24 +16,24 @@ export class HostReservas {
     return result;
   }
 
-  @Put('pagamento')
-  async attPagamento(@Query() query: DadosDeAttStatus) {
+  // @Put('pagamento')
+  // async attPagamento(@Query() query: DadosDeAttStatus) {
 
-    const data = {
+  //   const data = {
 
-      id: query.id,
-      status_pagamento: query.status
+  //     id: Number(query.id),
+  //     status_pagamento: Number(query.status)
 
-    };
+  //   };
 
 
-    const result = await this.reservas.attPagamento(data)
+  //   const result = await this.reservas.attPagamento(data)
 
-    return result;
+  //   return result;
 
-  }
+  // }
 
-  @Put('status')
+  @Put('statusReserva')
   async attReservas(@Query() query: DadosDeAttStatus) {
 
     const data = {
@@ -52,11 +52,10 @@ export class HostReservas {
   @Get('historico')
   async getHistoricosReserva(@Query() query: HistoricoDados) {
 
-    const { status, dataInicial, dataFinal } = query
+    const { status_reserva, dataInicial, dataFinal } = query
 
-    const result = await this.reservas.getHistorico(status, dataInicial, dataFinal)
+    const result = await this.reservas.getHistorico(status_reserva, dataInicial, dataFinal)
 
-    console.log("log do controller", result)
 
     return result;
   }
@@ -64,11 +63,11 @@ export class HostReservas {
   @Put('aceite')
   async attAceite(@Query() query: DadosNegarAceitar) {
 
-    const { status, id_reserva, id_usuario } = query
+    const { status_aceite, id_reserva, id_usuario } = query
 
-    const result = await this.reservas.aceitarNegarReservas(status, id_reserva, id_usuario);
+    const result = await this.reservas.aceitarNegarReservas(status_aceite, id_reserva, id_usuario);
 
-    console.log(result, "ACEITO COM SUCCESS!")
+
 
     return result
   }

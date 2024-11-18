@@ -1,10 +1,10 @@
-import { Contains, IsBoolean, IsDate, IsIn, isInt, IsInt, IsNotEmpty } from 'class-validator';
+import { Min, Max, IsDate,IsIn, IsInt, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
-import { StatusReserva } from 'src/shared/enum/enums';
 
 export class AnuncioValidator {
   @IsNotEmpty()
   @IsInt()
+  @Min(0)
   @Type(() => Number)
   id: number;
 }
@@ -12,12 +12,13 @@ export class AnuncioValidator {
 export class ReservaValidator {
   @IsNotEmpty()
   @IsInt()
+  @Min(0)
   @Type(() => Number)
   id_anuncio: number;
   
   @IsNotEmpty()
   @IsInt()
-  @IsIn([0, 1], { message: 'Status inválido!'})
+  @Min(0)
   @Type(() => Number)
   id_usuario: number;
 
@@ -27,12 +28,14 @@ export class DadosDeAttStatus {
 
   @IsNotEmpty()
   @IsInt()
+  @Min(0)
   @Type(() => Number)
   id: number;
 
   @IsNotEmpty()
   @IsInt()
-  @IsIn([0, 1], { message: 'Status inválido!'})
+  @Min(0)
+  @Max(3)
   @Type(() => Number)
   status: number;
 
@@ -42,9 +45,10 @@ export class HistoricoDados {
 
   @IsNotEmpty()
   @IsInt()
-  @IsIn([0, 1], { message: 'Status inválido!'})
+  @Min(0)
+  @Max(3)
   @Type(() => Number)
-  status: number;
+  status_reserva: number;
 
   @IsNotEmpty()
   @IsDate()
@@ -63,15 +67,17 @@ export class DadosNegarAceitar {
   @IsInt()
   @IsIn([0, 1], { message: 'Impossivel valor diferentes de "aceitar" e "negar"'})
   @Type(() => Number)
-  status: number;
+  status_aceite: number;
 
   @IsNotEmpty()
   @IsInt()
+  @Min(0)
   @Type(() => Number)
   id_reserva: number;
 
   @IsNotEmpty()
   @IsInt()
+  @Min(0)
   @Type(() => Number)
   id_usuario: number;
 

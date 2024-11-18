@@ -1,48 +1,32 @@
-import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { HostReservasRepo } from '../database/dto/host.reserva.dto';
-import { StatusReserva, StatusPagamento } from 'src/shared/enum/enums';
+import { Injectable } from '@nestjs/common';
+import { DadosDeReserva } from '../database/dto/get.dados.reserva.dto';
+import { mapToStatuPagamento, mapToStatusDeAceiteReserva, mapToStatusReserva } from '../database/dto/maps/map.number.to.TsEnum';
+import { AtualizarDadosDeReserva } from '../database/dto/att.dados.reserva.dto';
 
 
 @Injectable()
 export class ReservaService {
-  constructor(private readonly reserva: HostReservasRepo) { }
+  constructor(private readonly reservaDados: DadosDeReserva, private readonly statusReservas: AtualizarDadosDeReserva) { }
 
   async getReservas(id_anuncio: number, id_usuario: number) {
-    try {
-
+ 
       console.log('passando em getReserva');
 
-      const result = await this.reserva.getDadosReserva(id_anuncio, id_usuario);
-
-      if (!result || result.length === 0) {
-
-        throw new NotFoundException('Reservas não encontradas');
-
-      }
+      const result = await this.reservaDados.getDadosReserva(id_anuncio, id_usuario);
 
       return result;
-
-    } catch (err) {
-
-      if (err instanceof NotFoundException) {
-
-        throw err
-      }
-
-      console.error(' Código do erro: ' + err);
-
-      throw new BadRequestException('Erro ao buscar por reservas!');
-    }
+ 
   }
 
   async attStatusReserva(data: {id: number, status_reserva: number} ) {
 
     const { id, status_reserva} = data;
     
-    const resultadoAttStatusReserva = await this.reserva.atualizarStatusDeReserva(id, status_reserva);
+    const status = mapToStatusReserva[status_reserva]
+    
+    const resultadoAttStatusReserva = await this.statusReservas.atualizarStatusDeReserva(id, status);
 
     return resultadoAttStatusReserva
-
 
   }
 
@@ -50,30 +34,31 @@ export class ReservaService {
     
     const { id, status_pagamento } = dados
     
-    const resul = await this.reserva.atualizarStatusDePagamento(id, status_pagamento)
+    const status = mapToStatuPagamento[status_pagamento]
+
+    const resul = await this.statusReservas.atualizarStatusDePagamento(id, status)
 
     return resul
 
   }
 
-  async getHistorico(status: number, de: Date, ate: Date) {
+  async getHistorico(status_reserva: number, de: Date, ate: Date) {
 
       const inicial = new Date(de)
       const final = new Date(ate)
 
-      const res = await this.reserva.getHistorico(status, inicial, final)
+      const stt = mapToStatusReserva[status_reserva]
 
+      const res = await this.reservaDados.getHistorico(stt, inicial, final)
+
+      return res
   }
 
   async aceitarNegarReservas(status: number, id_reserva: number, id_usuario: number) {
 
-    const result = await this.reserva.aceitarNegarReservas(status, id_reserva, id_usuario);
+    const stt = mapToStatusDeAceiteReserva[status]
 
-    if (!result) {
-
-      throw new BadRequestException('Falha ao realizar a operação de aceitar/Negar reserva')
-
-    }
+    const result = await this.statusReservas.aceitarNegarReservas(stt, id_reserva, id_usuario);
 
     return result
 

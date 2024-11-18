@@ -2,17 +2,17 @@ export enum StatusReserva {
     reservado = 'Reservado',
     Processando = 'Processando',
     Finalizado = 'Finalizado',
-    Checkou_pendente = 'Confirmação de checkout pendente'
+    Checkout_pendente = 'Confirmação de checkout pendente'
 }
 
 export enum StatusPagamento {
-    Conclu_do = 'Concluído',
+    Concluido = 'Concluído',
     Aguardando = 'Aguardado'
 }
 
 export enum TipoReserva {
     instantanea = 'Instantânea',
-    naoInstantanea = 'Não instantânea'
+    NaoInstantanea = 'Não instantânea'
 }
 
 export enum StatusDeAceiteReserva {

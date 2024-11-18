@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
-import { HostReservas } from './host_Application/controllers/host.controller'; //HostController, 
-//import { AnuncioService } from './anuncio/host.anuncio.service';
-//import { AnuncioRepository } from './database/dto/host.anuncio.dto';
-import { HostReservasRepo } from 'src/host/database/dto/host.reserva.dto';
+import { HostReservas} from './host_Application/controllers/host.controller'; 
+import { PrismaService } from './database/prisma.instace';
 import { ReservaService } from './reserva/reserva.service';
-// import { AnuncioValidator, ReservaValidator } from './database/validator/host.validator.dto';
+import { DadosDeReserva } from './database/dto/get.dados.reserva.dto';
+import { AtualizarDadosDeReserva } from './database/dto/att.dados.reserva.dto';
 
 @Module({
   imports: [],
-  controllers: [ HostReservas ], //HostController,
-  providers: [ HostReservasRepo, ReservaService], //AnuncioService, AnuncioRepository,
+  controllers: [ HostReservas ], 
+  providers: [ ReservaService, PrismaService, DadosDeReserva, AtualizarDadosDeReserva], 
 })
 export class HostModule {}
 
