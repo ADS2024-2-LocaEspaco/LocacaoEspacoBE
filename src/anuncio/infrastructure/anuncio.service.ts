@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { error } from 'console';
-import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio } from './repositories/anuncio.repositories';
+import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio, getFotosByAnuncioId } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
+import { getAnuncioFotosDto } from './database/dto/get-anuncio-fotos.dto';
 
 
 @Injectable()
@@ -47,5 +48,10 @@ export class AnuncioService {
     const usuario = await getDadosUsuarioAnfitriaoPorIdAnuncio(id);
     return usuario;
 
+  }
+
+  async getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | null> {
+    const listaFotos =  await getFotosByAnuncioId(id);
+    return listaFotos;
   }
 }

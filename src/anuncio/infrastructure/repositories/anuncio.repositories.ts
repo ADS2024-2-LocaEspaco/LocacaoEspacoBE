@@ -3,6 +3,8 @@ import { getEnderecoDto } from "../database/dto/get-anuncio-endereco.dto";
 import { getReservaDto } from "../database/dto/get-reserva.dto";
 import { getAnuncioDto } from "../database/dto/get-anuncio.dto";
 import { getUsuarioDto } from "../database/dto/get-anuncio-usuario.dto";
+import { getAnuncioFotosDto } from "../database/dto/get-anuncio-fotos.dto";
+
 
 const prisma = new PrismaClient();
 
@@ -79,6 +81,38 @@ export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<
     }
 
     return anfitriao;
+}
+
+export async function getFotosByAnuncioId(id:number): Promise<getAnuncioFotosDto[]> {
+
+    const anuncioId = Number(id); 
+
+    const fotosId = await prisma.anuncioFotos.findMany({
+        where:{
+            anuncio_id: anuncioId
+        },
+        select: {
+            foto_id: true
+        }
+    })
+    
+    const fotos = await prisma.fotos.findMany({
+        where: {
+            
+            id:{
+                in: fotosId.map(f => f.foto_id)
+            }
+        }
+
+    })
+
+    const listaDTOs: getAnuncioFotosDto[] = fotos.map(f =>({
+        id: f.id,
+        url:f.url
+        
+    })) 
+
+    return listaDTOs
 }
 
 function calcularTempoCadastro(criadoEm: Date): string {
