@@ -1,4 +1,4 @@
-import { anuncio, PrismaClient, reservas } from "@prisma/client";
+import { anuncio, PrismaClient, reserva } from "@prisma/client";
 import { getReservaDto } from "../database/dto/get-reserva.dto";
 import { GetComentariosDto } from "../database/dto/get-comentarios.dto";
 
@@ -11,18 +11,16 @@ export async function getAnuncio(id: number): Promise<any | null> {
         },
     });
 
-    let dataAnuncio = {
+    let dataAnuncio = anuncio != null ? {
         ...anuncio,
-        quant_quartos:  Number(anuncio?.quant_quartos),
-        quant_banheiro:  Number(anuncio?.quant_banheiro),
-        quant_hospede:  Number(anuncio?.quant_hospede),
-        quant_cama:  Number(anuncio?.quant_cama),
-        quant_pet:  Number(anuncio?.quant_pet),
-        quant_diaria_min:  Number(anuncio?.quant_diaria_min),
-        quant_diaria_max:  Number(anuncio?.quant_diaria_max),
-        polit_cancelamento:  Number(anuncio?.polit_cancelamento),
-        temp_antec_reserva:  Number(anuncio?.temp_antec_reserva),
-    }
+        quartos:                        Number(anuncio?.quartos),
+        banheiros:                      Number(anuncio?.banheiros),
+        hospedes:                       Number(anuncio?.hospedes),
+        qtd_diaria_min:                 Number(anuncio?.qtd_diaria_min),
+        qtd_diaria_max:                 Number(anuncio?.qtd_diaria_max),
+        politica_cancelamento:          Number(anuncio?.politica_cancelamento),
+        tempo_antecipado_para_reserva:  Number(anuncio?.tempo_antecipado_para_reserva),
+    } : null
     
     return dataAnuncio;
 }
@@ -35,7 +33,7 @@ export async function getPoliticaCancelamento(id: number): Promise<any | null> {
     });
 
     let dataAnuncio = {
-        polit_cancelamento:  Number(anuncio?.polit_cancelamento),
+        politica_cancelamento:  Number(anuncio?.politica_cancelamento),
     }
     
     return dataAnuncio;
@@ -61,9 +59,9 @@ export async function getMediaNotaAnuncio(id: number): Promise<any | null> {
 }
 
 export async function getReservas(id: number): Promise<any | null> {
-    const reservas = await prisma.reservas.findMany({
+    const reservas = await prisma.reserva.findMany({
         where: { 
-            anuncio_id: id
+            id_anuncio: id
         },
         select:{
             data_final: true,
@@ -80,54 +78,36 @@ export async function getQtdMaxHospede(id: number): Promise<any | null> {
             id
         },
         select:{
-            quant_hospede: true
+            hospedes: true
         }
     });
 
-    return Number(data?.quant_hospede);
+    return Number(data?.hospedes);
 }
 
-export async function getComentariosAnuncio(anuncio_id: number): Promise<GetComentariosDto[] | object>{
-    const comentarios = await prisma.reservas.findMany({
+export async function getComentariosAnuncio(id_anuncio_avaliado : number): Promise<GetComentariosDto[] | object>{
+    const comentarios = await prisma.avaliacao.findMany({
         where:{
-            anuncio_id,
-            status_reserva: 1,
-            avaliacao:{
-                some:{
-                    avaliado: 1,
-                }
-            }
+            id_anuncio_avaliado,
         },
-        select:{
-            id: true,
-            usuario:{
-                select:{
-                    email: true,
-                    nome: true,
-                    nome_completo: true,
-                    img: true,
-                }
-            },
-            avaliacao: true,
-        }
     })
 
-    let valores = comentarios.map((comentario) => {
-        return {
-            ...comentario,
-            avaliacao: comentario.avaliacao.map((avalia) => {
-                return {
-                    comentario: avalia.comentario,
-                    nota_cordialidade: Number(avalia.nota_cordialidade),
-                    nota_exatidao_anuncio: Number(avalia.nota_exatidao_anuncio),
-                    nota_limpeza: Number(avalia.nota_limpeza),
-                    nota_localizacao: Number(avalia.nota_localizacao),
-                    nota_pontualidade: Number(avalia.nota_pontualidade),
-                    nota_seguiu_regras: Number(avalia.nota_seguiu_regras),
-                };
-            }),
-        };
-    });
+    // let valores = comentarios.map((comentario) => {
+    //     return {
+    //         ...comentario,
+    //         avaliacao: comentario.avaliacao.map((avalia) => {
+    //             return {
+    //                 comentario: avalia.comentario,
+    //                 nota_cordialidade: Number(avalia.nota_cordialidade),
+    //                 nota_exatidao_anuncio: Number(avalia.nota_exatidao_anuncio),
+    //                 nota_limpeza: Number(avalia.nota_limpeza),
+    //                 nota_localizacao: Number(avalia.nota_localizacao),
+    //                 nota_pontualidade: Number(avalia.nota_pontualidade),
+    //                 nota_seguiu_regras: Number(avalia.nota_seguiu_regras),
+    //             };
+    //         }),
+    //     };
+    // });
 
-    return valores
+    return comentarios
 }

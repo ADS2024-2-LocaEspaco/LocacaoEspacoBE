@@ -1,8 +1,8 @@
-import { usuario, avaliacao, reservas, anuncio } from "@prisma/client";
+import { usuario, avaliacao, reserva, anuncio } from "@prisma/client";
 
 export class GetComentariosDto{
     id:                     number;
-    img?:                   string | null;
+    foto?:                   string | null;
     nome:                   string;
     nomecompleto:           string;
     comentario:             string;

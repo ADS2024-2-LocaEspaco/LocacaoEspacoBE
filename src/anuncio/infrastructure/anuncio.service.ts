@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { anuncio, avaliacao, PrismaClient, reservas, usuario } from '@prisma/client';
+import { anuncio, avaliacao, PrismaClient, reserva, usuario } from '@prisma/client';
 import { error } from 'console';
 import { getMediaNotaAnuncio, getReservas, getQtdMaxHospede, getPoliticaCancelamento, getComentariosAnuncio, getAnuncio } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
@@ -48,8 +48,8 @@ private readonly prisma = new PrismaClient();
 
       } else {
         return {
-          quant_diaria_min : result.quant_diaria_min,
-          quant_diaria_max : result.quant_diaria_max,
+          quant_diaria_min : result.qtd_diaria_min,
+          quant_diaria_max : result.qtd_diaria_max,
         };
       }
 
@@ -66,7 +66,7 @@ private readonly prisma = new PrismaClient();
       let result = await getPoliticaCancelamento(+id)
 
       // Verifica se 'data' é null, undefined ou uma lista vazia
-      if (Number.isNaN(result.polit_cancelamento)) {
+      if (Number.isNaN(result.politica_cancelamento)) {
         return {
           'message': 'not content',
           'status': 204
@@ -74,7 +74,7 @@ private readonly prisma = new PrismaClient();
 
       } else {
         return {
-          politica_cancelamento : result.polit_cancelamento,
+          politica_cancelamento : result.politica_cancelamento,
         };
       }
 
