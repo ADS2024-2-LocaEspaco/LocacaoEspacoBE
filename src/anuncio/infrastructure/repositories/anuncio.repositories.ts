@@ -11,10 +11,11 @@ import { getComodidadesAnuncioDto } from "../database/dto/get-comodidade-anuncio
 const prisma = new PrismaClient();
 
 export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> {
-    const anuncioId = parseInt(id.toString(), 10);
+    const anuncioId = parseInt(id.toString(), 10); // Converte id para número inteiro
+
 
     const anuncio = await prisma.anuncio.findUnique({
-        where: { id:anuncioId },
+        where: { id: id },
         select: {
             id: true,
             titulo: true,
@@ -53,7 +54,7 @@ export async function getReservasById(id: number): Promise<getReservaDto[] | nul
 
 
 export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<getUsuarioDto | null> {
-    const anuncioId = parseInt(id.toString(), 10); 
+    const anuncioId = parseInt(id.toString(), 10);
 
     const usuario = await prisma.usuario.findUnique({
         where: {
@@ -84,68 +85,68 @@ export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<
 
     return anfitriao;
 }
-export async function getComodidadesByAnuncioId(id:number): Promise<getComodidadesAnuncioDto[]> {
+export async function getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[]> {
 
-    const anuncioId = Number(id); 
+    const anuncioId = Number(id);
 
     const comodidadesId = await prisma.anuncioComodidades.findMany({
-        where:{
+        where: {
             anuncio_id: anuncioId
         },
         select: {
-            comodidade_id:true
+            comodidade_id: true
         }
     })
 
     const comodidades = await prisma.comodidades.findMany({
         where: {
 
-            id:{
+            id: {
                 in: comodidadesId.map(c => c.comodidade_id)
             }
         }
 
     })
 
-    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map(c =>({
+    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map(c => ({
         id: c.id,
-        comodidades:c.comodidade,
+        comodidades: c.comodidade,
         icone: c.icone
 
-    })) 
+    }))
 
     return listaDTOs
 }
 
 
-export async function getFotosByAnuncioId(id:number): Promise<getAnuncioFotosDto[]> {
+export async function getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[]> {
 
-    const anuncioId = Number(id); 
+    const anuncioId = Number(id);
 
     const fotosId = await prisma.anuncioFotos.findMany({
-        where:{
+        where: {
             anuncio_id: anuncioId
         },
         select: {
             foto_id: true
         }
     })
-    
+
     const fotos = await prisma.fotos.findMany({
         where: {
-            
-            id:{
+
+            id: {
                 in: fotosId.map(f => f.foto_id)
             }
         }
 
     })
 
-    const listaDTOs: getAnuncioFotosDto[] = fotos.map(f =>({
+    const listaDTOs: getAnuncioFotosDto[] = fotos.map(f => ({
         id: f.id,
-        url:f.url
-        
-    })) 
+        url: f.url
+
+    }))
 
     return listaDTOs
 }

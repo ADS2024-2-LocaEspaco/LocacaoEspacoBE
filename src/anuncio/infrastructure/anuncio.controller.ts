@@ -3,6 +3,7 @@ import { AnuncioService } from './anuncio.service';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 import { getComodidadesAnuncioDto } from './database/dto/get-comodidade-anuncio.dto';
+import { getAnuncioFotosDto } from './database/dto/get-anuncio-fotos.dto';
 
 @Controller('anuncio')
 export class AnuncioController {
@@ -50,7 +51,21 @@ export class AnuncioController {
 
     return comodidades;
   }
-  
+
+  @Get('fotos/:id')
+  async getFotosByAnuncioId(@Param('id') id: number): Promise<getAnuncioFotosDto[] | null> {
+    const anuncioId = Number(id); // Certifique-se de que `id` é um número
+
+    const fotos = await this.anuncioService.getFotosByAnuncioId(id);
+
+    if (!fotos) {
+      return null;
+    }
+    console.log(fotos)
+
+    return fotos;
+  }
+
 
 }
 
