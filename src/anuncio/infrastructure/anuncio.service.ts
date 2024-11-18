@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { error } from 'console';
-import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio } from './repositories/anuncio.repositories';
+import { getReservasById, getAnuncioById } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
+import { getAnuncioDto } from './database/dto/get-anuncio.dto';
+import { userAuth } from 'src/user/infrastructure/database/dto/user.auth.dto';
 import { AnuncioFiltroRepository } from './repositories/anuncio.filtro.repository';
-
 
 
 @Injectable()
 export class AnuncioService {
 
-  private readonly prisma = new PrismaClient();
+private readonly prisma = new PrismaClient();
 
-  constructor(
-    private readonly anuncioFiltroRepository: AnuncioFiltroRepository
-  ){}
-
+constructor(
+  private readonly anuncioFiltroRepository: AnuncioFiltroRepository
+){}
   
-  async getAnuncioById(id: string): Promise<Anuncio | null> {
+  async getAnuncioById(id: number): Promise<getAnuncioDto | null> {
     return getAnuncioById(id);
   }
 
@@ -46,14 +46,35 @@ export class AnuncioService {
   }
 
 
-  async getUserFromAnuncio(id: string): Promise<User | null> {
+  async getUserFromAnuncio(id: number): Promise<userAuth | null> {
     try {
       const anuncio = await this.getAnuncioById(id);
   
-      if (anuncio && anuncio.userId) {
-        return this.prisma.usuario.findUnique({
-          where: { id: anuncio.userId },
+      if (anuncio && anuncio.usuario_id) {
+        const user = await this.prisma.usuario.findUnique({
+          where: { id: anuncio.usuario_id },
+
+          select: {
+            token_acesso: true,
+            email: true,
+            nome: true,
+            nome_completo: true,
+            foto: true,
+          },
         });
+
+        if (user) {
+          const userSaved: userAuth = {
+            accessToken: user.token_acesso,
+            email: user.email,
+            name: user.nome,
+            fullName: user.nome_completo,
+            picture: user.foto,
+          };
+    
+          return userSaved;
+        } 
+        
       } else {
         throw new Error('Usuário não encontrado');
       }
@@ -66,11 +87,19 @@ export class AnuncioService {
     }
   }
 
-  async getAnunciosService(destino: string, checkin: Date | string, checkout: Date | string, hospedes: number) {
-    const anuncios = await this.anuncioFiltroRepository.searchAnuncios(destino, checkin, checkout, hospedes)
-    
-    anuncios.map((anuncio: any) => {
-      console.log(anuncio);
-    })
+  async getAnunciosService(
+    destino: string | undefined,
+    checkin: Date | undefined,
+    checkout: Date | undefined,
+    hospedes: number,
+  ) {
+    const anuncios = await this.anuncioFiltroRepository.searchAnuncios(
+      destino,
+      checkin,
+      checkout,
+      hospedes,
+    );
+
+    return anuncios;
   }
 }
