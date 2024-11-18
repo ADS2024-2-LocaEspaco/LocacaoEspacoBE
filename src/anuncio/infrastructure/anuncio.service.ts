@@ -3,8 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import { error } from 'console';
 import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
-import { getAnuncioDto } from './database/dto/get-anuncio.dto';
-import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
+import { AnuncioFiltroRepository } from './repositories/anuncio.filtro.repository';
+
 
 
 @Injectable()
@@ -12,8 +12,12 @@ export class AnuncioService {
 
   private readonly prisma = new PrismaClient();
 
+  constructor(
+    private readonly anuncioFiltroRepository: AnuncioFiltroRepository
+  ){}
 
-  async getAnuncioById(id: number): Promise<getAnuncioDto | null> {
+  
+  async getAnuncioById(id: string): Promise<Anuncio | null> {
     return getAnuncioById(id);
   }
 
@@ -60,13 +64,9 @@ export class AnuncioService {
       console.error('Error fetching user:', error);
       return null;
     }
-  }*/
+  }
 
-  async getAnunciosService(destino: String, checkin: Date, checkout: Date, hospedes: number) {
-      console.log(destino)
-      console.log(checkin)
-      console.log(checkout)
-      console.log(checkout)
-      console.log(hospedes)
+  async getAnunciosService(destino: string, checkin: Date, checkout: Date, hospedes: number) {
+      console.log(await this.anuncioFiltroRepository.searchAnuncios(destino, checkin, checkout, hospedes));
   }
 }

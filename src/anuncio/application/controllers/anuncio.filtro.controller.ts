@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Query, Req, Res } from "@nestjs/common";
 import { AnuncioService } from "src/anuncio/infrastructure/anuncio.service";
 import { Request, Response } from "express";
 
@@ -7,10 +7,14 @@ export class AnuncioFiltroController {
     constructor(private readonly anuncioService: AnuncioService) {}
 
     @Get('search')
-    getAnuncios(req: Request, res: Response) {
-        let x = "oi"
-        return x;
-        
-        //return this.anuncioService.getAnunciosService()
+    async getAnuncios(@Req() req: Request, @Res() res: Response) {
+        const { destino, checkin, checkout, hospedes } = req.query;
+
+        const checkinDate: Date = new Date(<string>checkin);
+        const checkoutDate: Date = new Date(<string>checkout);
+
+        await this.anuncioService.getAnunciosService(<string> destino, checkinDate, checkoutDate, parseInt(<string>hospedes));
+
+        return res.status(200).send('funcionou');
     }
 }
