@@ -91,7 +91,7 @@ model usuario {
   cpf                                               String?                         @db.VarChar(14)
   telefone                                          String?                         @db.VarChar(14)
   admin                                             Boolean?                        @default(false)
-  criado_em                                         DateTime?                       @default(dbgenerated("CURRENT_DATE")) @db.Date
+  criado_em                                         DateTime                       @default(dbgenerated("CURRENT_DATE")) @db.Date
   ativo                                             Boolean?                        @default(true)
   url_documento                                     String?                         @db.VarChar(255)
   bloqueado                                         Boolean?                        @default(false)

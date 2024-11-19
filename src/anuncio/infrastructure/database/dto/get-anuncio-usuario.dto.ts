@@ -1,6 +1,6 @@
 export class getUsuarioDto {
-    id: number
-    nome:String
-    foto:String | null
-    tempoCadastro: string
+  id: number;
+  nome: string;
+  foto: string | null;
+  tempoCadastro: number | string | null;
 }
