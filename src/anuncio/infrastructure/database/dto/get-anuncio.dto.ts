@@ -1,7 +1,7 @@
-import { anuncio } from "@prisma/client";
-import { getUsuarioDto } from "./get-anuncio-usuario.dto";
+import { anuncio } from '@prisma/client';
+import { getUsuarioDto } from './get-anuncio-usuario.dto';
 export class getAnuncioDto {
-    id: number | null
-    titulo: String | null
-    usuario_id?: number | null
+  id: number | null;
+  titulo: string | null;
+  usuario_id?: number | null;
 }
