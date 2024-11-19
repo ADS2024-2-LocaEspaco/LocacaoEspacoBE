@@ -98,13 +98,13 @@ export async function getComodidadesByAnuncioId(id:number): Promise<getComodidad
         where: {
             
             id:{
-                in: comodidadesId.map(c => c.comodidade_id)
+                in: comodidadesId.map((c: { comodidade_id: any; }) => c.comodidade_id)
             }
         }
 
     })
 
-    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map(c =>({
+    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map((c: { id: any; comodidade: any; icone: any; }) =>({
         id: c.id,
         comodidades:c.comodidade,
         icone: c.icone

@@ -8,21 +8,23 @@ import { getComodidadesAnuncioDto } from './database/dto/get-comodidade-anuncio.
 export class AnuncioController {
   constructor(private readonly anuncioService: AnuncioService) { }
 
-  @Get('reservas')
-  async getReservas(@Body('id') id: number): Promise<Object> {
-    return await this.anuncioService.getReservas(id);
+  @Get('comodidades/:id')
+  async getComodidadesByAnuncioId(@Param('id') id: number): Promise<getComodidadesAnuncioDto[] | null> {
+    const anuncioId = Number(id); // Certifique-se de que `id` é um número
+
+    const comodidades = await this.anuncioService.getComodidadesByAnuncioId(id);
+
+    if (!comodidades) {
+      throw new NotFoundException('comodidade não encontrada');
+    }
+    return comodidades;
   }
 
-  @Get(':id/:user')
-  async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto | null> {
-    return this.anuncioService.getUserFromAnuncio(id);
-  }
-
-  @Get('usuario/:id')
+  @Get('usuarios/:id')
   async getDadosUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
      const anuncioId = Number(id); // Certifique-se de que `id` é um número
 
-      const anuncio = await this.anuncioService.getAnuncioById(anuncioId); 
+      const anuncio = await this.anuncioService.getAnuncioById(id); 
 
       if (!anuncio) {
         throw new NotFoundException('Anúncio não encontrado'); 
@@ -37,19 +39,19 @@ export class AnuncioController {
       return usuario; 
   }
 
-  @Get('comodidades/:id')
-  async getComodidadesByAnuncioId(@Param('id') id: number): Promise<getComodidadesAnuncioDto[] | null> {
-    const anuncioId = Number(id); // Certifique-se de que `id` é um número
 
-    const comodidades = await this.anuncioService.getComodidadesByAnuncioId(id);
-
-    if (!comodidades) {
-      throw new NotFoundException('comodidade não encontrada');
-    }
-    console.log(comodidades)
-
-    return comodidades;
+  @Get('reservas')
+  async getReservas(@Body('id') id: number): Promise<Object> {
+    return await this.anuncioService.getReservas(id);
   }
+
+  @Get(':id/:user')
+  async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto | null> {
+    return this.anuncioService.getUserFromAnuncio(id);
+  }
+
+  
+
 
 
 
