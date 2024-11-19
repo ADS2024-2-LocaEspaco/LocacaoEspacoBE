@@ -25,6 +25,7 @@ model anuncio {
   tipo_reserva_atual            tipo_reserva
   anfitriao                     Int
   comodidade_id                 Int
+  acessibilidade_id             Int
   tipo_imovel_id                Int
   tipo_espaco_id                Int
   seguranca_id                  Int
@@ -33,6 +34,7 @@ model anuncio {
   fotos                         fotos                           @relation(fields: [foto_id], references: [id])
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
   comodidades                   comodidades                     @relation(fields: [comodidade_id], references: [id])
+  accessibilidade               acessibilidades                 @relation(fields: [acessibilidade_id], references: [id])
   tipo_imovel                   tipo_imovel                     @relation(fields: [tipo_imovel_id], references: [id])
   tipo_espaco                   tipo_espaco                     @relation(fields: [tipo_espaco_id], references: [id])
   seguranca                     seguranca                       @relation(fields: [seguranca_id], references: [id])
@@ -52,6 +54,13 @@ model fotos {
 }
 
 model comodidades {
+  id                  Int       @id @default(autoincrement())
+  comodidade          String    @db.VarChar(50)
+
+  anuncio             anuncio[]          
+}
+
+model acessibilidades {
   id                  Int       @id @default(autoincrement())
   comodidade          String    @db.VarChar(50)
 
