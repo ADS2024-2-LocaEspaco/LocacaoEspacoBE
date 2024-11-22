@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "mysql://root:aluno@localhost:3306/stayeasy"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model anuncio {
   id                            Int                             @id @default(autoincrement())
-  foto_id                       Int
+  fotos                         String[]                        @db.VarChar
   titulo                        String?                         @db.VarChar(50)
   hospedes                      Int
   quartos                       Int
@@ -17,29 +17,19 @@ model anuncio {
   descricao                     String?                         @db.VarChar(500)
   valor_diaria                  Decimal                         @db.Decimal
   publicado                     Boolean
-  data_checkin                  DateTime                        
-  data_checkout                 DateTime                        
+  data_checkin                  DateTime                        @db.Date
+  data_checkout                 DateTime                        @db.Date
   cameras                       Boolean
   regra_da_casa                 String                          @db.VarChar(100)
   politica_cancelamento         String                          @db.VarChar(100)
   tipo_reserva_atual            tipo_reserva
   anfitriao                     Int
-  comodidade_id                 Int
-  acessibilidade_id             Int
-  tipo_imovel_id                Int
-  tipo_espaco_id                Int
-  seguranca_id                  Int
-  tipo_hospede_id               Int
-
-  fotos                         fotos                           @relation(fields: [foto_id], references: [id])
+  comodidades                   String[]
+  tipo_imovel                   String[]
+  tipo_espaco                   String[]
+  seguranca                     String[]
+  tipo_hospede                  String[]
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
-  comodidades                   comodidades                     @relation(fields: [comodidade_id], references: [id])
-  accessibilidade               acessibilidades                 @relation(fields: [acessibilidade_id], references: [id])
-  tipo_imovel                   tipo_imovel                     @relation(fields: [tipo_imovel_id], references: [id])
-  tipo_espaco                   tipo_espaco                     @relation(fields: [tipo_espaco_id], references: [id])
-  seguranca                     seguranca                       @relation(fields: [seguranca_id], references: [id])
-  tipo_hospede                  tipo_hospede                    @relation(fields: [tipo_hospede_id], references: [id])
-
   endereco                      endereco[]
   favoritos                     favoritos[]
   lista_favoritos_personalizada lista_favoritos_personalizada[]
@@ -56,14 +46,6 @@ model fotos {
 model comodidades {
   id                  Int       @id @default(autoincrement())
   comodidade          String    @db.VarChar(50)
-
-  anuncio             anuncio[]          
-}
-
-model acessibilidades {
-  id                  Int       @id @default(autoincrement())
-  comodidade          String    @db.VarChar(50)
-
   anuncio             anuncio[]          
 }
 
@@ -100,15 +82,15 @@ model avaliacao {
   id_usuario_avaliador                            Int
   id_usuario_avaliado                             Int?
   id_anuncio_avaliado                             Int?
-  nota_limpeza                                    Decimal?  @db.Decimal
-  nota_exatidao_anuncio                           Decimal?  @db.Decimal
-  nota_custo_beneficio                            Decimal?  @db.Decimal
-  nota_localizacao                                Decimal?  @db.Decimal
+  nota_limpeza                                    Decimal?  @db.Decimal @default(0)
+  nota_exatidao_anuncio                           Decimal?  @db.Decimal @default(0)
+  nota_custo_beneficio                            Decimal?  @db.Decimal @default(0)
+  nota_localizacao                                Decimal?  @db.Decimal @default(0)
   comentario                                      String    @db.VarChar(255)
-  nota_seguiu_regras                              Decimal?  @db.Decimal
-  nota_pontualidade                               Decimal?  @db.Decimal
-  nota_cordialidade                               Decimal?  @db.Decimal
-  criado_em                                       DateTime? @default(now()) 
+  nota_seguiu_regras                              Decimal?  @db.Decimal @default(0)
+  nota_pontualidade                               Decimal?  @db.Decimal @default(0)
+  nota_cordialidade                               Decimal?  @db.Decimal @default(0)
+  criado_em                                       DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
   usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
   usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
   usuario_usuario_avaliacao_idToavaliacao         usuario[] @relation("usuario_avaliacao_idToavaliacao")
@@ -127,18 +109,18 @@ model endereco {
   complemento String?   @db.VarChar(255)
   latitude    String?   @db.VarChar(50)
   longitude   String?   @db.VarChar(50)
-  criado_em   DateTime? @default(now()) 
+  criado_em   DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
   anuncio     anuncio?  @relation(fields: [id_anuncio], references: [id])
-  usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
 model favoritos {
   id         Int       @id @default(autoincrement())
   id_usuario Int?
   id_anuncio Int?
-  criado_em  DateTime? @default(now()) 
-  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
+  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
 model usuario {
@@ -150,7 +132,7 @@ model usuario {
   cpf                                               String?                         @db.VarChar(14)
   telefone                                          String?                         @db.VarChar(14)
   admin                                             Boolean?                        @default(false)
-  criado_em                                         DateTime?                       @default(now()) 
+  criado_em                                         DateTime?                       @default(dbgenerated("CURRENT_DATE")) @db.Date
   ativo                                             Boolean?                        @default(true)
   url_documento                                     String?                         @db.VarChar(255)
   bloqueado                                         Boolean?                        @default(false)
@@ -169,13 +151,13 @@ model usuario {
 
 model dados_bancarios {
   id           Int     @id @default(autoincrement())
-  id_usuario   Int     @unique
+  id_usuario   Int     @unique()
   banco        String  @db.VarChar(50)
   agencia      String  @db.VarChar(50)
   numero_conta String  @db.VarChar(20)
   tipo_conta   String  @db.VarChar(15)
   chave_pix    String? @db.VarChar(50)
-  usuario      usuario @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario      usuario @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
 model lista_favoritos_personalizada {
@@ -183,9 +165,9 @@ model lista_favoritos_personalizada {
   id_usuario Int?
   id_anuncio Int?
   nome       String?   @db.VarChar(20)
-  criado_em  DateTime? @default(now()) 
-  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  criado_em  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
+  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
 model reserva {
@@ -196,13 +178,13 @@ model reserva {
   qtd_criancas     Int?
   qtd_bebes        Int?
   qtd_pets         Int?
-  data_inicial     DateTime?         
-  data_final       DateTime?         
+  data_inicial     DateTime?         @db.Date
+  data_final       DateTime?         @db.Date
   status_reserva   status_reserva?
   status_pagamento status_pagamento?
   multa            Boolean?          @default(false)
   cancelamento     Boolean?          @default(false)
-  criado_em        DateTime?         @default(now()) 
+  criado_em        DateTime?         @default(dbgenerated("CURRENT_DATE")) @db.Date
   anuncio          anuncio?          @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
   usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
@@ -217,7 +199,14 @@ enum status_reserva {
   Processando
 }
 
-enum tipo_reserva {
-  Instant_nea     @map("Instantânea")
-  N_o_instant_nea @map("Não instantânea")
+enum tipo_reserva { // Opções de reserva
+  Instant_nea             @map("Instantânea")
+  N_o_instant_nea         @map("Não instantânea")
+  cancelamento_gratuito   @map("Cancelamento Gratuito")
+}
+
+enum tipo_accessibilidade { //Acessibilidade
+  cadeirantes         @map("Acessivel para cadeirantes")
+  banheiro_adaptado   @map("Banheiro adaptado")
+  alarmes_visuais     @map("Alarmes visuais")
 }

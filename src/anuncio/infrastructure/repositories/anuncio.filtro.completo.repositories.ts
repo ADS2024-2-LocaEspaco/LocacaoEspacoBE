@@ -1,42 +1,43 @@
-import { tipo_reserva, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { anuncioFiltroCompletoDto } from "../database/dto/anuncio.filtro.completo";
+import { Injectable } from "@nestjs/common";
 
 const prisma = new PrismaClient();
 
-export async function getAdvancedSearch(
-    tipo_imovel_id: number[], 
-    min_value: number, 
-    max_value: number, 
-    bath_quantity: number,
-    room_quantity: number,
-    comodidades: number[],
-    reserva: tipo_reserva,
-    accessibilities: number[]
-): Promise<any> {
-
-    const response = await prisma.anuncio.findMany({
-        where: {
-            tipo_imovel_id: {
-                in: tipo_imovel_id
-            },
-            valor_diaria: {
-                gte: min_value,
-                lte: max_value
-            },
-            banheiros: {
-                gte: bath_quantity 
-            },
-            quartos: {
-                gte: room_quantity
-            },
-            comodidade_id: {
-                in: comodidades
-            },
-            tipo_reserva_atual: {
-                equals: reserva
-            },
-            acessibilidade_id: {
-                in: accessibilities
+@Injectable()
+export class AnuncioFiltroCompletoRepository implements AnuncioFiltroCompletoRepository{
+    async getAdvancedSearch(filtroCompleto: anuncioFiltroCompletoDto): Promise<any> {
+        const result = await prisma.anuncio.findMany({
+            where: {
+                tipo_imovel_id: {
+                    in: filtroCompleto.tipo_imovel_id
+                },
+                valor_diaria: {
+                    gte: filtroCompleto.min_value,
+                    lte: filtroCompleto.max_value
+                },
+                banheiros: {
+                    gte: filtroCompleto.bath_quantity 
+                },
+                quartos: {
+                    gte: filtroCompleto.room_quantity
+                },
+                comodidade_id: {
+                    in: filtroCompleto.comodidades
+                },
+                tipo_reserva_atual: {
+                    equals: filtroCompleto.reserva
+                },
+                acessibilidade_id: {
+                    in: filtroCompleto.accessibilities
+                }
             }
+        })
+
+        if (!result) {
+            return null
         }
-    })
+
+        return result
+    }
 }
