@@ -9,11 +9,23 @@ import { getAnuncioFotosDto } from './database/dto/get-anuncio-fotos.dto';
 export class AnuncioController {
   constructor(private readonly anuncioService: AnuncioService) { }
 
-  @Get('user/:id')
+  @Get('comodidades/:id')
+  async getComodidadesByAnuncioId(@Param('id') id: number): Promise<getComodidadesAnuncioDto[] | null> {
+    const anuncioId = Number(id); 
+
+    const comodidades = await this.anuncioService.getComodidadesByAnuncioId(id);
+
+    if (!comodidades) {
+      throw new NotFoundException('comodidade não encontrada');
+    }
+    return comodidades;
+  }
+
+  @Get('usuarios/:id')
   async getDadosUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
      const anuncioId = Number(id); // Certifique-se de que `id` é um número
 
-      const anuncio = await this.anuncioService.getAnuncioById(anuncioId); 
+      const anuncio = await this.anuncioService.getAnuncioById(id); 
 
       if (!anuncio) {
         throw new NotFoundException('Anúncio não encontrado'); 
@@ -27,21 +39,6 @@ export class AnuncioController {
       const usuario = await this.anuncioService.getUserFromAnuncio(usuario_id); 
       return usuario; 
   }
-
-   @Get('comodidades/:id')
-  async getComodidadesByAnuncioId(@Param('id') id: number): Promise<getComodidadesAnuncioDto[] | null> {
-    const anuncioId = Number(id); // Certifique-se de que `id` é um número
-
-    const comodidades = await this.anuncioService.getComodidadesByAnuncioId(id);
-
-    if (!comodidades) {
-      throw new NotFoundException('comodidade não encontrada');
-    }
-    console.log(comodidades)
-
-    return comodidades;
-  }
-
   
   @Get('fotos/:id')
   async getFotosByAnuncioId(@Param('id') id: number): Promise<getAnuncioFotosDto[] | null> {
@@ -52,7 +49,6 @@ export class AnuncioController {
     if (!fotos) {
       return null;
     }
-    console.log(fotos)
 
     return fotos;
   }

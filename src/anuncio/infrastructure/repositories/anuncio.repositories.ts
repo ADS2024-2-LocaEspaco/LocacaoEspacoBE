@@ -6,9 +6,6 @@ import { getAnuncioFotosDto } from "../database/dto/get-anuncio-fotos.dto";
 import { getComodidadesAnuncioDto } from "../database/dto/get-comodidade-anuncio.dto";
 import { PrismaClient } from "@prisma/client";
 
-
-
-
 const prisma = new PrismaClient();
 
 export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> {
@@ -101,15 +98,14 @@ export async function getComodidadesByAnuncioId(id: number): Promise<getComodida
 
     const comodidades = await prisma.comodidades.findMany({
         where: {
-
-            id: {
+            id:{
                 in: comodidadesId.map((c: { comodidade_id: any; }) => c.comodidade_id)
             }
         }
 
     })
 
-    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map((c: { id: any; comodidade: any; icone: any; }) => ({
+    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map((c: { id: any; comodidade: any; icone: any; }) =>({
         id: c.id,
         comodidades: c.comodidade,
         icone: c.icone
