@@ -1,4 +1,12 @@
-import { IsString, IsInt, MinLength, IsBoolean, IsArray, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  MinLength,
+  IsBoolean,
+  IsDate,
+  IsArray,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateAnuncioDto {
   @IsString()
