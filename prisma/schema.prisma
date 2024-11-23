@@ -9,34 +9,39 @@ datasource db {
 
 model anuncio {
   id                            Int                             @id @default(autoincrement())
-  foto_id                       Int
   titulo                        String?                         @db.VarChar(50)
-  hospedes                      Int
-  quartos                       Int
-  banheiros                     Int
   descricao                     String?                         @db.VarChar(500)
-  valor_diaria                  Decimal                         @db.Decimal
-  publicado                     Boolean
-  data_checkin                  DateTime                        
-  data_checkout                 DateTime                        
+  quartos                       Int
+  camas                         Int
+  banheiros                     Int
+  hospedes                      Int
   cameras                       Boolean
-  regra_da_casa                 String                          @db.VarChar(100)
-  politica_cancelamento         String                          @db.VarChar(100)
+  valor_diaria                  Decimal                         @db.Decimal
+  dias_minimo_antecedencia      Int 
+  dias_minimo_duracao           Int
+  dias_maximo_duracao           Int
+  publicado                     Boolean
   tipo_reserva_atual            tipo_reserva
-  anfitriao                     Int
-  comodidade_id                 Int
   tipo_imovel_id                Int
   tipo_espaco_id                Int
-  seguranca_id                  Int
   tipo_hospede_id               Int
+  anfitriao                     Int
 
-  fotos                         fotos                           @relation(fields: [foto_id], references: [id])
-  usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
-  comodidades                   comodidades                     @relation(fields: [comodidade_id], references: [id])
-  tipo_imovel                   tipo_imovel                     @relation(fields: [tipo_imovel_id], references: [id])
-  tipo_espaco                   tipo_espaco                     @relation(fields: [tipo_espaco_id], references: [id])
-  seguranca                     seguranca                       @relation(fields: [seguranca_id], references: [id])
-  tipo_hospede                  tipo_hospede                    @relation(fields: [tipo_hospede_id], references: [id])
+  data_checkin                  DateTime?                        
+  data_checkout                 DateTime?                        
+  regra_da_casa                 String?                          @db.VarChar(100)
+  politica_cancelamento         String?                          @db.VarChar(100)
+  foto_id                       Int?
+  comodidade_id                 Int?
+  seguranca_id                  Int?
+
+  fotos                         fotos?                           @relation(fields: [foto_id], references: [id])
+  usuario                       usuario                          @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
+  comodidades                   comodidades?                     @relation(fields: [comodidade_id], references: [id])
+  tipo_imovel                   tipo_imovel                      @relation(fields: [tipo_imovel_id], references: [id])
+  tipo_espaco                   tipo_espaco                      @relation(fields: [tipo_espaco_id], references: [id])
+  seguranca                     seguranca?                       @relation(fields: [seguranca_id], references: [id])
+  tipo_hospede                  tipo_hospede                     @relation(fields: [tipo_hospede_id], references: [id])
 
   endereco                      endereco[]
   favoritos                     favoritos[]

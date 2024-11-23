@@ -1,21 +1,64 @@
-export class createAnuncioDto {
-  readonly titulo: string;
-  readonly tipo_imovel_id: number;
-  readonly tipo_espaco_id: number;
-  readonly comodidade_id: number;
-  readonly seguranca_id: number;
-  readonly tipo_hospede_id: number;
-  readonly foto_id: number;
-  readonly hospedes: number;
-  readonly quartos: number;
-  readonly banheiros: number;
-  readonly descricao?: string;
-  readonly valor_diaria: number;
-  readonly publicado: boolean;
-  readonly data_checkin: Date;
-  readonly data_checkout: Date;
-  readonly cameras: boolean;
-  readonly regra_da_casa: string;
-  readonly politica_cancelamento: string;
-  readonly anfitriao: number;
+import { IsString, IsInt, MinLength, IsBoolean, IsArray, MaxLength } from 'class-validator';
+
+export class CreateAnuncioDto {
+  @IsString()
+  @MaxLength(40)
+  titulo: string;
+
+  @IsString()
+  @MinLength(20)
+  @MaxLength(500)
+  descricao: string;
+
+  @IsInt()
+  tipo_imovel_id: number;
+
+  @IsInt()
+  tipo_espaco_id: number;
+
+  @IsInt()
+  quartos: number;
+
+  @IsInt()
+  camas: number;
+
+  @IsInt()
+  banheiros: number;
+
+  @IsInt()
+  hospedes: number;
+
+  @IsArray()
+  @IsInt({ each: true })
+  comodidades: number[]; // Check
+
+  @IsArray()
+  @IsInt({ each: true })
+  seguranca: number[]; // Check
+
+  @IsArray()
+  fotos: string[]; // Check
+
+  @IsBoolean()
+  cameras: boolean; 
+
+  @IsString()
+  tipo_reserva_atual: string;
+
+  @IsInt()
+  tipo_hospede_id: number;
+
+  @IsInt()
+  valor_diaria: number;
+
+  @IsInt()
+  dias_minimo_antecedencia: number;
+
+  @IsInt()
+  dias_minimo_duracao: number;
+
+  @IsInt()
+  dias_maximo_duracao: number;
+
+  // TODO: Criar a validação para o endereço
 }

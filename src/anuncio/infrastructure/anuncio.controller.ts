@@ -2,7 +2,7 @@ import { Controller, Get, Param, Body, NotFoundException, Post } from '@nestjs/c
 import { AnuncioService } from './anuncio.service';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
-import { createAnuncioDto } from './database/dto/create-anuncio.dto';
+import { CreateAnuncioDto } from './database/dto/create-anuncio.dto';
 
 @Controller('anuncio')
 export class AnuncioController {
@@ -58,7 +58,7 @@ export class AnuncioController {
   }
   
   @Post('/')
-  async createAnuncio(@Body() data: createAnuncioDto): Promise<{}> {
-    return {}
+  async createAnuncio(@Body() params: CreateAnuncioDto): Promise<void> {
+    return this.anuncioService.createAnuncio(params);
   }
 }

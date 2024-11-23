@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
-import { createAnuncioDto } from './database/dto/create-anuncio.dto';
+import { CreateAnuncioDto } from './database/dto/create-anuncio.dto';
 import { 
   getReservasById, 
   getAnuncioById, 
@@ -51,9 +51,31 @@ export class AnuncioService {
     return usuario;
   }
 
-  async createAnuncio(data: createAnuncioDto): Promise<void> {
+  async createAnuncio(data: CreateAnuncioDto): Promise<void> {
     try {
-      //
+      const anuncio = await this.prisma.anuncio.create({
+        data: {
+          titulo: data.titulo,
+          descricao: data.descricao,
+          quartos: data.quartos,
+          camas: data.camas,
+          banheiros: data.banheiros,
+          hospedes: data.hospedes,
+          cameras: data.cameras,
+          valor_diaria: data.valor_diaria,
+          dias_minimo_antecedencia: data.dias_minimo_antecedencia,
+          dias_minimo_duracao: data.dias_minimo_duracao,
+          dias_maximo_duracao: data.dias_maximo_duracao,
+          publicado: false,
+          tipo_reserva_atual: data.tipo_reserva_atual,
+          tipo_imovel_id: data.tipo_imovel_id,
+          tipo_espaco_id: data.tipo_espaco_id,
+          tipo_hospede_id: data.tipo_hospede_id,
+          anfitriao: 1
+        }
+      });
+
+      // TODO: criar o registro no endereço
     } catch (error) {
       // 
     }
