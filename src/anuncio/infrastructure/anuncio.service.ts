@@ -10,6 +10,7 @@ import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 import { AnuncioFiltroRepository } from './repositories/anuncio.filtro.repository';
+import { AnuncioMaisReservadosRepository } from './repositories/anuncio.mais_reservados.repository';
 
 @Injectable()
 export class AnuncioService {
@@ -17,6 +18,7 @@ export class AnuncioService {
 
   constructor(
     private readonly anuncioFiltroRepository: AnuncioFiltroRepository,
+    private readonly anuncioMaisReservadoRepository: AnuncioMaisReservadosRepository,
   ) {}
 
   async getAnuncioById(id: number): Promise<getAnuncioDto | null> {
@@ -98,5 +100,9 @@ export class AnuncioService {
     );
 
     return anuncios;
+  }
+
+  async getAnunciosMaisReservados() {
+    return this.anuncioMaisReservadoRepository.getAnuncios();
   }
 }

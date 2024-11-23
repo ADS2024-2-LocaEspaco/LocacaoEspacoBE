@@ -6,8 +6,10 @@ import { AnuncioService } from 'src/anuncio/infrastructure/anuncio.service';
 export class AnuncioMaisReservadosController {
   constructor(private readonly anuncioService: AnuncioService) {}
 
-  @Get('mais-reservados')
+  @Get('/')
   async getAnunciosMaisReservados(@Req() req: Request, @Res() res: Response) {
-    return res.send('aaaa');
+    const anunciosMaisReservados = await this.anuncioService.getAnunciosMaisReservados();
+
+    res.status(200).send(anunciosMaisReservados);
   }
 }
