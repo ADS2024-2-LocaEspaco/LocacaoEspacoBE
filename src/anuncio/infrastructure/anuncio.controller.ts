@@ -9,17 +9,7 @@ import { getAnuncioFotosDto } from './database/dto/get-anuncio-fotos.dto';
 export class AnuncioController {
   constructor(private readonly anuncioService: AnuncioService) { }
 
-  @Get('reservas')
-  async getReservas(@Body('id') id: number): Promise<Object> {
-    return await this.anuncioService.getReservas(id);
-  }
-
-  @Get(':id/:user')
-  async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto | null> {
-    return this.anuncioService.getUserFromAnuncio(id);
-  }
-
-  @Get('usuario/:id')
+  @Get('user/:id')
   async getDadosUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
      const anuncioId = Number(id); // Certifique-se de que `id` é um número
 
@@ -38,7 +28,7 @@ export class AnuncioController {
       return usuario; 
   }
 
-  @Get('comodidades/:id')
+   @Get('comodidades/:id')
   async getComodidadesByAnuncioId(@Param('id') id: number): Promise<getComodidadesAnuncioDto[] | null> {
     const anuncioId = Number(id); // Certifique-se de que `id` é um número
 
@@ -52,9 +42,10 @@ export class AnuncioController {
     return comodidades;
   }
 
+  
   @Get('fotos/:id')
   async getFotosByAnuncioId(@Param('id') id: number): Promise<getAnuncioFotosDto[] | null> {
-    const anuncioId = Number(id); // Certifique-se de que `id` é um número
+    const anuncioId = Number(id); 
 
     const fotos = await this.anuncioService.getFotosByAnuncioId(id);
 
@@ -65,6 +56,20 @@ export class AnuncioController {
 
     return fotos;
   }
+
+
+  @Get('reservas')
+  async getReservas(@Body('id') id: number): Promise<Object> {
+    return await this.anuncioService.getReservas(id);
+  }
+
+  @Get(':id/:user')
+  async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto | null> {
+    return this.anuncioService.getUserFromAnuncio(id);
+  }
+
+  
+ 
 
 
 }

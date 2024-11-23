@@ -1,10 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import { getEnderecoDto } from "../database/dto/get-anuncio-endereco.dto";
 import { getReservaDto } from "../database/dto/get-reserva.dto";
 import { getAnuncioDto } from "../database/dto/get-anuncio.dto";
 import { getUsuarioDto } from "../database/dto/get-anuncio-usuario.dto";
 import { getAnuncioFotosDto } from "../database/dto/get-anuncio-fotos.dto";
 import { getComodidadesAnuncioDto } from "../database/dto/get-comodidade-anuncio.dto";
+import { PrismaClient } from "@prisma/client";
+
 
 
 
@@ -102,13 +103,13 @@ export async function getComodidadesByAnuncioId(id: number): Promise<getComodida
         where: {
 
             id: {
-                in: comodidadesId.map(c => c.comodidade_id)
+                in: comodidadesId.map((c: { comodidade_id: any; }) => c.comodidade_id)
             }
         }
 
     })
 
-    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map(c => ({
+    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map((c: { id: any; comodidade: any; icone: any; }) => ({
         id: c.id,
         comodidades: c.comodidade,
         icone: c.icone
@@ -119,30 +120,31 @@ export async function getComodidadesByAnuncioId(id: number): Promise<getComodida
 }
 
 
-export async function getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[]> {
-
+export async function getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | null> {
+        
     const anuncioId = Number(id);
 
     const fotosId = await prisma.anuncioFotos.findMany({
-        where: {
+        where:{
             anuncio_id: anuncioId
         },
         select: {
-            foto_id: true
+            foto_id:true
         }
     })
+
 
     const fotos = await prisma.fotos.findMany({
         where: {
 
             id: {
-                in: fotosId.map(f => f.foto_id)
+                in: fotosId.map((f: { foto_id: any; }) => f.foto_id)
             }
         }
 
     })
 
-    const listaDTOs: getAnuncioFotosDto[] = fotos.map(f => ({
+    const listaDTOs: getAnuncioFotosDto[] = fotos.map((f: { id: any; url: any; }) => ({
         id: f.id,
         url: f.url
 
