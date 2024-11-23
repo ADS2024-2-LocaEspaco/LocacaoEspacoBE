@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://user:password@localhost:5432/locaespaco"
 }
 
 model anuncio {
@@ -14,7 +14,7 @@ model anuncio {
   hospedes                      Int
   quartos                       Int
   banheiros                     Int
-  descricao                     String?                         @db.String(500)
+  descricao                     String?                         @db.VarChar(500)
   valor_diaria                  Decimal                         @db.Decimal
   publicado                     Boolean
   data_checkin                  DateTime                        
@@ -24,82 +24,69 @@ model anuncio {
   politica_cancelamento         String                          @db.String(100)
   tipo_reserva_atual            tipo_reserva
   anfitriao                     Int
-  comodidade_id                 Int
-  tipo_imovel_id                Int
-  tipo_espaco_id                Int
-  seguranca_id                  Int
-  tipo_hospede_id               Int
-
-  fotos                         fotos                           @relation(fields: [foto_id], references: [id])
+  comodidades                   String[]
+  tipo_imovel                   String[]
+  tipo_espaco                   String[]
+  seguranca                     String[]
+  tipo_hospede                  String[]
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
-  comodidades                   comodidades                     @relation(fields: [comodidade_id], references: [id])
-  tipo_imovel                   tipo_imovel                     @relation(fields: [tipo_imovel_id], references: [id])
-  tipo_espaco                   tipo_espaco                     @relation(fields: [tipo_espaco_id], references: [id])
-  seguranca                     seguranca                       @relation(fields: [seguranca_id], references: [id])
-  tipo_hospede                  tipo_hospede                    @relation(fields: [tipo_hospede_id], references: [id])
-
   endereco                      endereco[]
   favoritos                     favoritos[]
   lista_favoritos_personalizada lista_favoritos_personalizada[]
   reserva                       reserva[]
 }
 
-model fotos {
-  id                  Int       @id @default(autoincrement())
-  url                 String    @db.String(255)
+model avaliacao {
+  id                    Int       @id @default(autoincrement())
+  reservas_id           Int
+  avaliado              BigInt
+  nota_limpeza          String?   @db.VarChar(255)
+  nota_exatidao_anuncio String?   @db.VarChar(255)
+  nota_custo_beneficio  String?   @db.VarChar(255)
+  nota_localizacao      String?   @db.VarChar(255)
+  comentario            String    @db.VarChar(350)
+  nota_seguiu_regras    String?   @db.VarChar(255)
+  nota_pontualidade     String?   @db.VarChar(255)
+  nota_cordialidade     String?   @db.VarChar(255)
+  criado_em             DateTime? @default(now()) @db.Timestamp(6)
 
-  anuncio             anuncio[]  
+  reserva              reserva  @relation(fields: [reservas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "avaliacao_fk1")
+}
+
+model categorias_comodidade {
+  id          Int           @id @default(autoincrement())
+  tipo        String        @unique(map: "tipo_cat_comod") @db.VarChar(100)
+  comodidades comodidades[]
+}
+
+model comodidade_anuncio {
+  id             Int         @id @default(autoincrement())
+  comodidades_id Int
+  anuncio_id     Int
+  comodidades    comodidades @relation(fields: [comodidades_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk1")
+  anuncio        anuncio     @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk2")
 }
 
 model comodidades {
-  id                  Int       @id @default(autoincrement())
-  comodidade          String    @db.String(50)
-
-  anuncio             anuncio[]  
-}
-
-model tipo_imovel {
-  id                  Int       @id @default(autoincrement())
-  imovel              String    @db.String(50)
-
-  anuncio             anuncio[]  
-}
-
-model tipo_espaco {
-  id                  Int       @id @default(autoincrement())
-  espaco              String    @db.String(50)
-
-  anuncio             anuncio[]  
-}
-
-model seguranca {
-  id                  Int       @id @default(autoincrement())
-  item_seguranca      String    @db.String(50)
-
-  anuncio             anuncio[]  
-}
-
-model tipo_hospede {
-  id                  Int       @id @default(autoincrement())
-  hospede             String    @db.String(50)
-
-  anuncio             anuncio[]  
-}
-
-model avaliacao {
+  id                       Int                   @id @default(autoincrement())
+  categorias_comodidade_id Int
+  nome                     String                @db.VarChar(100)
+  icone                    String?               @db.VarChar(500)
+  comodidade_anuncio       comodidade_anuncio[]
+  categorias_comodidade    categorias_comodidade @relation(fields: [categorias_comodidade_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidades_fk1")
   id                                              Int       @id @default(autoincrement())
   id_usuario_avaliador                            Int
   id_usuario_avaliado                             Int?
   id_anuncio_avaliado                             Int?
-  nota_limpeza                                    Decimal?  @db.Decimal @default(0)
-  nota_exatidao_anuncio                           Decimal?  @db.Decimal @default(0)
-  nota_custo_beneficio                            Decimal?  @db.Decimal @default(0)
-  nota_localizacao                                Decimal?  @db.Decimal @default(0)
-  comentario                                      String    @db.String(255)
-  nota_seguiu_regras                              Decimal?  @db.Decimal @default(0)
-  nota_pontualidade                               Decimal?  @db.Decimal @default(0)
-  nota_cordialidade                               Decimal?  @db.Decimal @default(0)
-  criado_em                                       DateTime? @default(now()) 
+  nota_limpeza                                    Decimal?  @db.Decimal
+  nota_exatidao_anuncio                           Decimal?  @db.Decimal
+  nota_custo_beneficio                            Decimal?  @db.Decimal
+  nota_localizacao                                Decimal?  @db.Decimal
+  comentario                                      String    @db.VarChar(255)
+  nota_seguiu_regras                              Decimal?  @db.Decimal
+  nota_pontualidade                               Decimal?  @db.Decimal
+  nota_cordialidade                               Decimal?  @db.Decimal
+  criado_em                                       DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
   usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
   usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
   usuario_usuario_avaliacao_idToavaliacao         usuario[] @relation("usuario_avaliacao_idToavaliacao")
@@ -147,7 +134,7 @@ model usuario {
   bloqueado                                         Boolean?                        @default(false)
   token_acesso                                      String                          @db.String(255)
   avaliacao_id                                      Int?
-  anuncio                                           anuncio[] 
+  anuncio                                           anuncio[]
   avaliacao_avaliacao_id_usuario_avaliadoTousuario  avaliacao[]                     @relation("avaliacao_id_usuario_avaliadoTousuario")
   avaliacao_avaliacao_id_usuario_avaliadorTousuario avaliacao[]                     @relation("avaliacao_id_usuario_avaliadorTousuario")
   dados_bancarios                                   dados_bancarios[]
