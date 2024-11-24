@@ -1,16 +1,19 @@
-import { PrismaClient } from "@prisma/client";
 import { getEnderecoDto } from "../database/dto/get-anuncio-endereco.dto";
 import { getReservaDto } from "../database/dto/get-reserva.dto";
 import { getAnuncioDto } from "../database/dto/get-anuncio.dto";
 import { getUsuarioDto } from "../database/dto/get-anuncio-usuario.dto";
-import { getComodidadesAnuncioDto } from "../database/dto/get-comodidade-anuncio.dto"
+import { getAnuncioFotosDto } from "../database/dto/get-anuncio-fotos.dto";
+import { getComodidadesAnuncioDto } from "../database/dto/get-comodidade-anuncio.dto";
+import { PrismaClient } from "@prisma/client";
+
 const prisma = new PrismaClient();
 
 export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> {
-    const anuncioId = parseInt(id.toString(), 10);
+    const anuncioId = parseInt(id.toString(), 10); // Converte id para número inteiro
+
 
     const anuncio = await prisma.anuncio.findUnique({
-        where: { id:anuncioId },
+        where: { id: id },
         select: {
             id: true,
             titulo: true,
@@ -49,7 +52,7 @@ export async function getReservasById(id: number): Promise<getReservaDto[] | nul
 
 
 export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<getUsuarioDto | null> {
-    const anuncioId = parseInt(id.toString(), 10); 
+    const anuncioId = parseInt(id.toString(), 10);
 
     const usuario = await prisma.usuario.findUnique({
         where: {
@@ -80,23 +83,21 @@ export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<
 
     return anfitriao;
 }
+export async function getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[]> {
 
-export async function getComodidadesByAnuncioId(id:number): Promise<getComodidadesAnuncioDto[]> {
-
-    const anuncioId = Number(id); 
+    const anuncioId = Number(id);
 
     const comodidadesId = await prisma.anuncioComodidades.findMany({
-        where:{
+        where: {
             anuncio_id: anuncioId
         },
         select: {
-            comodidade_id:true
+            comodidade_id: true
         }
     })
-    
+
     const comodidades = await prisma.comodidades.findMany({
         where: {
-            
             id:{
                 in: comodidadesId.map((c: { comodidade_id: any; }) => c.comodidade_id)
             }
@@ -106,14 +107,47 @@ export async function getComodidadesByAnuncioId(id:number): Promise<getComodidad
 
     const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map((c: { id: any; comodidade: any; icone: any; }) =>({
         id: c.id,
-        comodidades:c.comodidade,
+        comodidades: c.comodidade,
         icone: c.icone
-        
-    })) 
+
+    }))
 
     return listaDTOs
 }
 
+
+export async function getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | null> {
+        
+    const anuncioId = Number(id);
+
+    const fotosId = await prisma.anuncioFotos.findMany({
+        where:{
+            anuncio_id: anuncioId
+        },
+        select: {
+            foto_id:true
+        }
+    })
+
+
+    const fotos = await prisma.fotos.findMany({
+        where: {
+
+            id: {
+                in: fotosId.map((f: { foto_id: any; }) => f.foto_id)
+            }
+        }
+
+    })
+
+    const listaDTOs: getAnuncioFotosDto[] = fotos.map((f: { id: any; url: any; }) => ({
+        id: f.id,
+        url: f.url
+
+    }))
+
+    return listaDTOs
+}
 
 function calcularTempoCadastro(criadoEm: Date): string {
     const agora = new Date();

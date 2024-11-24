@@ -3,6 +3,7 @@ import { AnuncioService } from './anuncio.service';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 import { getComodidadesAnuncioDto } from './database/dto/get-comodidade-anuncio.dto';
+import { getAnuncioFotosDto } from './database/dto/get-anuncio-fotos.dto';
 
 @Controller('anuncio')
 export class AnuncioController {
@@ -10,7 +11,7 @@ export class AnuncioController {
 
   @Get('comodidades/:id')
   async getComodidadesByAnuncioId(@Param('id') id: number): Promise<getComodidadesAnuncioDto[] | null> {
-    const anuncioId = Number(id); // Certifique-se de que `id` é um número
+    const anuncioId = Number(id); 
 
     const comodidades = await this.anuncioService.getComodidadesByAnuncioId(id);
 
@@ -38,6 +39,19 @@ export class AnuncioController {
       const usuario = await this.anuncioService.getUserFromAnuncio(usuario_id); 
       return usuario; 
   }
+  
+  @Get('fotos/:id')
+  async getFotosByAnuncioId(@Param('id') id: number): Promise<getAnuncioFotosDto[] | null> {
+    const anuncioId = Number(id); 
+
+    const fotos = await this.anuncioService.getFotosByAnuncioId(id);
+
+    if (!fotos) {
+      return null;
+    }
+
+    return fotos;
+  }
 
 
   @Get('reservas')
@@ -51,10 +65,7 @@ export class AnuncioController {
   }
 
   
-
-
-
-
+ 
 
 
 }
