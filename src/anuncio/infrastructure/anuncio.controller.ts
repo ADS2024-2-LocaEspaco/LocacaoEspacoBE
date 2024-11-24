@@ -21,7 +21,7 @@ export class AnuncioController {
     return comodidades;
   }
 
-  @Get('usuarios/:id')
+  @Get('usuario/:id')
   async getDadosUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
      const anuncioId = Number(id); // Certifique-se de que `id` é um número
 

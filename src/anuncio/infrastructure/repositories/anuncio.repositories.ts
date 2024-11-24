@@ -9,11 +9,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> {
-    const anuncioId = parseInt(id.toString(), 10); // Converte id para número inteiro
+    const anuncioId = parseInt(id.toString(), 10); 
 
 
     const anuncio = await prisma.anuncio.findUnique({
-        where: { id: id },
+        where: { id: anuncioId },
         select: {
             id: true,
             titulo: true,
