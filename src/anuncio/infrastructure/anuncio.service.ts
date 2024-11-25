@@ -4,14 +4,15 @@ import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 import { CreateAnuncioDto } from './database/dto/create-anuncio.dto';
-import { 
-  getReservasById, 
-  getAnuncioById, 
+import { EnderecoDto } from './database/dto/endereco.dto';
+import {
+  getReservasById,
+  getAnuncioById,
   getDadosUsuarioAnfitriaoPorIdAnuncio,
   getTipoImovel,
   getTipoEspaco,
   getComodidades,
-  getSeguranca
+  getSeguranca,
 } from './repositories/anuncio.repositories';
 
 @Injectable()
@@ -23,25 +24,23 @@ export class AnuncioService {
   }
 
   async getReservas(id: number): Promise<getReservaDto[] | object> {
-    if (!Number.isNaN(id) && (id) > 0) {
+    if (!Number.isNaN(id) && id > 0) {
       let data = await getReservasById(id);
 
       // Verifica se 'data' é null, undefined ou uma lista vazia
       if (data == null || (Array.isArray(data) && data.length === 0)) {
         return {
-          'message': 'not content',
-          'status': 204
-        }
-
+          message: 'not content',
+          status: 204,
+        };
       } else {
         return data;
       }
-
     } else {
       return {
-        'message': 'bad request',
-        'status': 400
-      }
+        message: 'bad request',
+        status: 400,
+      };
     }
   }
 
@@ -71,14 +70,34 @@ export class AnuncioService {
           tipo_imovel_id: data.tipo_imovel_id,
           tipo_espaco_id: data.tipo_espaco_id,
           tipo_hospede_id: data.tipo_hospede_id,
-          anfitriao: 1
-        }
+          anfitriao: 1,
+        },
       });
 
-      // TODO: criar o registro no endereço
+      await this.createEndereco(data.endereco, anuncio.id);
     } catch (error) {
-      // 
+      //
     }
+  }
+
+  async createEndereco(
+    enderecoData: EnderecoDto,
+    anuncioId: number,
+  ): Promise<void> {
+    await this.prisma.endereco.create({
+      data: {
+        cep: enderecoData.cep,
+        estado: enderecoData.estado,
+        cidade: enderecoData.cidade,
+        bairro: enderecoData.bairro,
+        rua: enderecoData.rua,
+        numero: enderecoData.numero,
+        complemento: enderecoData.complemento,
+        latitude: enderecoData.latitude,
+        longitude: enderecoData.longitude,
+        id_anuncio: anuncioId,
+      },
+    });
   }
 
   async getTipoImovel(): Promise<Object> {
