@@ -4,9 +4,13 @@ import {
   MinLength,
   IsBoolean,
   IsDate,
+  IsOptional,
   IsArray,
+  IsNotEmpty,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateAnuncioDto {
   @IsString()
@@ -48,7 +52,7 @@ export class CreateAnuncioDto {
   fotos: string[]; // Check
 
   @IsBoolean()
-  cameras: boolean; 
+  cameras: boolean;
 
   @IsString()
   tipo_reserva_atual: string;
@@ -68,5 +72,53 @@ export class CreateAnuncioDto {
   @IsInt()
   dias_maximo_duracao: number;
 
-  // TODO: Criar a validação para o endereço
+  @ValidateNested()
+  @Type(() => EnderecoDto)
+  endereco: EnderecoDto;
+}
+export class EnderecoDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(10)
+  cep: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(2)
+  estado: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  cidade: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  bairro: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  rua: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(4)
+  numero?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(255)
+  complemento?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(50)
+  latitude?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(50)
+  longitude?: string;
 }
