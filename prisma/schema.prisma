@@ -190,10 +190,17 @@ model reserva {
   qtd_bebes        Int?
   qtd_pets         Int?
   data_inicial     DateTime?         
-  data_final       DateTime?      
+  data_final       DateTime?     
+
+  estadia_minima    Int             @default(1) 
+  estadia_maxima    Int?            
+
+  checkin           String?         @db.VarChar(40)
+  checkout          String?         @db.VarChar(40)
+
   status_aceite    status_aceite_reserva @default(Aguardando_resposta_anfitiao) // <<<< LINHA ADICIONADA @PEDRO   
-  status_reserva   status_reserva?
-  status_pagamento status_pagamento?
+  status_reserva   status_reserva    @default(Processando) //DEFAULT ADICIONADO
+  status_pagamento status_pagamento  @default(Aguardando) //DEFAULT ADICIONADO
   multa            Boolean?          @default(false)
   cancelamento     Boolean?          @default(false)
   criado_em        DateTime?         @default(now()) 
@@ -206,18 +213,20 @@ model reserva {
 // TABELA ADICIONADA @PEDRO
 model notificacao {
   id         Int      @id @default(autoincrement())
-  usuario_id Int
-  reserva_id Int? 
+  id_usuario Int      //de usuario_id para id_usuario
+  id_reserva Int      //de reserva_id para id_reserva
   tipo       String   @db.VarChar(50) 
   mensagem   String   @db.VarChar(255) 
-  status     String   @db.VarChar(20) 
+  // status     String   @db.VarChar(20) @default("Enviado") 
   data_envio DateTime @default(now()) 
 
-  usuario usuario  @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
-  reserva reserva? @relation(fields: [reserva_id], references: [id])
+  usuario usuario  @relation(fields: [id_usuario], references: [id], onDelete: Cascade)
+  reserva reserva  @relation(fields: [id_reserva], references: [id])
 
-  @@index([usuario_id])
+  @@index([id_usuario])
 }
+//Tabela adicionada
+
 
 // TABELA DE ENUM ADICIONADA @PEDRO
 enum status_aceite_reserva {
@@ -243,3 +252,10 @@ enum tipo_reserva {
   Instant_nea     @map("Instantânea")
   N_o_instant_nea @map("Não instantânea")
 }
+
+
+//Modificações feitas:
+//Tebela NOTIFICAÇÃO: REMOVIDO LINHA DE "STATUS"
+//tabela NOTIFICACÇÃO: mudei os dois id's (user e reserva), para id_(user ou reserva)
+//Tabela RESERVA: default adicionado para status de pagamento e reserva
+//Tabela RESERVA: Estadia mínima e máxima adicionado

@@ -10,6 +10,8 @@ export interface HostReservaDados {
   qtd_pets: number | null,
   data_inicial: Date | null,
   data_final: Date | null,
+  estadia_minima: number,
+  estadia_maxima: number | null,
   status_reserva: StatusReserva | null,
   status_pagamento: StatusPagamento | null,
   multa: number | null,

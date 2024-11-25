@@ -1,7 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma.instace";
-
-import { status_reserva } from "@prisma/client";
 import { StatusReserva } from "src/shared/enum/enums";
 import { mapStatusReservaToPrisma } from "./maps/map.TsEnum.to.prismaEnum.";
 
@@ -27,6 +25,8 @@ export class DadosDeReserva{
                     qtd_pets: true,
                     data_inicial: true,
                     data_final: true,
+                    estadia_minima: true,
+                    estadia_maxima: true,
                     status_reserva: true,
                     status_pagamento: true,
                     multa: true,
@@ -73,6 +73,8 @@ export class DadosDeReserva{
                     qtd_pets: true,
                     data_inicial: true,
                     data_final: true,
+                    estadia_minima: true,
+                    estadia_maxima: true,
                     status_reserva: true,
                     status_pagamento: true,
                     multa: true,

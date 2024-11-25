@@ -1,0 +1,71 @@
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma.instace";
+import { Checkout, TipoDeNotificacao } from "src/shared/enum/enums";
+import { Prisma } from "@prisma/client";
+import { Notificacoes } from "./notificacoes.dto";
+
+
+@Injectable()
+export class AlteracoesAnfitriao{
+    constructor (private readonly prisma: PrismaService, private readonly notify: Notificacoes){}
+
+    async checkoutDoAnfitriao( id_reserva:number, id_usuario: number, mensagem: string ){
+        try{   
+            
+            const checkout = await this.forcarCheckout(id_reserva);
+
+            if(!checkout || checkout.checkout){
+
+                throw new Error ("Checkout não realizado corretamente");
+            }
+
+            const tipo = TipoDeNotificacao.Checkout_realizado_anfitriao
+
+            const notificacao = await this.notify.notificaUsuario(id_usuario, id_reserva, tipo, mensagem);
+
+            if(!notificacao){
+
+                throw new Error('Notificação não realizada');
+
+            }
+
+            return {mensagem:"Checkout Realizado, Notificação enviada", checkout, notificacao}
+
+        }catch(error){
+
+            console.log('Algum erro occoreu durante o processo de checkout ou notifciação ao usuario: ', error)
+
+            throw new BadRequestException('Erro interno')
+
+        }
+    }
+
+    async forcarCheckout( id_reserva: number ) {
+        try{
+
+            const checkout = await this.prisma.reserva.update({
+                where: {
+                    id: id_reserva
+                },
+                data:{
+                    checkout: Checkout.Realizado_por_anfitriao
+                }
+            })
+
+            return checkout;
+
+        }catch(err){
+
+            if(err instanceof Prisma.PrismaClientKnownRequestError){
+                
+                console.log('Erro no prisma: ', err.code, err.meta)
+            }
+
+            console.log('Erro: ', err)
+
+            throw new BadRequestException('Um erro ocorreu ao fazer checkout')
+        }
+    }
+
+    
+}

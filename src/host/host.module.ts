@@ -4,11 +4,13 @@ import { PrismaService } from './database/prisma.instace';
 import { ReservaService } from './reserva/reserva.service';
 import { DadosDeReserva } from './database/dto/get.dados.reserva.dto';
 import { AtualizarDadosDeReserva } from './database/dto/att.dados.reserva.dto';
+import { Notificacoes } from './database/dto/notificacoes.dto';
+import { AlteracoesAnfitriao } from './database/dto/anfitriao.altera.dados';
 
 @Module({
   imports: [],
   controllers: [ HostReservas ], 
-  providers: [ ReservaService, PrismaService, DadosDeReserva, AtualizarDadosDeReserva], 
+  providers: [ ReservaService, PrismaService, DadosDeReserva, AtualizarDadosDeReserva, Notificacoes, AlteracoesAnfitriao], 
 })
 export class HostModule {}
 

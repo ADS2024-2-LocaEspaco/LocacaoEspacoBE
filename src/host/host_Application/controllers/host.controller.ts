@@ -1,5 +1,6 @@
 import { Controller, Get, Put, Query } from '@nestjs/common';
-import { ReservaValidator, DadosDeAttStatus, HistoricoDados, DadosNegarAceitar } from 'src/host/database/validator/host.validator.dto';
+import { ValidadorParaIdReserva, ValidadorParaDadosDeHistorico } from 'src/host/database/validator/validator.retorno.de.dados';
+import { ValidadorParaAtualizarStatusDeReserva, ValidadorParaAtualizarStatusDeAceiteReserva } from 'src/host/database/validator/validator.atualizacao.de.dados';
 import { ReservaService } from 'src/host/reserva/reserva.service';
 
 @Controller('reservas')
@@ -7,7 +8,7 @@ export class HostReservas {
   constructor(private readonly reservas: ReservaService) { }
 
   @Get()
-  async getReservas(@Query() query: ReservaValidator) {
+  async getReservas(@Query() query: ValidadorParaIdReserva) {
 
     const { id_anuncio, id_usuario } = query;
 
@@ -16,25 +17,8 @@ export class HostReservas {
     return result;
   }
 
-  // @Put('pagamento')
-  // async attPagamento(@Query() query: DadosDeAttStatus) {
-
-  //   const data = {
-
-  //     id: Number(query.id),
-  //     status_pagamento: Number(query.status)
-
-  //   };
-
-
-  //   const result = await this.reservas.attPagamento(data)
-
-  //   return result;
-
-  // }
-
   @Put('statusReserva')
-  async attReservas(@Query() query: DadosDeAttStatus) {
+  async attReservas(@Query() query: ValidadorParaAtualizarStatusDeReserva) {
 
     const data = {
 
@@ -50,7 +34,7 @@ export class HostReservas {
   }
 
   @Get('historico')
-  async getHistoricosReserva(@Query() query: HistoricoDados) {
+  async getHistoricosReserva(@Query() query: ValidadorParaDadosDeHistorico) {
 
     const { status_reserva, dataInicial, dataFinal } = query
 
@@ -61,13 +45,11 @@ export class HostReservas {
   }
 
   @Put('aceite')
-  async attAceite(@Query() query: DadosNegarAceitar) {
+  async attAceite(@Query() query: ValidadorParaAtualizarStatusDeAceiteReserva) {
 
     const { status_aceite, id_reserva, id_usuario } = query
 
     const result = await this.reservas.aceitarNegarReservas(status_aceite, id_reserva, id_usuario);
-
-
 
     return result
   }
