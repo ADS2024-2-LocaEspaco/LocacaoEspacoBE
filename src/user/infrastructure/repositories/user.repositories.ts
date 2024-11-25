@@ -22,17 +22,16 @@ export class UserRepository{
     //     return comentario
     // };
     
-    // async getUserHost(id: string): Promise<createHostDto | null>{
-    //     const getHostData = prisma.user.findUnique({
-    //         where:{
-    //             id
-    //         },
-    //         select:{
-    //             firstName: true,
-    //             lastName: true,
-    //             picture: true,
-    //         }
-    //     })
-    //     return getHostData
-    // }    
+    async getUserHost(id: number): Promise<object | null>{
+        const getHostData = prisma.usuario.findUnique({
+            where:{
+                id
+            },
+            select:{
+                nome: true,
+                foto: true,
+            }
+        })
+        return getHostData
+    }    
 }

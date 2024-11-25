@@ -17,27 +17,27 @@ export class UserService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  // async getDataAnfitriao(id: string): Promise<createHostDto | null> {
-  //   let data: createHostDto | any 
+  async getDataAnfitriao(id: string): Promise<createHostDto | null> {
+    let data: createHostDto | any 
 
-  //   try {
-  //     data = await this.userRepository.getUserHost(id)
+    try {
+      data = await this.userRepository.getUserHost(+id)
 
-  //     if(data == null){
-  //       data = {
-  //         "message": "usuario não encontrado"
-  //       }
+      if(data == null){
+        data = {
+          "message": "usuario não encontrado"
+        }
 
-  //     }
+      }
 
-  //   } catch (error) {
-  //     data = {
-  //       "erro": `${error}`
-  //     }
-  //   }
+    } catch (error) {
+      data = {
+        "erro": `${error}`
+      }
+    }
 
-  //   return data
-  // }
+    return data
+  }
 
   // async getUserById(id: string): Promise<User | null> {
   //   return this.prisma.user.findUnique({
