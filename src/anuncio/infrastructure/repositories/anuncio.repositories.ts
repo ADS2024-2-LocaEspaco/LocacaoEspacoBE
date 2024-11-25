@@ -16,10 +16,10 @@ export async function getAnuncio(id: number): Promise<any | null> {
         quartos:                        Number(anuncio?.quartos),
         banheiros:                      Number(anuncio?.banheiros),
         hospedes:                       Number(anuncio?.hospedes),
-        qtd_diaria_min:                 Number(anuncio?.qtd_diaria_min),
-        qtd_diaria_max:                 Number(anuncio?.qtd_diaria_max),
+        dias_minimo_duracao:            Number(anuncio?.dias_minimo_duracao),
+        dias_maximo_duracao:            Number(anuncio?.dias_maximo_duracao),
+        dias_minimo_antecedencia:       Number(anuncio?.dias_minimo_antecedencia),
         politica_cancelamento:          Number(anuncio?.politica_cancelamento),
-        tempo_antecipado_para_reserva:  Number(anuncio?.tempo_antecipado_para_reserva),
     } : null
     
     return dataAnuncio;

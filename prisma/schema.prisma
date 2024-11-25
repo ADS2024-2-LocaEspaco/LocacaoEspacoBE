@@ -28,9 +28,9 @@ model anuncio {
   tipo_espaco_id                Int
   seguranca_id                  Int
   tipo_hospede_id               Int
-  qtd_diaria_min                Int
-  qtd_diaria_max                Int
-  tempo_antecipado_para_reserva Int
+  dias_minimo_antecedencia      Int                            @default(0)
+  dias_minimo_duracao           Int                            @default(0)
+  dias_maximo_duracao           Int                            @default(0)
 
   fotos                         fotos                           @relation(fields: [foto_id], references: [id])
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
