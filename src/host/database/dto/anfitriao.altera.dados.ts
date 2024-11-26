@@ -9,15 +9,19 @@ import { Notificacoes } from "./notificacoes.dto";
 export class AlteracoesAnfitriao{
     constructor (private readonly prisma: PrismaService, private readonly notify: Notificacoes){}
 
-    async checkoutDoAnfitriao( id_reserva:number, id_usuario: number, mensagem: string ){
+    async checkoutDoAnfitriao( id_reserva: number, id_usuario: number, mensagem: string ){
         try{   
             
+            console.log('ID reserva: ', id_reserva, typeof(id_reserva), '\nID usuario: ', id_usuario, typeof(id_usuario), '\nMesagem: ', mensagem, typeof(mensagem))
+
             const checkout = await this.forcarCheckout(id_reserva);
 
-            if(!checkout || checkout.checkout){
+            // console.log('\nCheckout return: ', checkout)
 
-                throw new Error ("Checkout não realizado corretamente");
-            }
+            // if(!checkout || checkout.checkout){
+
+            //     throw new Error ("Checkout não realizado corretamente");
+            // }
 
             const tipo = TipoDeNotificacao.Checkout_realizado_anfitriao
 
@@ -28,6 +32,8 @@ export class AlteracoesAnfitriao{
                 throw new Error('Notificação não realizada');
 
             }
+
+            console.log("Notificação: ", notificacao)
 
             return {mensagem:"Checkout Realizado, Notificação enviada", checkout, notificacao}
 

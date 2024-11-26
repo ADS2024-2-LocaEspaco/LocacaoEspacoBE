@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsIn, IsInt, IsNotEmpty, Max, Min } from "class-validator";
+import { IsIn, IsInt, IsNotEmpty, Max, MaxLength, Min, MinLength } from "class-validator";
 
 export class ValidadorParaAtualizarStatusDeReserva {
 
@@ -40,3 +40,22 @@ export class ValidadorParaAtualizarStatusDeReserva {
   
   }
   
+  export class ValidadorDoCheckoutANfitriao {
+
+  @IsNotEmpty()
+  @IsInt()
+  @Min(0)
+  @Type(() => Number)
+  id_reserva: number
+  
+  @IsInt()
+  @Min(0)
+  @Type(() => Number)
+  id_usuario: number
+
+  @IsNotEmpty()
+  @MinLength(1)
+  @MaxLength(254)
+  mensagem: string
+
+  }

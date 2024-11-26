@@ -1,4 +1,4 @@
-import { Min, Max, IsDate,IsIn, IsInt, IsNotEmpty } from 'class-validator';
+import { Min, IsInt, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class AnuncioValidator {

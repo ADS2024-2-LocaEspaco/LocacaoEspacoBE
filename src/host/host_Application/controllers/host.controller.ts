@@ -1,6 +1,6 @@
-import { Controller, Get, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
 import { ValidadorParaIdReserva, ValidadorParaDadosDeHistorico } from 'src/host/database/validator/validator.retorno.de.dados';
-import { ValidadorParaAtualizarStatusDeReserva, ValidadorParaAtualizarStatusDeAceiteReserva } from 'src/host/database/validator/validator.atualizacao.de.dados';
+import { ValidadorParaAtualizarStatusDeReserva, ValidadorParaAtualizarStatusDeAceiteReserva, ValidadorDoCheckoutANfitriao } from 'src/host/database/validator/validator.atualizacao.de.dados';
 import { ReservaService } from 'src/host/reserva/reserva.service';
 
 @Controller('reservas')
@@ -10,9 +10,9 @@ export class HostReservas {
   @Get()
   async getReservas(@Query() query: ValidadorParaIdReserva) {
 
-    const { id_anuncio, id_usuario } = query;
+    const { id_usuario } = query;
 
-    const result = await this.reservas.getReservas(id_anuncio, id_usuario);
+    const result = await this.reservas.getReservas( id_usuario );
 
     return result;
   }
@@ -50,6 +50,16 @@ export class HostReservas {
     const { status_aceite, id_reserva, id_usuario } = query
 
     const result = await this.reservas.aceitarNegarReservas(status_aceite, id_reserva, id_usuario);
+
+    return result
+  }
+
+  @Post('checkout')
+  async checkoutDoAnfitriao(@Body() body: ValidadorDoCheckoutANfitriao){
+    
+    const { id_reserva, id_usuario, mensagem } = body
+
+    const result = await this.reservas.checkoutAnfitriao(id_reserva, id_usuario, mensagem);
 
     return result
   }

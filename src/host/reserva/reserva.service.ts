@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { DadosDeReserva } from '../database/dto/get.dados.reserva.dto';
 import { mapToStatuPagamento, mapToStatusDeAceiteReserva, mapToStatusReserva } from '../database/dto/maps/map.number.to.TsEnum';
 import { AtualizarDadosDeReserva } from '../database/dto/att.dados.reserva.dto';
-
+import { AlteracoesAnfitriao } from '../database/dto/anfitriao.altera.dados';
 
 @Injectable()
 export class ReservaService {
-  constructor(private readonly reservaDados: DadosDeReserva, private readonly statusReservas: AtualizarDadosDeReserva) { }
+  constructor(private readonly reservaDados: DadosDeReserva, private readonly statusReservas: AtualizarDadosDeReserva, private readonly anfitriao: AlteracoesAnfitriao) { }
 
-  async getReservas(id_anuncio: number, id_usuario: number) {
+  async getReservas( id_usuario: number) {
  
       console.log('passando em getReserva');
 
-      const result = await this.reservaDados.getDadosReserva(id_anuncio, id_usuario);
+      const result = await this.reservaDados.getDadosReserva( id_usuario);
 
       return result;
  
@@ -64,6 +64,12 @@ export class ReservaService {
 
   }
 
+  async checkoutAnfitriao( id_reserva: number, id_usuario: number, mensagem: string){
 
+    const result = await this.anfitriao.checkoutDoAnfitriao(id_reserva, id_usuario, mensagem)
+
+    return result;
+
+  }
 }
 

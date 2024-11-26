@@ -2,12 +2,6 @@ import { Type } from "class-transformer";
 import { IsDate, IsInt, IsNotEmpty, Max, Min } from "class-validator";
 
 export class ValidadorParaIdReserva {
-
-    @IsNotEmpty()
-    @IsInt()
-    @Min(0)
-    @Type(() => Number)
-    id_anuncio: number;
     
     @IsNotEmpty()
     @IsInt()

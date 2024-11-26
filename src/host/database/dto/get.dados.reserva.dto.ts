@@ -7,14 +7,14 @@ import { mapStatusReservaToPrisma } from "./maps/map.TsEnum.to.prismaEnum.";
 export class DadosDeReserva{
     constructor( private readonly prisma: PrismaService ){}
 
-    async getDadosReserva(id_anuncio: number, id_usuario: number){
+    async getDadosReserva(id_usuario: number){
         try{
 
-            console.log('id anuncio: ', id_anuncio, typeof id_anuncio,'\nid usuario: ', id_usuario, typeof id_usuario)
+            console.log('\nid usuario: ', id_usuario, typeof id_usuario)
 
             const res = await this.prisma.reserva.findMany({
 
-                where: {id_anuncio, id_usuario},
+                where: { id_usuario},
                 select: {
                     id: true,
                     id_anuncio: true,
