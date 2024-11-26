@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma.instace";
-import { Checkout, TipoDeNotificacao } from "src/shared/enum/enums";
+import { Checkin, Checkout, TipoDeNotificacao } from "src/shared/enum/enums";
 import { Prisma } from "@prisma/client";
 import { Notificacoes } from "./notificacoes.dto";
 
@@ -16,13 +16,6 @@ export class AlteracoesAnfitriao{
 
             const checkout = await this.forcarCheckout(id_reserva);
 
-            // console.log('\nCheckout return: ', checkout)
-
-            // if(!checkout || checkout.checkout){
-
-            //     throw new Error ("Checkout não realizado corretamente");
-            // }
-
             const tipo = TipoDeNotificacao.Checkout_realizado_anfitriao
 
             const notificacao = await this.notify.notificaUsuario(id_usuario, id_reserva, tipo, mensagem);
@@ -35,7 +28,7 @@ export class AlteracoesAnfitriao{
 
             console.log("Notificação: ", notificacao)
 
-            return {mensagem:"Checkout Realizado, Notificação enviada", checkout, notificacao}
+            return {mensagem:"Checkout Realizado, Notificação enviada.", checkout, notificacao}
 
         }catch(error){
 
@@ -43,6 +36,34 @@ export class AlteracoesAnfitriao{
 
             throw new BadRequestException('Erro interno')
 
+        }
+    }
+
+    async checkinDoAnfitriao(id_reserva: number, id_usuario: number, mensagem: string){
+
+        try{
+
+        const checkin = await this.forcarCheckin( id_reserva )
+
+        const tipo = TipoDeNotificacao.Checkin_realizado_anfitriao
+
+        const notificacao = await this.notify.notificaUsuario(id_usuario, id_reserva, tipo, mensagem)
+
+        if(!notificacao){
+
+            throw new Error('Notificação não realizada');
+
+        }
+
+        console.log('Notificação: ', notificacao)
+
+        return { mensagem: "Checkin realizado, notificação enviada. ", checkin, notificacao}
+        
+        }catch(err){
+
+            console.log('Algum erro ocorreu durante o processo de notificação ou checkin: ', err)
+
+            throw new BadRequestException('Erro interno')
         }
     }
 
@@ -73,5 +94,30 @@ export class AlteracoesAnfitriao{
         }
     }
 
+    async forcarCheckin( id_reserva: number ) {
+        try{
+            const checkin = await this.prisma.reserva.update({
+                where: {
+                    id: id_reserva
+                }, 
+                data:{
+                    checkin: Checkin.Realizado_por_anfitriao
+                }
+            })
+
+            return checkin;
+        }catch (err){
+
+            if(err instanceof Prisma.PrismaClientKnownRequestError){
+
+                console.log('Erro no prisma: ', err.code, err.meta)
+
+            }
+
+            console.log('Erro: ', err)
+
+            throw new BadRequestException('Um erro ocorreu ao realizar checkin')
+        }
+    }
     
 }

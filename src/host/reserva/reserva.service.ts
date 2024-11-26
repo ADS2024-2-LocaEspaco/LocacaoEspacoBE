@@ -71,5 +71,13 @@ export class ReservaService {
     return result;
 
   }
+
+  async checkinAnfitriao( id_reserva: number, id_usuario: number, mensagem: string){
+    
+    const result = await this.anfitriao.checkinDoAnfitriao(id_reserva, id_usuario, mensagem)
+
+    return result;
+    
+  }
 }
 
