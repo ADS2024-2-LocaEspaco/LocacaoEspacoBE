@@ -91,8 +91,3 @@ export class AnuncioController {
   }
 
 }
-
-// @Get(':id/:user')
-// async getUserFromAnuncio(@Param('id') id: string): Promise<usuario | null> {
-//   return this.anuncioService.getUserFromAnuncio(id);
-// }
