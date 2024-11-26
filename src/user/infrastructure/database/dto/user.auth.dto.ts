@@ -1,5 +1,5 @@
-import { userAuthProperty } from "./user.auth.property.dto";
+import { userAuthProperty } from './user.auth.property.dto';
 
-export class userAuth extends userAuthProperty{
-    accessToken: string;
+export class userAuth extends userAuthProperty {
+  accessToken: string;
 }

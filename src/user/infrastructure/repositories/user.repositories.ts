@@ -1,26 +1,24 @@
 import { PrismaClient } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { createHostDto } from '../database/dto/create-user-host.dto';
-import { CreateUserDto } from '../database/dto/create-user.dto';
 
 const prisma = new PrismaClient();
 @Injectable()
 export class UserRepository{
-    // async getUserById(id: string): Promise<CreateUserDto | null>{
-    //     const comentario = prisma.usuario.findUnique({
-    //         where:{
-    //             id: id
-    //         },
-    //         select:{
-    //             id: true,
-    //             nome: true,
-    //             nome_completo: true,
-    //             img: true,
-    //         }
-    //     })
+    async getUserById(id: number): Promise</*CreateUserDto | null*/any>{
+        const comentario = prisma.usuario.findUnique({
+            where:{
+                id: id
+            },
+            select:{
+                id: true,
+                nome: true,
+                nome_completo: true,
+                foto: true,
+            }
+        })
 
-    //     return comentario
-    // };
+        return comentario
+    };
     
     async getUserHost(id: number): Promise<object | null>{
         const getHostData = prisma.usuario.findUnique({
@@ -29,6 +27,7 @@ export class UserRepository{
             },
             select:{
                 nome: true,
+                nome_completo: true,
                 foto: true,
             }
         })

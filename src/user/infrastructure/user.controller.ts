@@ -5,6 +5,12 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get('comentario')
+  // async getComentarioUser(@Body('id') data: any): Promise<CreateFeedbackDto[]> {
+  //   console.log(data)
+  //   return this.userService.getComentarioUser(data);
+  // }
+
   @Get('data-anfitriao')
   async getDataAnfitriao(@Body('id') data: any): Promise<any> {
     data = await this.userService.getDataAnfitriao(data);

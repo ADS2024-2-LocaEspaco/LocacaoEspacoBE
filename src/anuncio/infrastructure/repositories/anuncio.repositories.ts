@@ -1,6 +1,11 @@
 import { anuncio, PrismaClient, reserva } from "@prisma/client";
 import { getReservaDto } from "../database/dto/get-reserva.dto";
 import { GetComentariosDto } from "../database/dto/get-comentarios.dto";
+import { getEnderecoDto } from "../database/dto/get-anuncio-endereco.dto";
+import { getAnuncioDto } from "../database/dto/get-anuncio.dto";
+import { getUsuarioDto } from "../database/dto/get-anuncio-usuario.dto";
+import { getAnuncioFotosDto } from "../database/dto/get-anuncio-fotos.dto";
+import { getComodidadesAnuncioDto } from "../database/dto/get-comodidade-anuncio.dto";
 
 const prisma = new PrismaClient();
 
@@ -23,6 +28,52 @@ export async function getAnuncio(id: number): Promise<any | null> {
     } : null
     
     return dataAnuncio;
+}
+
+export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> {
+    const anuncio = await prisma.anuncio.findUnique({
+        where: { id:  parseInt(id.toString(), 10) },
+        select: {
+            id: true,
+            titulo: true,
+            anfitriao: true
+        },
+    });
+
+    const getAnuncio: getAnuncioDto = {
+        id: anuncio?.id || null,
+        titulo: anuncio?.titulo || null,
+        usuario_id: anuncio?.anfitriao || null
+    }
+    return getAnuncio
+}
+
+export async function getQtdMaxHospede(id: number): Promise<getAnuncioDto | any> {
+    const anuncio = await prisma.anuncio.findUnique({
+        where: { id:  parseInt(id.toString(), 10) },
+        select: {
+            id: true,
+            hospedes: true,
+        },
+    });
+
+    return anuncio
+}
+
+export async function getComentariosAnuncio(id: number): Promise<getAnuncioDto | any> {
+    const avaliacao = await prisma.avaliacao.findMany({
+        where: { 
+            id_anuncio_avaliado:  parseInt(id.toString(), 10) 
+        },
+        select: {
+            id_usuario_avaliado: true,
+            id_usuario_avaliador: true,
+            id_anuncio_avaliado: true,
+            comentario: true,
+        },
+    });
+
+    return avaliacao
 }
 
 export async function getPoliticaCancelamento(id: number): Promise<any | null> {
@@ -58,56 +109,147 @@ export async function getMediaNotaAnuncio(id: number): Promise<any | null> {
     return reservas;
 }
 
-export async function getReservas(id: number): Promise<any | null> {
+export async function getReservasById(id: number): Promise<getReservaDto[] | any> {
     const reservas = await prisma.reserva.findMany({
-        where: { 
-            id_anuncio: id
+        where: {
+            id_anuncio: id,
+            status_reserva: 'Reservado'
         },
-        select:{
+        select: {
+            id: true,
+            id_usuario: true,
+            id_anuncio: true,
+            status_reserva: true,
+            data_inicial: true,
             data_final: true,
-            data_inicial: true
+            criado_em: true
         }
     });
 
     return reservas;
 }
 
-export async function getQtdMaxHospede(id: number): Promise<any | null> {
-    const data = await prisma.anuncio.findUnique({
-        where: { 
-            id
+export async function getDadosUsuarioAnfitriaoPorIdAnuncio(id: number): Promise<getUsuarioDto | null> {
+    const anuncioId = parseInt(id.toString(), 10);
+
+    const usuario = await prisma.usuario.findUnique({
+        where: {
+            id: anuncioId,
         },
-        select:{
-            hospedes: true
-        }
+        select: {
+            id: true,
+            nome: true,
+            foto: true,
+            criado_em: true
+        },
     });
 
-    return Number(data?.hospedes);
+    // Verifica se o usuário foi encontrado
+    if (!usuario) {
+        return null;
+    }
+
+    // Verifica se 'criado_em' não é null antes de calcular
+    const tempoCadastro = usuario.criado_em ? calcularTempoCadastro(usuario.criado_em) : "Data de cadastro não disponível";
+
+    const anfitriao: getUsuarioDto = {
+        id: Number(usuario.id),
+        nome: usuario.nome,
+        foto: usuario.foto,
+        tempoCadastro: tempoCadastro
+    }
+
+    return anfitriao;
 }
 
-export async function getComentariosAnuncio(id_anuncio_avaliado : number): Promise<GetComentariosDto[] | object>{
-    const comentarios = await prisma.avaliacao.findMany({
-        where:{
-            id_anuncio_avaliado,
+export async function getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[]> {
+
+    const anuncioId = Number(id);
+
+    const comodidadesId = await prisma.anuncioComodidades.findMany({
+        where: {
+            anuncio_id: anuncioId
         },
+        select: {
+            comodidade_id: true
+        }
     })
 
-    // let valores = comentarios.map((comentario) => {
-    //     return {
-    //         ...comentario,
-    //         avaliacao: comentario.avaliacao.map((avalia) => {
-    //             return {
-    //                 comentario: avalia.comentario,
-    //                 nota_cordialidade: Number(avalia.nota_cordialidade),
-    //                 nota_exatidao_anuncio: Number(avalia.nota_exatidao_anuncio),
-    //                 nota_limpeza: Number(avalia.nota_limpeza),
-    //                 nota_localizacao: Number(avalia.nota_localizacao),
-    //                 nota_pontualidade: Number(avalia.nota_pontualidade),
-    //                 nota_seguiu_regras: Number(avalia.nota_seguiu_regras),
-    //             };
-    //         }),
-    //     };
-    // });
+    const comodidades = await prisma.comodidades.findMany({
+        where: {
+            id:{
+                in: comodidadesId.map((c: { comodidade_id: any; }) => c.comodidade_id)
+            }
+        }
 
-    return comentarios
+    })
+
+    const listaDTOs: getComodidadesAnuncioDto[] = comodidades.map((c: { id: any; comodidade: any; icone: any; }) =>({
+        id: c.id,
+        comodidades: c.comodidade,
+        icone: c.icone
+
+    }))
+
+    return listaDTOs
+}
+
+export async function getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | null> {
+        
+    const anuncioId = Number(id);
+
+    const fotosId = await prisma.anuncioFotos.findMany({
+        where:{
+            anuncio_id: anuncioId
+        },
+        select: {
+            foto_id:true
+        }
+    })
+
+
+    const fotos = await prisma.fotos.findMany({
+        where: {
+
+            id: {
+                in: fotosId.map((f: { foto_id: any; }) => f.foto_id)
+            }
+        }
+
+    })
+
+    const listaDTOs: getAnuncioFotosDto[] = fotos.map((f: { id: any; url: any; }) => ({
+        id: f.id,
+        url: f.url
+
+    }))
+
+    return listaDTOs
+}
+
+function calcularTempoCadastro(criadoEm: Date): string {
+    const agora = new Date();
+    const tempoCadastro = agora.getTime() - criadoEm.getTime(); // Diferença em milissegundos
+
+    const segundos = Math.floor(tempoCadastro / 1000);
+    const minutos = Math.floor(segundos / 60);
+    const horas = Math.floor(minutos / 60);
+    const dias = Math.floor(horas / 24);
+    const meses = Math.floor(dias / 30); // Aproximando um mês como 30 dias
+    const anos = Math.floor(meses / 12);
+
+    // Retornando um formato legível
+    if (anos > 0) {
+        return `${anos} ano(s)`;
+    } else if (meses > 0) {
+        return `${meses} mês(es)`;
+    } else if (dias > 0) {
+        return `${dias} dia(s)`;
+    } else if (horas > 0) {
+        return `${horas} hora(s)`;
+    } else if (minutos > 0) {
+        return `${minutos} minuto(s)`;
+    } else {
+        return `${segundos} segundo(s)`;
+    }
 }

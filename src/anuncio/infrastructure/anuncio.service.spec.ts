@@ -15,7 +15,7 @@ describe('AvaliacaoService', () => {
     service = module.get<AnuncioService>(AnuncioService);
   });
 
-  it('Retornar comentarios com id valido', async () => {
+  it('Retornar reserva valido', async () => {
     const data = '1'
 
     // Mock the expected result if necessary
@@ -28,7 +28,7 @@ describe('AvaliacaoService', () => {
     expect(await service.getComentarioUser(data)).toEqual(expectedReserva);
   });
 
-  it('Retornar comentarios com id inexistente', async () => {
+  it('Retornar reserva com id inexistente', async () => {
     const data = '0'
 
     // Define um usuário mock para o teste

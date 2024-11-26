@@ -1,22 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { anuncio, avaliacao, PrismaClient, reserva, usuario } from '@prisma/client';
 import { error } from 'console';
-import { getMediaNotaAnuncio, getReservas, getQtdMaxHospede, getPoliticaCancelamento, getComentariosAnuncio, getAnuncio } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { GetComentariosDto } from 'src/anuncio/infrastructure/database/dto/get-comentarios.dto';
+import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio, getComodidadesByAnuncioId, getFotosByAnuncioId, getMediaNotaAnuncio, getPoliticaCancelamento, getAnuncio, getComentariosAnuncio, getQtdMaxHospede } from './repositories/anuncio.repositories';
+import { getAnuncioDto } from './database/dto/get-anuncio.dto';
+import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
+import { getAnuncioFotosDto } from './database/dto/get-anuncio-fotos.dto';
+import { getComodidadesAnuncioDto } from './database/dto/get-comodidade-anuncio.dto';
 
 
 @Injectable()
 export class AnuncioService {
 
-private readonly prisma = new PrismaClient();
+  private readonly prisma = new PrismaClient();
 
   
   async getAnuncio(id: string): Promise<anuncio | object> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let result = await getAnuncio(+id)
 
-      // Verifica se 'data' é null, undefined ou uma lista vazia
       if (result == null) {
         return {
           'message': 'not content',
@@ -39,7 +42,6 @@ private readonly prisma = new PrismaClient();
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let result = await getAnuncio(+id)
 
-      // Verifica se 'data' é null, undefined ou uma lista vazia
       if (result == null) {
         return {
           'message': 'not content',
@@ -65,7 +67,6 @@ private readonly prisma = new PrismaClient();
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let result = await getPoliticaCancelamento(+id)
 
-      // Verifica se 'data' é null, undefined ou uma lista vazia
       if (Number.isNaN(result.politica_cancelamento)) {
         return {
           'message': 'not content',
@@ -86,9 +87,25 @@ private readonly prisma = new PrismaClient();
     }
   }
 
-  async getComentarioUser(id: string): Promise<GetComentariosDto[] | object> {
+  async getComentarioUser(id: string): Promise<GetComentariosDto[] | any> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let data = await getComentariosAnuncio(+id);
+      return data
+    }else{
+      return {
+        'message': 'bad request',
+        'status': 400
+      }
+    }
+  }
+
+  async getAnuncioById(id: number): Promise<getAnuncioDto | null> {
+    return getAnuncioById(id);
+  }
+
+  async getReservas(id: number): Promise<getReservaDto[] | object> {
+    if (!Number.isNaN(id) && (id) > 0) {
+      let data = await getReservasById(id);
 
       // Verifica se 'data' é null, undefined ou uma lista vazia
       if (data == null || (Array.isArray(data) && data.length === 0)) {
@@ -101,7 +118,7 @@ private readonly prisma = new PrismaClient();
         return data;
       }
 
-    }else{
+    } else {
       return {
         'message': 'bad request',
         'status': 400
@@ -112,15 +129,13 @@ private readonly prisma = new PrismaClient();
   async getAnuncioHospedeDataMediaAv(id: string): Promise<getReservaDto[] | object> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let dataMediasNotas = await getMediaNotaAnuncio(+id);
-      let dataReservas = await getReservas(+id);
+      let dataReservas = await getReservasById(+id);
       let dataMaxHospedes = await getQtdMaxHospede(+id);
 
       const verifyMedia       = (dataMediasNotas == null || (Array.isArray(dataMediasNotas) && dataMediasNotas.length === 0));
       const verifyReservas    = (dataReservas == null || (Array.isArray(dataReservas) && dataReservas.length === 0));
       const verifyMaxHospedes = (dataMaxHospedes == null);
 
-
-      // Verifica se 'data' é null, undefined ou uma lista vazia
       if (verifyMaxHospedes || verifyMedia || verifyReservas) {
         return {
           'message': 'not content',
@@ -142,28 +157,33 @@ private readonly prisma = new PrismaClient();
         'status': 400
       }
     }
+  }
+
+  async getUserFromAnuncio(id: number): Promise<getUsuarioDto | any> {
+    try {
+      const usuario = await getDadosUsuarioAnfitriaoPorIdAnuncio(id);
+
+      if (usuario) {
+        return usuario;
+
+      } else {
+        throw new Error('Usuário não encontrado');
+      }      
+
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      return null;
+    }
     
   }
 
+  async getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[] | null> {
+    const comodidades = await getComodidadesByAnuncioId(id);
+    return comodidades;
+  }
 
-  // async getUserFromAnuncio(id: string): Promise<usuario | null> {
-  //   try {
-  //     const anuncio = await this.getAnuncioById(id);
-  
-  //     if (anuncio && anuncio.usuario_id) {
-  //       return this.prisma.usuario.findUnique({
-  //         where: { id: anuncio.usuario_id },
-  //       });
-  //     } else {
-  //       throw new Error('Usuário não encontrado');
-  //     }
-  
-  //     return null;
-  //   } catch (error) {
-  //     // Handle errors gracefully, e.g., log the error and return null
-  //     console.error('Error fetching user:', error);
-  //     return null;
-  //   }
-  // }
-
+  async getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | null> {
+    const listaFotos =  await getFotosByAnuncioId(id)
+    return listaFotos;
+  }
 }

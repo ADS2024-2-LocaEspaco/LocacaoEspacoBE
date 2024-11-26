@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://user:password@localhost:5432/locaespaco"
+}
+
+model anuncio {
+  id                            Int                             @id @default(autoincrement())
+  foto_id                       Int
+  titulo                        String?                         @db.String(50)
+  hospedes                      Int
+  quartos                       Int
+  banheiros                     Int
+  descricao                     String?                         @db.VarChar(500)
+  valor_diaria                  Decimal                         @db.Decimal
+  publicado                     Boolean
+  data_checkin                  DateTime                        
+  data_checkout                 DateTime                        
+  cameras                       Boolean
+  regra_da_casa                 String                          @db.String(100)
+  politica_cancelamento         String                          @db.String(100)
+  tipo_reserva_atual            tipo_reserva
+  anfitriao                     Int
+  comodidades                   String[]
+  tipo_imovel                   String[]
+  tipo_espaco                   String[]
+  seguranca                     String[]
+  tipo_hospede                  String[]
+  usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
+  endereco                      endereco[]
+  favoritos                     favoritos[]
+  lista_favoritos_personalizada lista_favoritos_personalizada[]
+  reserva                       reserva[]
+}
+
+model avaliacao {
+  id                    Int       @id @default(autoincrement())
+  reservas_id           Int
+  avaliado              BigInt
+  nota_limpeza          String?   @db.VarChar(255)
+  nota_exatidao_anuncio String?   @db.VarChar(255)
+  nota_custo_beneficio  String?   @db.VarChar(255)
+  nota_localizacao      String?   @db.VarChar(255)
+  comentario            String    @db.VarChar(350)
+  nota_seguiu_regras    String?   @db.VarChar(255)
+  nota_pontualidade     String?   @db.VarChar(255)
+  nota_cordialidade     String?   @db.VarChar(255)
+  criado_em             DateTime? @default(now()) @db.Timestamp(6)
+
+  reserva              reserva  @relation(fields: [reservas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "avaliacao_fk1")
+}
+
+model categorias_comodidade {
+  id          Int           @id @default(autoincrement())
+  tipo        String        @unique(map: "tipo_cat_comod") @db.VarChar(100)
+  comodidades comodidades[]
+}
+
+model comodidade_anuncio {
+  id             Int         @id @default(autoincrement())
+  comodidades_id Int
+  anuncio_id     Int
+  comodidades    comodidades @relation(fields: [comodidades_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk1")
+  anuncio        anuncio     @relation(fields: [anuncio_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidade_anuncio_fk2")
+}
+
+model comodidades {
+  id                       Int                   @id @default(autoincrement())
+  categorias_comodidade_id Int
+  nome                     String                @db.VarChar(100)
+  icone                    String?               @db.VarChar(500)
+  comodidade_anuncio       comodidade_anuncio[]
+  categorias_comodidade    categorias_comodidade @relation(fields: [categorias_comodidade_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comodidades_fk1")
+  id                                              Int       @id @default(autoincrement())
+  id_usuario_avaliador                            Int
+  id_usuario_avaliado                             Int?
+  id_anuncio_avaliado                             Int?
+  nota_limpeza                                    Decimal?  @db.Decimal
+  nota_exatidao_anuncio                           Decimal?  @db.Decimal
+  nota_custo_beneficio                            Decimal?  @db.Decimal
+  nota_localizacao                                Decimal?  @db.Decimal
+  comentario                                      String    @db.VarChar(255)
+  nota_seguiu_regras                              Decimal?  @db.Decimal
+  nota_pontualidade                               Decimal?  @db.Decimal
+  nota_cordialidade                               Decimal?  @db.Decimal
+  criado_em                                       DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
+  usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
+  usuario_usuario_avaliacao_idToavaliacao         usuario[] @relation("usuario_avaliacao_idToavaliacao")
+}
+
+model endereco {
+  id          Int       @id @default(autoincrement())
+  id_usuario  Int?
+  id_anuncio  Int?
+  cep         String    @db.String(10)
+  estado      String    @db.String(2)
+  cidade      String    @db.String(50)
+  bairro      String    @db.String(50)
+  rua         String    @db.String(100)
+  numero      String?   @db.String(4)
+  complemento String?   @db.String(255)
+  latitude    String?   @db.String(50)
+  longitude   String?   @db.String(50)
+  criado_em   DateTime? @default(now()) 
+  anuncio     anuncio?  @relation(fields: [id_anuncio], references: [id])
+  usuario     usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model favoritos {
+  id         Int       @id @default(autoincrement())
+  id_usuario Int?
+  id_anuncio Int?
+  criado_em  DateTime? @default(now()) 
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model usuario {
+  id                                                Int                             @id @default(autoincrement())
+  foto                                              String?                         @db.String(255)
+  nome                                              String                          @db.String(50)
+  nome_completo                                     String?                         @db.String(150)
+  email                                             String                          @unique @db.String(100)
+  cpf                                               String?                         @db.String(14)
+  telefone                                          String?                         @db.String(14)
+  admin                                             Boolean?                        @default(false)
+  criado_em                                         DateTime?                       @default(now()) 
+  ativo                                             Boolean?                        @default(true)
+  url_documento                                     String?                         @db.String(255)
+  bloqueado                                         Boolean?                        @default(false)
+  token_acesso                                      String                          @db.String(255)
+  avaliacao_id                                      Int?
+  anuncio                                           anuncio[]
+  avaliacao_avaliacao_id_usuario_avaliadoTousuario  avaliacao[]                     @relation("avaliacao_id_usuario_avaliadoTousuario")
+  avaliacao_avaliacao_id_usuario_avaliadorTousuario avaliacao[]                     @relation("avaliacao_id_usuario_avaliadorTousuario")
+  dados_bancarios                                   dados_bancarios[]
+  endereco                                          endereco[]
+  favoritos                                         favoritos[]
+  lista_favoritos_personalizada                     lista_favoritos_personalizada[]
+  reserva                                           reserva[]
+  avaliacao_usuario_avaliacao_idToavaliacao         avaliacao?                      @relation("usuario_avaliacao_idToavaliacao", fields: [avaliacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_avaliacao")
+}
+
+model dados_bancarios {
+  id           Int     @id @default(autoincrement())
+  id_usuario   Int
+  banco        String  @db.String(50)
+  agencia      String  @db.String(50)
+  numero_conta String  @db.String(20)
+  tipo_conta   String  @db.String(15)
+  chave_pix    String? @db.String(50)
+  usuario      usuario @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model lista_favoritos_personalizada {
+  id         Int       @id @default(autoincrement())
+  id_usuario Int?
+  id_anuncio Int?
+  nome       String?   @db.String(20)
+  criado_em  DateTime? @default(now()) 
+  anuncio    anuncio?  @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  usuario    usuario?  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model reserva {
+  id               Int               @id @default(autoincrement())
+  id_usuario       Int?
+  id_anuncio       Int?
+  qtd_adultos      Int?
+  qtd_criancas     Int?
+  qtd_bebes        Int?
+  qtd_pets         Int?
+  data_inicial     DateTime?         
+  data_final       DateTime?         
+  status_reserva   status_reserva?
+  status_pagamento status_pagamento?
+  multa            Boolean?          @default(false)
+  cancelamento     Boolean?          @default(false)
+  criado_em        DateTime?         @default(now()) 
+  anuncio          anuncio?          @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
+  usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+}
+
+enum status_pagamento {
+  Conclu_do  @map("Concluído")
+  Aguardando
+}
+
+enum status_reserva {
+  Reservado
+  Processando
+}
+
+enum tipo_reserva {
+  Instant_nea     @map("Instantânea")
+  N_o_instant_nea @map("Não instantânea")
+}

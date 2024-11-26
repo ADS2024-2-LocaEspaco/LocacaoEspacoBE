@@ -6,76 +6,84 @@ import { createHostDto } from './database/dto/create-user-host.dto';
 // import { CreateFeedbackDto } from 'src/feedback/infrastructure/database/dto/create-feedback.dto';
 import { UserSaveRepository } from './repositories/user.save.repository';
 import { userAuthProperty } from './database/dto/user.auth.property.dto';
+import { UserDataRepository } from './repositories/user.getData.repository';
 import { userAuth } from './database/dto/user.auth.dto';
+import * as bcrypt from 'bcrypt';
 
-
-const prisma = new PrismaClient()
 @Injectable()
 export class UserService {
   constructor(
     private readonly userSaveRepository: UserSaveRepository,
     private readonly userRepository: UserRepository,
+    private readonly userGetDataRepository: UserDataRepository,
   ) {}
 
-  async getDataAnfitriao(id: string): Promise<createHostDto | null> {
-    let data: createHostDto | any 
+  // Criar outra função chamada getComentariosUser
+  // async getComentarioUser(id: string): Promise<CreateFeedbackDto[]> {
+  //   return getComentariosAnuncio(id);
+  // }
+
+  async getDataAnfitriao(id: number): Promise<createHostDto | null> {
+    let data: createHostDto | any;
 
     try {
-      data = await this.userRepository.getUserHost(+id)
+      data = await this.userRepository.getUserHost(id);
 
-      if(data == null){
+      if (data == null) {
         data = {
-          "message": "usuario não encontrado"
-        }
-
+          message: 'usuario não encontrado',
+        };
       }
-
     } catch (error) {
       data = {
-        "erro": `${error}`
-      }
+        erro: `${error}`,
+      };
     }
 
-    return data
+    return data;
   }
 
-  // async getUserById(id: string): Promise<User | null> {
-  //   return this.prisma.user.findUnique({
-  //     where: { id },
-  //   });
-  // }
+  async googleLogin(req: any) {
+    let userData: userAuth;
 
-  // async googleLogin(req: any) {
-  //   if (!req.user) {
-  //     return 'Nenhum usuário';
-  //   }
-    
-    // const user: userAuth = {
-    //   accessToken: req.user.accessToken,
-    //   email: req.user.email,
-    //   name: req.user.firstName,
-    //   fullName: req.user.firstName + ' ' + req.user.lastName,
-    //   picture: req.user.picture,
-    // };
-    
-  //   try {
-  //     if (!(await this.userSaveRepository.userExists(user.email))) {
-  //       await this.userSaveRepository.save(user);
-      
-  //     }else {
-  //       await this.userSaveRepository.updateToken(user);
-  //     }
+    if (!req.user) {
+      const user = null;
+      return user;
+    }
 
-  //     return {
-  //       message: 'Usuário logado',
-  //       user: user,
-  //     };
-  //   }catch(error) {
-  //     return {
-  //       message: error
-  //     }
-  //   }
-    
-  // }
+    const hashToken = await bcrypt.hash(req.user.accessToken, 10);
+    const user: userAuth = {
+      accessToken: hashToken,
+      email: req.user.email,
+      name: req.user.firstName,
+      fullName: req.user.firstName + ' ' + req.user.lastName,
+      picture: req.user.picture,
+    };
 
+    try {
+      if (!(await this.userSaveRepository.userExists(user.email))) {
+        userData = await this.userSaveRepository.save(user);
+      } else {
+        userData = await this.userSaveRepository.updateToken(user);
+      }
+
+      return {
+        message: 'Usuário logado',
+        user: userData,
+      };
+    } catch (error) {
+      return {
+        message: error,
+      };
+    }
+  }
+
+  async getUserData(token: string) {
+    try {
+      const data = await this.userGetDataRepository.getUser(token);
+      return data;
+    } catch (error) {
+      return error;
+    }
+  }
 }

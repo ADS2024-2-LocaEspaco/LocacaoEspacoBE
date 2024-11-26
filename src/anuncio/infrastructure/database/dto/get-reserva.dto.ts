@@ -13,8 +13,6 @@ class notas {
     nota_seguiu_regras:     number
 }
 
-
-
 export class getReservaDto {
     id:             String
     media_notas:    notas[]
