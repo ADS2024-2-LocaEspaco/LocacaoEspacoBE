@@ -8,7 +8,8 @@ export class AnuncioMaisReservadosController {
 
   @Get('/')
   async getAnunciosMaisReservados(@Req() req: Request, @Res() res: Response) {
-    const anunciosMaisReservados = await this.anuncioService.getAnunciosMaisReservados();
+    const anunciosMaisReservados =
+      await this.anuncioService.getAnunciosMaisReservados();
 
     res.status(200).send(anunciosMaisReservados);
   }

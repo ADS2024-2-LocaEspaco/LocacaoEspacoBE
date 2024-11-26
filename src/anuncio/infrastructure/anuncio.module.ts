@@ -4,7 +4,7 @@ import { AnuncioController } from './anuncio.controller';
 import { AnuncioFiltroController } from '../application/controllers/anuncio.filtro.controller';
 import { AnuncioFiltroRepository } from './repositories/anuncio.filtro.repository';
 import { AnuncioMaisReservadosController } from '../application/controllers/anuncio.mais_reservados.controller';
-
+import { AnuncioMaisReservadosRepository } from './repositories/anuncio.mais_reservados.repository';
 @Module({
   imports: [],
   controllers: [
@@ -12,6 +12,10 @@ import { AnuncioMaisReservadosController } from '../application/controllers/anun
     AnuncioFiltroController,
     AnuncioMaisReservadosController,
   ],
-  providers: [AnuncioService, AnuncioFiltroRepository],
+  providers: [
+    AnuncioService,
+    AnuncioFiltroRepository,
+    AnuncioMaisReservadosRepository,
+  ],
 })
 export class AnuncioModule {}

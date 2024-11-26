@@ -1,8 +1,9 @@
-export class GetAnunciosMaisReservados {
-    id: number;
-    fotos: [];
-    titulo: string | null;
-    endereco: {};
-    valor_diaria: number;
-    avalicacao: [];
-}
+export type GetAnunciosMaisReservados = {
+  id: number;
+  fotos: string[];
+  titulo: string | null;
+  endereco: string[];
+  valor_diaria: number;
+  avalicacao: number[];
+  reserva: object[];
+};
