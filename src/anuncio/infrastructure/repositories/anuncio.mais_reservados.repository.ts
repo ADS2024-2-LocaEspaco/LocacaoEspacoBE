@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 export class AnuncioMaisReservadosRepository
   implements AnuncioMaisReservadosRepositoryInterface
 {
-  async getAnuncios(): Promise<GetAnunciosMaisReservados[]> {
+  async getAnuncios(): Promise<any> {
     const anuncios = await prisma.anuncio.findMany({
       select: {
         id: true,
@@ -21,7 +21,7 @@ export class AnuncioMaisReservadosRepository
       },
     });
 
-		const anunciosList = anuncios.map((anuncio: GetAnunciosMaisReservados) => {
+    const anunciosList = anuncios.map((anuncio: GetAnunciosMaisReservados) => {
       return anuncio;
     });
 
