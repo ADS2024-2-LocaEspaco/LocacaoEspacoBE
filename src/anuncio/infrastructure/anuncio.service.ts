@@ -1,19 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { getReservaDto } from './database/dto/get-reserva.dto';
-import { getAnuncioDto } from './database/dto/get-anuncio.dto';
-import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 import { CreateAnuncioDto } from './database/dto/create-anuncio.dto';
 import { EnderecoDto } from './database/dto/endereco.dto';
-import {
-  getReservasById,
-  getAnuncioById,
-  getDadosUsuarioAnfitriaoPorIdAnuncio,
+import { error } from 'console';
+import { 
+  getReservasById, 
+  getAnuncioById, 
+  getDadosUsuarioAnfitriaoPorIdAnuncio, 
+  getComodidadesByAnuncioId, 
+  getFotosByAnuncioId,
   getTipoImovel,
   getTipoEspaco,
   getComodidades,
   getSeguranca,
 } from './repositories/anuncio.repositories';
+import { getReservaDto } from './database/dto/get-reserva.dto';
+import { getAnuncioDto } from './database/dto/get-anuncio.dto';
+import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
+import { getAnuncioFotosDto } from './database/dto/get-anuncio-fotos.dto';
+import { getComodidadesAnuncioDto } from './database/dto/get-comodidade-anuncio.dto';
 
 @Injectable()
 export class AnuncioService {
@@ -50,33 +55,27 @@ export class AnuncioService {
     return usuario;
   }
 
-  async createAnuncio(data: CreateAnuncioDto): Promise<void> {
+  async createAnuncio(data: CreateAnuncioDto): Promise<Object> {
     try {
-      const anuncio = await this.prisma.anuncio.create({
+      const { endereco, fotos, comodidades, seguranca, ...values } = data;
+
+      const anuncio = await this.prisma.anuncio.create({ 
         data: {
-          titulo: data.titulo,
-          descricao: data.descricao,
-          quartos: data.quartos,
-          camas: data.camas,
-          banheiros: data.banheiros,
-          hospedes: data.hospedes,
-          cameras: data.cameras,
-          valor_diaria: data.valor_diaria,
-          dias_minimo_antecedencia: data.dias_minimo_antecedencia,
-          dias_minimo_duracao: data.dias_minimo_duracao,
-          dias_maximo_duracao: data.dias_maximo_duracao,
+          ...values,
           publicado: false,
-          tipo_reserva_atual: data.tipo_reserva_atual,
-          tipo_imovel_id: data.tipo_imovel_id,
-          tipo_espaco_id: data.tipo_espaco_id,
-          tipo_hospede_id: data.tipo_hospede_id,
+          tipo_reserva_atual: 'Instant_nea',
           anfitriao: 1,
-        },
+        }
       });
 
-      await this.createEndereco(data.endereco, anuncio.id);
+      // await this.createEndereco(data.endereco, anuncio.id);
+
+      return anuncio;
     } catch (error) {
-      //
+      return {
+        message: 'internal server error',
+        status: 500,
+      };
     }
   }
 
@@ -114,5 +113,15 @@ export class AnuncioService {
 
   async getSeguranca(): Promise<Object> {
     return getSeguranca();
+  }
+
+  async getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[] | null> {
+    const comodidades = await getComodidadesByAnuncioId(id);
+    return comodidades;
+  }
+
+  async getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | null> {
+    const listaFotos =  await getFotosByAnuncioId(id)
+    return listaFotos;
   }
 }

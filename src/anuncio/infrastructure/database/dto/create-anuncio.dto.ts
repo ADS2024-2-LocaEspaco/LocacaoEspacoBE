@@ -76,6 +76,7 @@ export class CreateAnuncioDto {
   @Type(() => EnderecoDto)
   endereco: EnderecoDto;
 }
+
 export class EnderecoDto {
   @IsString()
   @IsNotEmpty()
