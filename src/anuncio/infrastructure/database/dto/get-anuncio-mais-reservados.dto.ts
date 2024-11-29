@@ -1,9 +1,12 @@
-export type GetAnunciosMaisReservados = {
+import { Decimal } from "@prisma/client/runtime/library";
+
+export class GetAnunciosMaisReservadosDTO {
   id: number;
-  fotos: string[];
+  fotos: string[] | object;
   titulo: string | null;
   endereco: object;
-  valor_diaria: number;
-  avalicacao: number[];
+  valor_diaria: number | Decimal;
+  avalicacao: number[] | object;
   reserva: object[];
+  qtd_reserva: number;
 };
