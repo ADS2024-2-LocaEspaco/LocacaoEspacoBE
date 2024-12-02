@@ -50,8 +50,8 @@ export class AnuncioService {
 
       } else {
         return {
-          quant_diaria_min : result.qtd_diaria_min,
-          quant_diaria_max : result.qtd_diaria_max,
+          dias_minimo_duracao : result.dias_minimo_duracao,
+          dias_maximo_duracao : result.dias_maximo_duracao,
         };
       }
 
@@ -90,7 +90,17 @@ export class AnuncioService {
   async getComentarioUser(id: string): Promise<GetComentariosDto[] | any> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let data = await getComentariosAnuncio(+id);
-      return data
+
+      if(data == null){
+        return {
+          'message': 'not content',
+          'status': 204
+        }
+
+      }else{
+        return data
+      }
+
     }else{
       return {
         'message': 'bad request',
@@ -136,6 +146,7 @@ export class AnuncioService {
       const verifyReservas    = (dataReservas == null || (Array.isArray(dataReservas) && dataReservas.length === 0));
       const verifyMaxHospedes = (dataMaxHospedes == null);
 
+      console.log(verifyMedia)
       if (verifyMaxHospedes || verifyMedia || verifyReservas) {
         return {
           'message': 'not content',

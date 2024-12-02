@@ -82,12 +82,10 @@ export async function getPoliticaCancelamento(id: number): Promise<any | null> {
             id 
         },
     });
-
-    let dataAnuncio = {
-        politica_cancelamento:  Number(anuncio?.politica_cancelamento),
-    }
     
-    return dataAnuncio;
+    return {
+        politica_cancelamento:  Number(anuncio?.politica_cancelamento),
+    };
 }
 
 export async function getMediaNotaAnuncio(id: number): Promise<any | null> {
@@ -105,6 +103,7 @@ export async function getMediaNotaAnuncio(id: number): Promise<any | null> {
             nota_seguiu_regras: true,
         },
     });
+
 
     return reservas;
 }
