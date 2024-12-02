@@ -36,12 +36,14 @@ model anuncio {
   seguranca                     seguranca                       @relation(fields: [seguranca_id], references: [id])
   tipo_hospede                  tipo_hospede                    @relation(fields: [tipo_hospede_id], references: [id])
 
+  avaliacao                     avaliacao[]                     
   endereco                      endereco[]
   favoritos                     favoritos[]
   lista_favoritos_personalizada lista_favoritos_personalizada[]
   reserva                       reserva[]
   anuncioComodidades            anuncioComodidades[]
   anuncioFotos                  anuncioFotos[]
+  
 }
 
 model fotos {
@@ -131,6 +133,7 @@ model avaliacao {
   usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
   usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
   usuario_usuario_avaliacao_idToavaliacao         usuario[] @relation("usuario_avaliacao_idToavaliacao")
+  anuncio_avaliado                                anuncio?  @relation(fields: [id_anuncio_avaliado], references: [id])
 }
 
 model endereco {
