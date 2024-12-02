@@ -7,15 +7,18 @@ import { Prisma } from "@prisma/client";
 export class Notificacoes{
     constructor( private readonly prisma: PrismaService){}
 
-    async notificaUsuario(id_usuario: number, id_reserva: number, tipo: TipoDeNotificacao, mensagem: string){
+    async notificaUsuario(usuario_id: number, reserva_id: number, tipo: TipoDeNotificacao, mensagem: string){
         try{
+
+            const status = "Enviado"
 
             const notificar = await this.prisma.notificacao.create({
                 data: {
-                    id_usuario,
-                    id_reserva, 
+                    usuario_id,
+                    reserva_id, 
                     tipo,
-                    mensagem
+                    mensagem,
+                    status
                 }
             })
 

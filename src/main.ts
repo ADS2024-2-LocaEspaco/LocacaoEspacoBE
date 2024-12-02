@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true,    // Garante que a transformação dos dados seja feita
     whitelist: true,    // Remove propriedades não definidas nos DTOs
-    forbidNonWhitelisted: true,  // Lança erro quando uma propriedade não é esperada
+    forbidNonWhitelisted: false,  // Lança erro quando uma propriedade não é esperada
   }));
   await app.listen(3000);
 }

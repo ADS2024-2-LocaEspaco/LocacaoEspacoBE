@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = "mysql://root:password@localhost:3306/locacaoEspaco"
-  
 }
 
 model anuncio {
@@ -24,28 +23,27 @@ model anuncio {
   politica_cancelamento         String                          @db.VarChar(100)
   tipo_reserva_atual            tipo_reserva
   anfitriao                     Int
-  comodidade_id                 Int
-  tipo_imovel_id                Int
+  tipo_imovel_id                Int       
   tipo_espaco_id                Int
   seguranca_id                  Int
   tipo_hospede_id               Int
-    dias_minimo_antecedencia      Int                           @default(0)
-  dias_minimo_duracao           Int                             @default(0)
-  dias_maximo_duracao           Int                             @default(0)
 
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
   tipo_imovel                   tipo_imovel                     @relation(fields: [tipo_imovel_id], references: [id])
   tipo_espaco                   tipo_espaco                     @relation(fields: [tipo_espaco_id], references: [id])
   seguranca                     seguranca                       @relation(fields: [seguranca_id], references: [id])
   tipo_hospede                  tipo_hospede                    @relation(fields: [tipo_hospede_id], references: [id])
-
-  anuncioComodidades            anuncioComodidades[]
-  anuncioFotos                  anuncioFotos[]
+  dias_minimo_antecedencia      Int                             @default(0)
+  dias_minimo_duracao           Int                             @default(0)
+  dias_maximo_duracao           Int                             @default(0)
   endereco                      endereco[]
   favoritos                     favoritos[]
   lista_favoritos_personalizada lista_favoritos_personalizada[]
   reserva                       reserva[]
+  anuncioComodidades            anuncioComodidades[]
+  anuncioFotos                  anuncioFotos[]
 }
+
 model fotos {
   id                            Int       @id @default(autoincrement())
   url                           String    @db.VarChar(255)
@@ -63,7 +61,6 @@ model anuncioFotos {
   @@id([anuncio_id, foto_id])
   @@map("anuncio_fotos")  
 }
-
 model comodidades {
   id                  Int       @id @default(autoincrement())
   comodidade          String    @db.VarChar(50)
@@ -73,7 +70,6 @@ model comodidades {
 
   anuncioComodidades  anuncioComodidades[]   
 }
-
 
 model anuncioComodidades {
   anuncio_id    Int
@@ -85,6 +81,7 @@ model anuncioComodidades {
   @@id([anuncio_id, comodidade_id])
   @@map("anuncio_comodidades") 
 }
+
 
 model tipo_imovel {
   id                  Int       @id @default(autoincrement())
@@ -121,14 +118,14 @@ model avaliacao {
   id_usuario_avaliador                            Int
   id_usuario_avaliado                             Int?
   id_anuncio_avaliado                             Int?
-  nota_limpeza                                    Decimal?  @db.Decimal
-  nota_exatidao_anuncio                           Decimal?  @db.Decimal
-  nota_custo_beneficio                            Decimal?  @db.Decimal
-  nota_localizacao                                Decimal?  @db.Decimal
-  comentario                                      String    @db.VarChar(255)
-  nota_seguiu_regras                              Decimal?  @db.Decimal
-  nota_pontualidade                               Decimal?  @db.Decimal
-  nota_cordialidade                               Decimal?  @db.Decimal
+  nota_limpeza                                    Decimal?  @db.Decimal @default(0)
+  nota_exatidao_anuncio                           Decimal?  @db.Decimal @default(0)
+  nota_custo_beneficio                            Decimal?  @db.Decimal @default(0)
+  nota_localizacao                                Decimal?  @db.Decimal @default(0)
+  comentario                                      String    @db.VarChar(255) 
+  nota_seguiu_regras                              Decimal?  @db.Decimal @default(0)
+  nota_pontualidade                               Decimal?  @db.Decimal @default(0)
+  nota_cordialidade                               Decimal?  @db.Decimal @default(0)
   criado_em                                       DateTime? @default(now()) 
   usuario_avaliacao_id_usuario_avaliadoTousuario  usuario?  @relation("avaliacao_id_usuario_avaliadoTousuario", fields: [id_usuario_avaliado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliado")
   usuario_avaliacao_id_usuario_avaliadorTousuario usuario   @relation("avaliacao_id_usuario_avaliadorTousuario", fields: [id_usuario_avaliador], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_avaliador")
@@ -178,6 +175,7 @@ model usuario {
   token_acesso                                      String                          @db.VarChar(255)
   avaliacao_id                                      Int?
   anuncio                                           anuncio[]
+  notificacao                                       notificacao[] 
   avaliacao_avaliacao_id_usuario_avaliadoTousuario  avaliacao[]                     @relation("avaliacao_id_usuario_avaliadoTousuario")
   avaliacao_avaliacao_id_usuario_avaliadorTousuario avaliacao[]                     @relation("avaliacao_id_usuario_avaliadorTousuario")
   dados_bancarios                                   dados_bancarios[]
@@ -185,7 +183,6 @@ model usuario {
   favoritos                                         favoritos[]
   lista_favoritos_personalizada                     lista_favoritos_personalizada[]
   reserva                                           reserva[]
-  notificacao                                       notificacao[] // <<<<< ADICIONEI ESTÁ LINHA @PEDRO
   avaliacao_usuario_avaliacao_idToavaliacao         avaliacao?                      @relation("usuario_avaliacao_idToavaliacao", fields: [avaliacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_avaliacao")
 }
 
@@ -222,7 +219,7 @@ model reserva {
   data_final       DateTime?
   prazo_cancelamento DateTime        @db.Date          
   checkin          String?           @db.VarChar(40)
-  checkout         String?           @db.VarChar(40)
+  checkout         String?           @db.VarChar(40) 
   status_aceite    status_aceite_reserva @default(Aguardando_resposta_anfitiao) // <<<< LINHA ADICIONADA @PEDRO   
   status_reserva   status_reserva    @default(Processando) //DEFAULT ADICIONADO
   status_pagamento status_pagamento  @default(Aguardando) //DEFAULT ADICIONADO
@@ -233,31 +230,6 @@ model reserva {
   usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 
   notificacao      notificacao[] // <<<< LINHA ADICIONADA @PEDRO
-}
-
-// TABELA ADICIONADA @PEDRO
-model notificacao {
-  id         Int      @id @default(autoincrement())
-  id_usuario Int      //de usuario_id para id_usuario
-  id_reserva Int?      //de reserva_id para id_reserva
-  tipo       String   @db.VarChar(50) 
-  mensagem   String   @db.VarChar(255) 
-  status     String   @db.VarChar(20) @default("Enviado") 
-  data_envio DateTime @default(now()) 
-
-  usuario usuario   @relation(fields: [id_usuario], references: [id], onDelete: Cascade)
-  reserva reserva?  @relation(fields: [id_reserva], references: [id])
-
-  @@index([id_usuario])
-}
-//Tabela adicionada
-
-
-// TABELA DE ENUM ADICIONADA @PEDRO
-enum status_aceite_reserva {
-  Aceita
-  Negada
-  Aguardando_resposta_anfitiao @map("Aguardando resposta")
 }
 
 
@@ -278,8 +250,27 @@ enum tipo_reserva {
   N_o_instant_nea @map("Não instantânea")
 }
 
+model notificacao {
+  id         Int      @id @default(autoincrement())
+  usuario_id Int
+  reserva_id Int? 
+  tipo       String   @db.VarChar(50) 
+  mensagem   String   @db.VarChar(255) 
+  status     String   @db.VarChar(20) 
+  data_envio DateTime @default(now()) 
+
+  usuario usuario  @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  reserva reserva? @relation(fields: [reserva_id], references: [id])
+
+  @@index([usuario_id])
+}
+
+enum status_aceite_reserva {
+  Aceita
+  Negada
+  Aguardando_resposta_anfitiao @map("Aguardando resposta")
+}
 
 //Modificações feitas:
-//tabela NOTIFICACÇÃO: mudei os dois id's (user e reserva), para id_(user ou reserva)
-//Tabela RESERVA: default adicionado para status de pagamento e reserva
-//Tabela RESERVA: Estadia mínima e máxima adicionado
+//Tabela RESERVA: default adicionado para status_pagamento e status_reserva
+//checkin e checkout criados em reserva;
