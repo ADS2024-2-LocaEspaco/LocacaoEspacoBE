@@ -30,7 +30,7 @@ export class AnuncioController {
     if(!Number.isNaN(id) && id > 0){
       const anuncio = await this.anuncioService.getAnuncioById(id); 
 
-      if (!anuncio) {
+      if (!anuncio.usuario_id) {
         throw new NotFoundException('Anúncio não encontrado'); 
       }
 
@@ -41,7 +41,7 @@ export class AnuncioController {
 
       const usuario = await this.anuncioService.getUserFromAnuncio(usuario_id); 
       return usuario; 
-      
+
     }else{
       return {
         'message': 'bad request',
