@@ -27,6 +27,7 @@ export class AnuncioController {
 
   @Get('usuario/:id')
   async getDadosUsuarioAnfitriaoPorIdAnuncio(@Param('id') id: number): Promise<any> {
+    if(!Number.isNaN(id) && id > 0){
       const anuncio = await this.anuncioService.getAnuncioById(id); 
 
       if (!anuncio) {
@@ -40,6 +41,13 @@ export class AnuncioController {
 
       const usuario = await this.anuncioService.getUserFromAnuncio(usuario_id); 
       return usuario; 
+      
+    }else{
+      return {
+        'message': 'bad request',
+        'status': 404
+      }
+    }
   }
   
   @Get('fotos/:id')

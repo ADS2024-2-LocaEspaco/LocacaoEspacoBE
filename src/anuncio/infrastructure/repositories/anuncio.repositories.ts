@@ -91,7 +91,7 @@ export async function getPoliticaCancelamento(id: number): Promise<any | null> {
 export async function getMediaNotaAnuncio(id: number): Promise<any | null> {
     const reservas = await prisma.avaliacao.aggregate({
         where: { 
-            id
+            id_anuncio_avaliado: id
         },
         _avg:{
             nota_limpeza: true,

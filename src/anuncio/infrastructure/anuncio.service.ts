@@ -14,7 +14,6 @@ import { getComodidadesAnuncioDto } from './database/dto/get-comodidade-anuncio.
 export class AnuncioService {
 
   private readonly prisma = new PrismaClient();
-
   
   async getAnuncio(id: string): Promise<anuncio | object> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
@@ -91,7 +90,7 @@ export class AnuncioService {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let data = await getComentariosAnuncio(+id);
 
-      if(data == null){
+      if(data == null || data.length == 0){
         return {
           'message': 'not content',
           'status': 204
@@ -109,8 +108,26 @@ export class AnuncioService {
     }
   }
 
-  async getAnuncioById(id: number): Promise<getAnuncioDto | null> {
-    return getAnuncioById(id);
+  async getAnuncioById(id: number): Promise<getAnuncioDto | any> {
+    if(!Number.isNaN(id) && id > 0){
+      let data = await getAnuncioById(id);
+
+      if(data == null){
+        return {
+          'message': 'not content',
+          'status': 204
+        }
+
+      }else{
+        return data
+      }
+
+    }else{
+      return {
+        'message': 'bad request',
+        'status': 400
+      }
+    }
   }
 
   async getReservas(id: number): Promise<getReservaDto[] | object> {
@@ -187,13 +204,47 @@ export class AnuncioService {
     
   }
 
-  async getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[] | null> {
-    const comodidades = await getComodidadesByAnuncioId(id);
-    return comodidades;
+  async getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[] | any> {
+    if(!Number.isNaN(id) && id > 0){
+      let data = await await getComodidadesByAnuncioId(id);
+
+      if(data == null || data.length == 0){
+        return {
+          'message': 'not content',
+          'status': 204
+        }
+
+      }else{
+        return data
+      }
+
+    }else{
+      return {
+        'message': 'bad request',
+        'status': 400
+      }
+    }
   }
 
-  async getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | null> {
-    const listaFotos =  await getFotosByAnuncioId(id)
-    return listaFotos;
+  async getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | any> {
+    if(!Number.isNaN(id) && id > 0){
+      let data = await await await getFotosByAnuncioId(id);
+
+      if(data == null || data.length == 0){
+        return {
+          'message': 'not content',
+          'status': 204
+        }
+
+      }else{
+        return data
+      }
+
+    }else{
+      return {
+        'message': 'bad request',
+        'status': 400
+      }
+    }
   }
 }
