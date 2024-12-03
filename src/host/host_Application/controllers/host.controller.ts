@@ -1,11 +1,13 @@
 import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
-import { ValidadorParaIdReserva, ValidadorParaDadosDeHistorico } from 'src/host/database/validator/validator.retorno.de.dados';
-import { ValidadorParaAtualizarStatusDeReserva, ValidadorParaAtualizarStatusDeAceiteReserva, ValidadorDoCheckoutANfitriao } from 'src/host/database/validator/validator.atualizacao.de.dados';
+import { ValidadorParaIdReserva, ValidadorParaDadosDeHistorico, validadorID } from 'src/host/database/validator/validator.retorno.de.dados';
+import { ValidadorParaAtualizarStatusDeReserva, ValidadorParaAtualizarStatusDeAceiteReserva, ValidadorDeDadosAlteradosAnfitriao } from 'src/host/database/validator/validator.atualizacao.de.dados';
 import { ReservaService } from 'src/host/reserva/reserva.service';
+import { query } from 'express';
+import { Outros } from 'src/host/anuncio/host.anuncio.service';
 
 @Controller('reservas')
 export class HostReservas {
-  constructor(private readonly reservas: ReservaService) { }
+  constructor(private readonly reservas: ReservaService, private readonly outros: Outros) { }
 
   @Get()
   async getReservas(@Query() query: ValidadorParaIdReserva) {
@@ -55,11 +57,42 @@ export class HostReservas {
   }
 
   @Post('checkout')
-  async checkoutDoAnfitriao(@Body() body: ValidadorDoCheckoutANfitriao){
+  async checkoutDoAnfitriao(@Body() body: ValidadorDeDadosAlteradosAnfitriao){
     
     const { id_reserva, id_usuario, mensagem } = body
 
     const result = await this.reservas.checkoutAnfitriao(id_reserva, id_usuario, mensagem);
+
+    return result
+  }
+
+  @Post('checkin')
+  async checkinDoAnfintriao(@Body() body: ValidadorDeDadosAlteradosAnfitriao){
+    
+    const { id_reserva, id_usuario, mensagem } = body
+
+    const result = await this.reservas.checkinAnfitriao(id_reserva, id_usuario, mensagem);
+
+    return result
+
+  }
+
+  @Get('usuario')
+  async dadosUsuario(@Query() query: validadorID){
+
+    const { id } = query
+
+    const result = await this.outros.getDadosDeUsuario(id)
+
+    return result;
+  }
+
+  @Get('anuncio')
+  async dadosAnuncio(@Query() query: validadorID){
+
+    const { id } = query 
+
+    const result = await this.outros.getDadosAnuncio(id)
 
     return result
   }

@@ -40,16 +40,16 @@ export class ValidadorParaAtualizarStatusDeReserva {
   
   }
   
-  export class ValidadorDoCheckoutANfitriao {
+  export class ValidadorDeDadosAlteradosAnfitriao {
 
   @IsNotEmpty()
   @IsInt()
-  @Min(0)
+  @Min(1)
   @Type(() => Number)
   id_reserva: number
   
   @IsInt()
-  @Min(0)
+  @Min(1)
   @Type(() => Number)
   id_usuario: number
 

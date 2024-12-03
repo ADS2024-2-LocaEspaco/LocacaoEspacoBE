@@ -11,6 +11,15 @@ export class ValidadorParaIdReserva {
   
   }
 
+  export class validadorID{
+    
+    @IsNotEmpty()
+    @IsInt()
+    @Min(0)
+    @Type(() => Number)
+    id: number;
+  }
+
   export class ValidadorParaDadosDeHistorico {
 
     @IsNotEmpty()

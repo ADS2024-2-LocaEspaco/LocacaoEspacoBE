@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma.instace";
 import { Checkin, Checkout, TipoDeNotificacao } from "src/shared/enum/enums";
 import { Prisma } from "@prisma/client";
 import { Notificacoes } from "./notificacoes.dto";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 
 @Injectable()
@@ -30,14 +31,25 @@ export class AlteracoesAnfitriao{
 
             return {mensagem:"Checkout Realizado, Notificação enviada.", checkout, notificacao}
 
-        }catch(error){
+        }catch(err){
+            if( err.code === 'P2025'){
 
-            console.log('Algum erro occoreu durante o processo de checkout ou notifciação ao usuario: ', error)
+                console.log('ID de usuário não encontrado. ')
 
-            throw new BadRequestException('Erro interno')
+                throw new NotFoundException('Dados de usuário não encontrados.')
 
+            }else if( err instanceof PrismaClientKnownRequestError ){
+                
+                console.log('Erro no prisma: ', err.code, err.meta)
+
+                throw new BadRequestException('Algum erro ocorreu ao tentar recuperar os dados de reservas deste usuário')
+            }
+
+            console.log('Erro não tratado: ', err)
+
+            throw new BadRequestException('Erro desconhecido.')
         }
-    }
+    } 
 
     async checkinDoAnfitriao(id_reserva: number, id_usuario: number, mensagem: string){
 
@@ -60,12 +72,24 @@ export class AlteracoesAnfitriao{
         return { mensagem: "Checkin realizado, notificação enviada. ", checkin, notificacao}
         
         }catch(err){
+            if( err.code === 'P2025'){
 
-            console.log('Algum erro ocorreu durante o processo de notificação ou checkin: ', err)
+                console.log('ID de usuário não encontrado. ')
 
-            throw new BadRequestException('Erro interno')
+                throw new NotFoundException('Dados de usuário não encontrados.')
+
+            }else if( err instanceof PrismaClientKnownRequestError ){
+                
+                console.log('Erro no prisma: ', err.code, err.meta)
+
+                throw new BadRequestException('Algum erro ocorreu ao tentar recuperar os dados de reservas deste usuário')
+            }
+
+            console.log('Erro não tratado: ', err)
+
+            throw new BadRequestException('Erro desconhecido.')
         }
-    }
+    } 
 
     async forcarCheckout( id_reserva: number ) {
         try{
