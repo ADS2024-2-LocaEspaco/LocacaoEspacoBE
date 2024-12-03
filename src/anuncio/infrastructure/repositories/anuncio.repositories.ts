@@ -84,7 +84,7 @@ export async function getPoliticaCancelamento(id: number): Promise<any | null> {
     });
     
     return {
-        politica_cancelamento:  Number(anuncio?.politica_cancelamento),
+        politica_cancelamento:  anuncio?.politica_cancelamento,
     };
 }
 
@@ -103,7 +103,6 @@ export async function getMediaNotaAnuncio(id: number): Promise<any | null> {
             nota_seguiu_regras: true,
         },
     });
-
 
     return reservas;
 }
@@ -238,7 +237,9 @@ function calcularTempoCadastro(criadoEm: Date): string {
     const anos = Math.floor(meses / 12);
 
     // Retornando um formato legível
-    if (anos > 0) {
+    if(tempoCadastro < 0){
+        return 'criado com data futura'
+    }else if(anos > 0) {
         return `${anos} ano(s)`;
     } else if (meses > 0) {
         return `${meses} mês(es)`;

@@ -67,7 +67,7 @@ export class AnuncioService {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let result = await getPoliticaCancelamento(+id)
 
-      if (Number.isNaN(result.politica_cancelamento)) {
+      if (result.politica_cancelamento == null) {
         return {
           'message': 'not content',
           'status': 204
@@ -146,7 +146,6 @@ export class AnuncioService {
       const verifyReservas    = (dataReservas == null || (Array.isArray(dataReservas) && dataReservas.length === 0));
       const verifyMaxHospedes = (dataMaxHospedes == null);
 
-      console.log(verifyMedia)
       if (verifyMaxHospedes || verifyMedia || verifyReservas) {
         return {
           'message': 'not content',

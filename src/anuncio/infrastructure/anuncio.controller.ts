@@ -12,43 +12,13 @@ export class AnuncioController {
   constructor(
     private readonly anuncioService: AnuncioService,
   ) {}
-  
-  @Get('comentarios')
-  async getComentarioUser(@Body('id') data: any): Promise<GetComentariosDto[] | object> {
-    return this.anuncioService.getComentarioUser(data);
-  }
-  
-  @Get('media-avaliacao/data-reservas')
-  async getAnuncioHospedeDataMediaAv(@Body('id') id: string): Promise<Object> {
-    return await this.anuncioService.getAnuncioHospedeDataMediaAv(id);
-  }
-
-  @Get('qtd-max-min-diaria')
-  async getQuantMaxEMinDiaria(@Body('id') id: string): Promise<Object> {
-    return await this.anuncioService.getQuantMaxEMinDiaria(id);
-  }
-
-  @Get('politica-cancelamento')
-  async getPoliticaCancelamento(@Body('id') id: string): Promise<Object> {
-    return await this.anuncioService.getPoliticaCancelamento(id);
-  }
-
-  @Get(':id')
-  async getAnuncio(@Param('id') id: string): Promise<anuncio | object> {
-    return this.anuncioService.getAnuncio(id);
-  }
-
-  @Get(':id/:user')
-  async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto | null> {
-    return this.anuncioService.getUserFromAnuncio(id);
-  }
 
   @Get('comodidades/:id')
   async getComodidadesByAnuncioId(@Param('id') id: number): Promise<getComodidadesAnuncioDto[] | null> {
     const anuncioId = Number(id); 
 
     const comodidades = await this.anuncioService.getComodidadesByAnuncioId(id);
-
+    
     if (!comodidades) {
       throw new NotFoundException('comodidade não encontrada');
     }
@@ -84,9 +54,39 @@ export class AnuncioController {
 
     return fotos;
   }
+  
+  @Get('comentarios/:id')
+  async getComentarioUser(@Param('id') data: any): Promise<GetComentariosDto[] | object> {
+    return this.anuncioService.getComentarioUser(data);
+  }
+  
+  @Get('media-avaliacao/data-reservas/:id')
+  async getAnuncioHospedeDataMediaAv(@Param('id') id: string): Promise<Object> {
+    return await this.anuncioService.getAnuncioHospedeDataMediaAv(id);
+  }
 
-  @Get('reservas')
-  async getReservas(@Body('id') id: number): Promise<Object> {
+  @Get('qtd-max-min-diaria/:id')
+  async getQuantMaxEMinDiaria(@Param('id') id: string): Promise<Object> {
+    return await this.anuncioService.getQuantMaxEMinDiaria(id);
+  }
+
+  @Get('politica-cancelamento/:id')
+  async getPoliticaCancelamento(@Param('id') id: string): Promise<Object> {
+    return await this.anuncioService.getPoliticaCancelamento(id);
+  }
+
+  @Get(':id')
+  async getAnuncio(@Param('id') id: string): Promise<anuncio | object> {
+    return this.anuncioService.getAnuncio(id);
+  }
+
+  @Get(':id/:user')
+  async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto | null> {
+    return this.anuncioService.getUserFromAnuncio(id);
+  }
+
+  @Get('reservas/:id')
+  async getReservas(@Param('id') id: number): Promise<Object> {
     return await this.anuncioService.getReservas(id);
   }
 
