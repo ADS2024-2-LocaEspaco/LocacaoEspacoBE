@@ -12,7 +12,7 @@ export class AnuncioMaisReservadosRepository
     const anuncios = await prisma.anuncio.findMany({
       select: {
         id: true,
-        fotos: true,
+        anuncioFotos: true,
         titulo: true,
         avaliacao: true,
         valor_diaria: true,
@@ -30,7 +30,7 @@ export class AnuncioMaisReservadosRepository
     for(let i = 0; i < anunciosList.length; i++) {
       const anuncio: GetAnunciosMaisReservadosDTO = {
         id: anunciosList[i].id,
-        fotos: anunciosList[i].fotos,
+        fotos: anunciosList[i].anuncioFotos,
         titulo: anunciosList[i].titulo,
         endereco: anunciosList[i].endereco,
         valor_diaria: anunciosList[i].valor_diaria,
