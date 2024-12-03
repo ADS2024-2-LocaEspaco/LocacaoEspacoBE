@@ -60,20 +60,37 @@ export async function getQtdMaxHospede(id: number): Promise<getAnuncioDto | any>
     return anuncio
 }
 
-export async function getComentariosAnuncio(id: number): Promise<getAnuncioDto | any> {
-    const avaliacao = await prisma.avaliacao.findMany({
-        where: { 
-            id_anuncio_avaliado:  parseInt(id.toString(), 10) 
-        },
-        select: {
-            id_usuario_avaliado: true,
-            id_usuario_avaliador: true,
-            id_anuncio_avaliado: true,
-            comentario: true,
-        },
-    });
+export async function getComentarioAnuncio(data: any): Promise<any> {
 
-    return avaliacao
+    if(typeof data === 'number'){//QUANDO DESEJA RECEBER TODOS OS COMENTARIO DOS ANUNCIOS
+        const avaliacao = await prisma.avaliacao.findMany({
+            where: { 
+                id_anuncio_avaliado:  parseInt(data.toString(), 10) 
+            },
+            select: {
+                id_usuario_avaliado: true,
+                id_usuario_avaliador: true,
+                id_anuncio_avaliado: true,
+                comentario: true,
+            },
+        });
+        return avaliacao
+        
+    }else{//QUANDO DESEJA RECEBER APENAS COMENTARIO DE UM USUARIO {ID_ANUNCIO, ID_USUARIO}
+        const avaliacao = await prisma.avaliacao.findMany({
+            where: { 
+                id_anuncio_avaliado:  parseInt(data.id_anuncio.toString(), 10),
+                id_usuario_avaliador: parseInt(data.id_usuario.toString(), 10),
+            },
+            select: {
+                id_usuario_avaliado: true,
+                id_usuario_avaliador: true,
+                id_anuncio_avaliado: true,
+                comentario: true,
+            },
+        });
+        return avaliacao
+    }
 }
 
 export async function getPoliticaCancelamento(id: number): Promise<any | null> {

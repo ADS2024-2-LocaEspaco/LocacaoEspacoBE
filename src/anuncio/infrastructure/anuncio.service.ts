@@ -1,18 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { anuncio, avaliacao, PrismaClient, reserva, usuario } from '@prisma/client';
 import { error } from 'console';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { GetComentariosDto } from 'src/anuncio/infrastructure/database/dto/get-comentarios.dto';
-import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio, getComodidadesByAnuncioId, getFotosByAnuncioId, getMediaNotaAnuncio, getPoliticaCancelamento, getAnuncio, getComentariosAnuncio, getQtdMaxHospede } from './repositories/anuncio.repositories';
+import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio, getComodidadesByAnuncioId, getFotosByAnuncioId, getMediaNotaAnuncio, getPoliticaCancelamento, getAnuncio, getComentarioAnuncio, getQtdMaxHospede } from './repositories/anuncio.repositories';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 import { getAnuncioFotosDto } from './database/dto/get-anuncio-fotos.dto';
 import { getComodidadesAnuncioDto } from './database/dto/get-comodidade-anuncio.dto';
-
+import { Request, Response } from 'express';
 
 @Injectable()
-export class AnuncioService {
-
+export class AnuncioService extends HttpException{
   private readonly prisma = new PrismaClient();
   
   async getAnuncio(id: string): Promise<anuncio | object> {
@@ -32,7 +31,7 @@ export class AnuncioService {
     }else{
       return {
         'message': 'bad request',
-        'status': 400
+        'status': 404
       }
     }
   }
@@ -86,9 +85,9 @@ export class AnuncioService {
     }
   }
 
-  async getComentarioUser(id: string): Promise<GetComentariosDto[] | any> {
+  async getComentariosUsuarios(id: string): Promise<GetComentariosDto[] | any> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
-      let data = await getComentariosAnuncio(+id);
+      let data = await getComentarioAnuncio(+id);
 
       if(data == null || data.length == 0){
         return {
@@ -98,6 +97,28 @@ export class AnuncioService {
 
       }else{
         return data
+      }
+
+    }else{
+      return {
+        'message': 'bad request',
+        'status': 400
+      }
+    }
+  }
+
+  async getComentarioUnicoUsuario(data: any): Promise<GetComentariosDto[] | any> {
+    if(!Number.isNaN(parseInt(data.id_anuncio)) && parseInt(data.id_anuncio) > 0 && !Number.isNaN(parseInt(data.id_usuario)) && parseInt(data.id_usuario) > 0){
+      let comentario = await getComentarioAnuncio(data);
+
+      if(comentario == null || comentario.length == 0){
+        return {
+          'message': 'not content',
+          'status': 204
+        }
+
+      }else{
+        return comentario
       }
 
     }else{

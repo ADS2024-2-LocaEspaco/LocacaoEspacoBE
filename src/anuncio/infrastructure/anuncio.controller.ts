@@ -64,8 +64,13 @@ export class AnuncioController {
   }
   
   @Get('comentarios/:id')
-  async getComentarioUser(@Param('id') data: any): Promise<GetComentariosDto[] | object> {
-    return this.anuncioService.getComentarioUser(data);
+  async getComentariosUsuarios(@Param('id') data: any): Promise<GetComentariosDto[] | object> {
+    return this.anuncioService.getComentariosUsuarios(data);
+  }
+
+  @Get('comentario-usuario/:id_anuncio/:id_usuario')
+  async getComentarioUser(@Param() data: any): Promise<GetComentariosDto | object> {
+    return this.anuncioService.getComentarioUnicoUsuario(data);
   }
   
   @Get('media-avaliacao/data-reservas/:id')
