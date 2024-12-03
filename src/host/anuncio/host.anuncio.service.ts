@@ -41,8 +41,8 @@ export class Outros {
   async getDadosAnuncio(id: number){
     try {
 
-      const anuncio = await this.prisma.anuncio.findUnique({
-          where:{ id }
+      const anuncio = await this.prisma.anuncio.findMany({
+          where:{ anfitriao: id }
       })
 
       return anuncio;
@@ -69,4 +69,3 @@ export class Outros {
   }
 
 }
-
