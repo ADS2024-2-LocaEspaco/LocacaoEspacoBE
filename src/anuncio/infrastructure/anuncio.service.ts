@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { error } from 'console';
+<<<<<<< HEAD
 import {
   getReservasById,
   getAnuncioById,
@@ -11,6 +12,15 @@ import { getAnuncioDto } from './database/dto/get-anuncio.dto';
 import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
 import { AnuncioFiltroRepository } from './repositories/anuncio.filtro.repository';
 import { AnuncioMaisReservadosRepository } from './repositories/anuncio.mais_reservados.repository';
+=======
+import { getReservasById, getAnuncioById, getDadosUsuarioAnfitriaoPorIdAnuncio, getComodidadesByAnuncioId, getFotosByAnuncioId } from './repositories/anuncio.repositories';
+import { getReservaDto } from './database/dto/get-reserva.dto';
+import { getAnuncioDto } from './database/dto/get-anuncio.dto';
+import { getUsuarioDto } from './database/dto/get-anuncio-usuario.dto';
+import { getAnuncioFotosDto } from './database/dto/get-anuncio-fotos.dto';
+import { getComodidadesAnuncioDto } from './database/dto/get-comodidade-anuncio.dto';
+
+>>>>>>> developer
 
 @Injectable()
 export class AnuncioService {
@@ -86,6 +96,7 @@ export class AnuncioService {
     }
   }
 
+<<<<<<< HEAD
   async getAnunciosService(
     destino: string | undefined,
     checkin: Date | undefined,
@@ -106,3 +117,15 @@ export class AnuncioService {
     return this.anuncioMaisReservadoRepository.getAnuncios();
   }
 }
+=======
+  async getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[] | null> {
+    const comodidades = await getComodidadesByAnuncioId(id);
+    return comodidades;
+  }
+
+  async getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | null> {
+    const listaFotos =  await getFotosByAnuncioId(id)
+    return listaFotos;
+  }
+}
+>>>>>>> developer
