@@ -57,7 +57,7 @@ export class AnuncioService {
 
   async createAnuncio(data: CreateAnuncioDto): Promise<Object> {
     try {
-      const { endereco, fotos, comodidades, seguranca, ...values } = data;
+      const { fotos, comodidades, seguranca, ...values } = data;
 
       const anuncio = await this.prisma.anuncio.create({ 
         data: {

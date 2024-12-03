@@ -72,9 +72,9 @@ export class CreateAnuncioDto {
   @IsInt()
   dias_maximo_duracao: number;
 
-  @ValidateNested()
-  @Type(() => EnderecoDto)
-  endereco: EnderecoDto;
+  // @ValidateNested()
+  // @Type(() => EnderecoDto)
+  // endereco: EnderecoDto;
 }
 
 export class EnderecoDto {

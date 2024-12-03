@@ -73,7 +73,7 @@ export class AnuncioController {
   }
   
   @Post('/')
-  async createAnuncio(@Body() params: CreateAnuncioDto): Promise<void> {
+  async createAnuncio(@Body() params: CreateAnuncioDto): Promise<Object> {
     return this.anuncioService.createAnuncio(params);
   }
   
