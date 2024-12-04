@@ -30,12 +30,12 @@ model anuncio {
   tipo_imovel_id                Int       
   tipo_espaco_id                Int
   tipo_hospede_id               Int
-  seguranca_id                  Int?
+  seguranca_id                  Int
 
   usuario                       usuario                         @relation(fields: [anfitriao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anfitriao")
   tipo_imovel                   tipo_imovel                     @relation(fields: [tipo_imovel_id], references: [id])
   tipo_espaco                   tipo_espaco                     @relation(fields: [tipo_espaco_id], references: [id])
-  seguranca                     seguranca?                      @relation(fields: [seguranca_id], references: [id])
+  seguranca                     seguranca                       @relation(fields: [seguranca_id], references: [id])
   tipo_hospede                  tipo_hospede                    @relation(fields: [tipo_hospede_id], references: [id])
 
   endereco                      endereco[]

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { CreateAnuncioDto } from './database/dto/create-anuncio.dto';
+import { CreateAnuncioDto, UpdateAnuncioDto } from './database/dto/create-anuncio.dto';
 import { EnderecoDto } from './database/dto/endereco.dto';
 import { error } from 'console';
 import { 
@@ -57,7 +57,7 @@ export class AnuncioService {
 
   async createAnuncio(data: CreateAnuncioDto): Promise<Object> {
     try {
-      const { endereco, fotos, comodidades, seguranca, ...values } = data;
+      const { comodidades, endereco, ...values } = data;
 
       const anuncio = await this.prisma.anuncio.create({ 
         data: {
@@ -65,6 +65,16 @@ export class AnuncioService {
           publicado: false,
           tipo_reserva_atual: 'Instant_nea',
           anfitriao: 1,
+          anuncioComodidades: {
+            create: comodidades.map((comodidade) => {
+              return {
+                comodidade_id: comodidade,
+              };
+            }),
+          },
+          endereco: {
+            create: endereco
+          }
         }
       });
 
@@ -74,6 +84,35 @@ export class AnuncioService {
     } catch (error) {
       return {
         message: 'internal server error',
+        status: 500,
+      };
+    }
+  }
+
+  async updateAnuncio(id: number, data: Partial<UpdateAnuncioDto>): Promise<Object> {
+    try {
+      const { comodidades, endereco, ...values } = data;
+  
+      const anuncioAtualizado = await this.prisma.anuncio.update({
+        where: { id },
+        data: {
+          // ...
+          anuncioComodidades: comodidades
+          ? {
+              deleteMany: {},
+              create: comodidades.map((comodidade) => ({
+                comodidade_id: comodidade,
+              })),
+            }
+          : undefined,
+        },
+      });
+  
+      return anuncioAtualizado;
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'Erro ao atualizar o anúncio',
         status: 500,
       };
     }
