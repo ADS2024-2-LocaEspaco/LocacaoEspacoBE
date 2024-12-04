@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, PipeTransform } from '@nestjs/common';
 import { anuncio, avaliacao, PrismaClient, reserva, usuario } from '@prisma/client';
 import { error } from 'console';
 import { getReservaDto } from './database/dto/get-reserva.dto';
@@ -11,7 +11,7 @@ import { getComodidadesAnuncioDto } from './database/dto/get-comodidade-anuncio.
 import { Request, Response } from 'express';
 
 @Injectable()
-export class AnuncioService extends HttpException{
+export class AnuncioService {
   private readonly prisma = new PrismaClient();
   
   async getAnuncio(id: string): Promise<anuncio | object> {

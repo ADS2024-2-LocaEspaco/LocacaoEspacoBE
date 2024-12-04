@@ -5,16 +5,15 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('comentario')
+  //@Get('comentario')
   // async getComentarioUser(@Body('id') data: any): Promise<CreateFeedbackDto[]> {
   //   console.log(data)
   //   return this.userService.getComentarioUser(data);
   // }
 
-  @Get('data-anfitriao')
-  async getDataAnfitriao(@Body('id') data: any): Promise<any> {
-    data = await this.userService.getDataAnfitriao(data);
-    return data
+  @Get('data-anfitriao/:id')
+  async getDataAnfitriao(@Param('id') id: number): Promise<any> {
+    return await this.userService.getDataAnfitriao(+id);
   }
 
   

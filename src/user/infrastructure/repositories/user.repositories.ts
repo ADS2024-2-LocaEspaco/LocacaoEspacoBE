@@ -21,16 +21,17 @@ export class UserRepository{
     };
     
     async getUserHost(id: number): Promise<object | null>{
-        const getHostData = prisma.usuario.findUnique({
+        const getHostData = await prisma.usuario.findUnique({
             where:{
-                id
+                id,
             },
             select:{
                 nome: true,
                 nome_completo: true,
                 foto: true,
+                anuncio: true
             }
         })
-        return getHostData
+        return getHostData?.anuncio.length == 0 ? null: getHostData
     }    
 }

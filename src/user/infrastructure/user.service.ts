@@ -23,24 +23,35 @@ export class UserService {
   //   return getComentariosAnuncio(id);
   // }
 
-  async getDataAnfitriao(id: number): Promise<createHostDto | null> {
+  async getDataAnfitriao(id: number): Promise<createHostDto | any> {
     let data: createHostDto | any;
 
     try {
-      data = await this.userRepository.getUserHost(id);
-
-      if (data == null) {
-        data = {
-          message: 'usuario não encontrado',
-        };
+      if(!Number.isNaN(id) && id > 0){
+        data = await this.userRepository.getUserHost(id);
+  
+        if(data == null){
+          return {
+            'message': 'not content',
+            'status': 204
+          }
+  
+        }else{
+          return data
+        }
+  
+      }else{
+        return {
+          'message': 'bad request',
+          'status': 400
+        }
       }
+      
     } catch (error) {
-      data = {
+      return data = {
         erro: `${error}`,
       };
     }
-
-    return data;
   }
 
   async googleLogin(req: any) {
