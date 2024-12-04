@@ -19,13 +19,13 @@ describe('AvaliacaoService', () => {
     const data = '1'
 
     // Mock the expected result if necessary
-    const expectedReserva = new getReservaDto();
+    const expectedReserva = [new GetComentariosDto()];
     // Set up expected values for the feedback DTO
     
     // Ensure that the service.getComentarios(data) returns expectedFeedback
-    jest.spyOn(service, 'getComentarioUser').mockResolvedValue(expectedReserva);
+    jest.spyOn(service, 'getComentariosUsuarios').mockResolvedValue(expectedReserva);
     
-    expect(await service.getComentarioUser(data)).toEqual(expectedReserva);
+    expect(await service.getComentariosUsuarios(data)).toEqual(expectedReserva);
   });
 
   it('Retornar reserva com id inexistente', async () => {
@@ -36,7 +36,7 @@ describe('AvaliacaoService', () => {
       "message": 'bad request',
       "status": 400
     };
-    expect(await service.getComentarioUser(data)).toEqual(mockUser);
+    expect(await service.getComentariosUsuarios(data)).toEqual(mockUser);
   });
 
   it('Retornar comentarios com id validos', async () => {

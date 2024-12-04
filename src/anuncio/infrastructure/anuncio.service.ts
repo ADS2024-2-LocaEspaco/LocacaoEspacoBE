@@ -1,4 +1,4 @@
-import { Injectable, PipeTransform } from '@nestjs/common';
+import { Injectable, PipeTransform, HttpStatus, HttpException, BadRequestException, ExceptionFilter } from '@nestjs/common';
 import { anuncio, avaliacao, PrismaClient, reserva, usuario } from '@prisma/client';
 import { error } from 'console';
 import { getReservaDto } from './database/dto/get-reserva.dto';
@@ -14,25 +14,19 @@ import { Request, Response } from 'express';
 export class AnuncioService {
   private readonly prisma = new PrismaClient();
   
-  async getAnuncio(id: string): Promise<anuncio | object> {
+  async getAnuncio(id: string): Promise<anuncio> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let result = await getAnuncio(+id)
 
       if (result == null) {
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       } else {
         return result;
       }
 
     }else{
-      return {
-        'message': 'bad request',
-        'status': 404
-      }
+      throw new BadRequestException();
     }
   }
 
@@ -41,10 +35,7 @@ export class AnuncioService {
       let result = await getAnuncio(+id)
 
       if (result == null) {
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       } else {
         return {
@@ -54,10 +45,7 @@ export class AnuncioService {
       }
 
     }else{
-      return {
-        'message': 'bad request',
-        'status': 400
-      }
+      throw new BadRequestException();
     }
   }
 
@@ -66,10 +54,7 @@ export class AnuncioService {
       let result = await getPoliticaCancelamento(+id)
 
       if (result.politica_cancelamento == null) {
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       } else {
         return {
@@ -78,54 +63,39 @@ export class AnuncioService {
       }
 
     }else{
-      return {
-        'message': 'bad request',
-        'status': 400
-      }
+      throw new BadRequestException();
     }
   }
 
-  async getComentariosUsuarios(id: string): Promise<GetComentariosDto[] | any> {
+  async getComentariosUsuarios(id: string): Promise<GetComentariosDto[] | ExceptionFilter> {
     if(!Number.isNaN(parseInt(id)) && parseInt(id) > 0){
       let data = await getComentarioAnuncio(+id);
 
       if(data == null || data.length == 0){
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       }else{
         return data
       }
 
     }else{
-      return {
-        'message': 'bad request',
-        'status': 400
-      }
+      throw new BadRequestException();
     }
   }
 
-  async getComentarioUnicoUsuario(data: any): Promise<GetComentariosDto[] | any> {
+  async getComentarioUnicoUsuario(data: any): Promise<GetComentariosDto[]> {
     if(!Number.isNaN(parseInt(data.id_anuncio)) && parseInt(data.id_anuncio) > 0 && !Number.isNaN(parseInt(data.id_usuario)) && parseInt(data.id_usuario) > 0){
       let comentario = await getComentarioAnuncio(data);
 
       if(comentario == null || comentario.length == 0){
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       }else{
         return comentario
       }
 
     }else{
-      return {
-        'message': 'bad request',
-        'status': 400
-      }
+      throw new BadRequestException();
     }
   }
 
@@ -134,20 +104,14 @@ export class AnuncioService {
       let data = await getAnuncioById(id);
 
       if(data == null){
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       }else{
         return data
       }
 
     }else{
-      return {
-        'message': 'bad request',
-        'status': 400
-      }
+      throw new BadRequestException();
     }
   }
 
@@ -157,20 +121,14 @@ export class AnuncioService {
 
       // Verifica se 'data' é null, undefined ou uma lista vazia
       if (data == null || (Array.isArray(data) && data.length === 0)) {
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       } else {
         return data;
       }
 
     } else {
-      return {
-        'message': 'bad request',
-        'status': 400
-      }
+      throw new BadRequestException();
     }
   }
 
@@ -185,13 +143,11 @@ export class AnuncioService {
       const verifyMaxHospedes = (dataMaxHospedes == null);
 
       if (verifyMaxHospedes || verifyMedia || verifyReservas) {
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       } else {
         let dataFinal = {
+          id: id,
           media_notas: dataMediasNotas._avg,
           datas_reservas: dataReservas,
           quant_hospedes: dataMaxHospedes,
@@ -200,14 +156,11 @@ export class AnuncioService {
       }
 
     }else{
-      return {
-        'message': 'bad request',
-        'status': 400
-      }
+      throw new BadRequestException();
     }
   }
 
-  async getUserFromAnuncio(id: number): Promise<getUsuarioDto | any> {
+  async getUserFromAnuncio(id: number): Promise<getUsuarioDto> {
     try {
       const usuario = await getDadosUsuarioAnfitriaoPorIdAnuncio(id);
 
@@ -215,57 +168,45 @@ export class AnuncioService {
         return usuario;
 
       } else {
-        throw new Error('Usuário não encontrado');
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
       }      
 
     } catch (error) {
       console.error('Error fetching user:', error);
-      return null;
+      throw new Error('Erro');
     }
     
   }
 
-  async getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[] | any> {
+  async getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[]> {
     if(!Number.isNaN(id) && id > 0){
       let data = await await getComodidadesByAnuncioId(id);
 
       if(data == null || data.length == 0){
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       }else{
         return data
       }
 
     }else{
-      return {
-        'message': 'bad request',
-        'status': 400
-      }
+      throw new BadRequestException();
     }
   }
 
-  async getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | any> {
+  async getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[]> {
     if(!Number.isNaN(id) && id > 0){
       let data = await await await getFotosByAnuncioId(id);
 
       if(data == null || data.length == 0){
-        return {
-          'message': 'not content',
-          'status': 204
-        }
+        throw new HttpException('Not Content', HttpStatus.NO_CONTENT);
 
       }else{
         return data
       }
 
     }else{
-      return {
-        'message': 'bad request',
-        'status': 400
-      }
+      throw new BadRequestException();
     }
   }
 }
