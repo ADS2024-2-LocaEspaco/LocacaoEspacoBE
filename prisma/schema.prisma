@@ -222,13 +222,18 @@ model reserva {
   data_inicial     DateTime?         
   data_final       DateTime?    
   prazo_cancelamento DateTime              @db.Date     
-  status_reserva   status_reserva?
-  status_pagamento status_pagamento?
+  status_reserva   status_reserva         @default(Processando)
+  status_pagamento status_pagamento       @default(Aguardando)
   status_aceite    status_aceite_reserva @default(Aguardando_resposta_anfitiao)
   notificacao      notificacao[]
   multa            Boolean?          @default(false)
   cancelamento     Boolean?          @default(false)
   criado_em        DateTime?         @default(now()) 
+  checkin          String?           @db.VarChar(40)
+  checkout         String?           @db.VarChar(40)
+
+
+
   anuncio          anuncio?          @relation(fields: [id_anuncio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_anuncio")
   usuario          usuario?          @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
