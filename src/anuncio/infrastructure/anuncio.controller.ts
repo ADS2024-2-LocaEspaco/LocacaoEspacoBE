@@ -13,6 +13,11 @@ export class AnuncioController {
     private readonly anuncioService: AnuncioService,
   ) {}
 
+  @Get('reservas/:id')
+  async getReservas(@Param('id') id: number): Promise<Object> {
+    return await this.anuncioService.getReservas(+id);
+  }
+
   @Get('comodidades/:id')
   async getComodidadesByAnuncioId(@Param('id') id: number): Promise<getComodidadesAnuncioDto[] | null> {
     const anuncioId = Number(id); 
@@ -98,9 +103,6 @@ export class AnuncioController {
     return this.anuncioService.getUserFromAnuncio(id);
   }
 
-  @Get('reservas/:id')
-  async getReservas(@Param('id') id: number): Promise<Object> {
-    return await this.anuncioService.getReservas(id);
-  }
+  
 
 }
