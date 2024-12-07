@@ -14,6 +14,9 @@ export async function getAnuncio(id: number): Promise<any | null> {
         where: { 
             id 
         },
+        include:{
+            endereco: true
+        }
     });
 
     let dataAnuncio = anuncio != null ? {
