@@ -27,7 +27,7 @@ export class AnuncioMaisReservadosRepository
 
     const anuncioListDto = [];
 
-    for(let i = 0; i < anunciosList.length; i++) {
+    for (let i = 0; i < anunciosList.length; i++) {
       const anuncio: GetAnunciosMaisReservadosDTO = {
         id: anunciosList[i].id,
         fotos: anunciosList[i].anuncioFotos,
@@ -37,11 +37,11 @@ export class AnuncioMaisReservadosRepository
         avalicacao: anunciosList[i].avaliacao,
         reserva: anunciosList[i].reserva,
         qtd_reserva: anunciosList[i].reserva.length,
-      }
+      };
 
       anuncioListDto.push(anuncio);
     }
 
-    return anuncioListDto.sort((a, b ) => b.qtd_reserva - a.qtd_reserva);
+    return anuncioListDto.sort((a, b) => b.qtd_reserva - a.qtd_reserva);
   }
 }
