@@ -95,14 +95,7 @@ export class AnuncioController {
 
   @Get(':id')
   async getAnuncio(@Param('id') id: string): Promise<anuncio | object> {
+    console.log(id)
     return this.anuncioService.getAnuncio(id);
   }
-
-  @Get(':id/:user')
-  async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto | null> {
-    return this.anuncioService.getUserFromAnuncio(id);
-  }
-
-  
-
 }
