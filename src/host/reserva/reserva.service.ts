@@ -79,5 +79,12 @@ export class ReservaService {
     return result;
     
   }
+
+  async todosDadosRetornados( id_usuario: number){
+
+    const dados = await this.reservaDados.getDadosURA(id_usuario);
+
+    return dados;
+  }
 }
 

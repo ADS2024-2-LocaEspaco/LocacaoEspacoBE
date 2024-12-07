@@ -13,6 +13,7 @@ import { SharedModule } from 'src/shared/shared.module';
   imports: [SharedModule],
   controllers: [ HostReservas], 
   providers: [ ReservaService, PrismaService, DadosDeReserva, AtualizarDadosDeReserva, Notificacoes, AlteracoesAnfitriao, Outros], 
+  
 })
 export class HostModule {}
 

@@ -96,4 +96,13 @@ export class HostReservas {
 
     return result
   }
+
+  @Get('dados')
+  async todosDados(@Query() query: ValidadorParaIdReserva){
+
+    const { id_usuario } = query
+
+    return await this.reservas.todosDadosRetornados(id_usuario)
+    
+  }
 }
