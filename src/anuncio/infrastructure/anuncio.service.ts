@@ -13,6 +13,7 @@ import {
   getTipoEspaco,
   getComodidades,
   getSeguranca,
+  getTipoHospede
 } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
@@ -56,37 +57,28 @@ export class AnuncioService {
   }
 
   async createAnuncio(data: CreateAnuncioDto): Promise<Object> {
-    try {
-      const { comodidades, endereco, ...values } = data;
+    const { comodidades, endereco, ...values } = data;
 
-      const anuncio = await this.prisma.anuncio.create({ 
-        data: {
-          ...values,
-          publicado: false,
-          tipo_reserva_atual: 'Instant_nea',
-          anfitriao: 1,
-          anuncioComodidades: {
-            create: comodidades.map((comodidade) => {
-              return {
-                comodidade_id: comodidade,
-              };
-            }),
-          },
-          endereco: {
-            create: endereco
-          }
+    const anuncio = await this.prisma.anuncio.create({ 
+      data: {
+        ...values,
+        publicado: false,
+        tipo_reserva_atual: 'Instant_nea',
+        anfitriao: 1,
+        anuncioComodidades: {
+          create: comodidades.map((comodidade) => {
+            return {
+              comodidade_id: comodidade,
+            };
+          }),
+        },
+        endereco: {
+          create: endereco
         }
-      });
+      }
+    });
 
-      // await this.createEndereco(data.endereco, anuncio.id);
-
-      return anuncio;
-    } catch (error) {
-      return {
-        message: 'internal server error',
-        status: 500,
-      };
-    }
+    return anuncio;
   }
 
   async updateAnuncio(id: number, data: Partial<UpdateAnuncioDto>): Promise<Object> {
@@ -146,12 +138,16 @@ export class AnuncioService {
     return getTipoEspaco();
   }
 
-  async getComodidades(): Promise<Object> {
-    return getComodidades();
+  async getComodidades(especial: boolean | undefined = undefined): Promise<Object> {
+    return getComodidades(especial);
   }
 
   async getSeguranca(): Promise<Object> {
     return getSeguranca();
+  }
+
+  async getTipoHospede(): Promise<Object> {
+    return getTipoHospede();
   }
 
   async getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[] | null> {

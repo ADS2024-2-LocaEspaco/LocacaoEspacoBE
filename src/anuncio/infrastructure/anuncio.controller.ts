@@ -22,12 +22,22 @@ export class AnuncioController {
 
   @Get('/get-comodidades')
   async getComodidades(): Promise<Object> {
-    return await this.anuncioService.getComodidades();
+    return await this.anuncioService.getComodidades(false);
+  }
+
+  @Get('/get-comodidades-especiais')
+  async getComodidadesEspeciais(): Promise<Object> {
+    return await this.anuncioService.getComodidades(true);
   }
 
   @Get('/get-seguranca')
   async getSeguranca(): Promise<Object> {
     return await this.anuncioService.getSeguranca();
+  }
+
+  @Get('/get-tipo-hospede')
+  async getTipoHospede(): Promise<Object> {
+    return await this.anuncioService.getTipoHospede();
   }
 
   @Get('/reservas')
@@ -38,6 +48,11 @@ export class AnuncioController {
   @Get('/:id/:user')
   async getUserFromAnuncio(@Param('id') id: number): Promise<getUsuarioDto  | null> {
     return this.anuncioService.getUserFromAnuncio(id);
+  }
+
+  @Get('/:id')
+  async getAnuncioById(@Param('id') id: string): Promise<getAnuncioDto | null> {
+    return this.anuncioService.getAnuncioById(parseInt(id));
   }
 
   @Get('/:id')

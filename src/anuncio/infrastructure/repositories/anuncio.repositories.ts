@@ -8,26 +8,14 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getAnuncioById(id: number): Promise<getAnuncioDto | null> {
-    const anuncioId = parseInt(id.toString(), 10); 
-
-
+export async function getAnuncioById(id: number) {
     const anuncio = await prisma.anuncio.findUnique({
-        where: { id: anuncioId },
-        select: {
-            id: true,
-            titulo: true,
-            anfitriao: true
-        },
+        where: {
+            id: id
+        }
     });
 
-    const getAnuncio: getAnuncioDto = {
-        id: anuncio?.id || null,
-        titulo: anuncio?.titulo || null,
-        usuario_id: anuncio?.anfitriao || null
-    }
-
-    return getAnuncio
+    return anuncio;
 }
 
 export async function getReservasById(id: number): Promise<getReservaDto[] | null> {
@@ -184,10 +172,18 @@ export async function getTipoEspaco(): Promise<Object> {
     return await prisma.tipo_espaco.findMany()
 }
 
-export async function getComodidades(): Promise<Object> {
-    return await prisma.comodidades.findMany()
+export async function getComodidades(especial: boolean | undefined = undefined): Promise<Object> {
+    return await prisma.comodidades.findMany({
+        where: {
+            especial: especial
+        }
+    });
 }
 
 export async function getSeguranca(): Promise<Object> {
     return await prisma.seguranca.findMany()
+}
+
+export async function getTipoHospede(): Promise<Object> {
+    return await prisma.tipo_hospede.findMany()
 }

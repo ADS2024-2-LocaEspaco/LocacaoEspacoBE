@@ -91,8 +91,7 @@ export class CreateAnuncioDto {
   @IsInt({ each: true })
   comodidades: number[]; 
 
-  @IsArray()
-  @IsInt({ each: true })
+  @IsInt()
   seguranca_id: number;
 
   @IsBoolean()
