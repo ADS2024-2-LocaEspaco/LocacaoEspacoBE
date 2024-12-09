@@ -9,14 +9,14 @@ import { Outros } from "src/host/anuncio/host.anuncio.service";
 export class DadosDeReserva{
     constructor( private readonly prisma: PrismaService, private readonly outros: Outros ){}
 
-    async getDadosReserva(id_usuario: number){
+    async getDadosReserva(id_anuncio: number){
         try{
 
-            console.log('\nid usuario: ', id_usuario, typeof id_usuario)
+            console.log('\nid usuario: ', id_anuncio, typeof id_anuncio)
 
             const res = await this.prisma.reserva.findMany({
 
-                where: { id_usuario},
+                where: {id_anuncio},
             });
 
             return res
@@ -78,24 +78,41 @@ export class DadosDeReserva{
     async getDadosURA(id_usuario: number){
         try {
             
-            const reserva = await this.getDadosReserva(id_usuario);
+
             const anuncio = await this.outros.getDadosAnuncio(id_usuario);
-            const usuario = await this.outros.getDadosDeUsuario(id_usuario);
 
-            if( !reserva || reserva.length === 0 ){
-
-                console.log('Entradas de reservas não encontradas! ')
-
-            }else if( !anuncio || anuncio.length === 0){
+        
+            if( !anuncio || anuncio.length === 0){
 
                 console.log('Entradas para anuncio não contradas')
 
-            }else if( !usuario ){
-
-                console.log(' Usuário não encontrado! ')
+                throw new BadRequestException('Erro ao procurar por anuncio')
 
             }
 
+            const id_anuncio = anuncio[0].id;
+            
+            const reserva = await this.getDadosReserva(id_anuncio);
+
+            if(!reserva || reserva.length === 0){
+
+                console.log('Reservas não encontradas')
+
+                throw new BadRequestException('Reservas não encontradas!')
+            }
+
+
+            const id = reserva[0].id;
+
+            const usuario = await this.outros.getDadosDeUsuario(id);
+
+            if(!usuario){
+
+                console.log('Usuario não encontrado.')
+
+                throw new BadRequestException('Usuário não encontrado.')
+            }
+            
             return {
                 Reservas: {reserva},
                 Anuncio: {anuncio},
@@ -104,24 +121,24 @@ export class DadosDeReserva{
 
         } catch (err) {
            
-        if(err instanceof PrismaClientKnownRequestError){
+            if(err instanceof PrismaClientKnownRequestError){
 
-            if(err?.code === 'P2025'){
-                
-                console.log('Alguma entrada não foi encontrada')
-                
-                throw new BadRequestException('Dados não encontrados.')
-                }   
+                if(err?.code === 'P2025'){
+                    
+                    console.log('Alguma entrada não foi encontrada')
+                    
+                    throw new BadRequestException('Dados não encontrados.')
+                    }   
 
-                console.log('Erro no prisma: ', err.code, err.meta, err.message)
+                    console.log('Erro no prisma: ', err.code, err.meta, err.message)
 
-                throw new BadRequestException('Erro ao buscar dados.')
+                    throw new BadRequestException('Erro ao buscar dados.')
+                }
+
+                console.log('Erro não tratado: ', err)
+
+                throw new BadRequestException('Um erro desconhecido ocorreu.')
             }
-
-            console.log('Erro não tratado: ', err)
-
-            throw new BadRequestException('Um erro desconhecido ocorreu.')
-        }
 
     }
 
