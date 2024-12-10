@@ -1,19 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { CreateAnuncioDto, UpdateAnuncioDto } from './database/dto/create-anuncio.dto';
+import {
+  CreateAnuncioDto,
+  UpdateAnuncioDto,
+} from './database/dto/create-anuncio.dto';
 import { EnderecoDto } from './database/dto/endereco.dto';
 import { error } from 'console';
-import { 
-  getReservasById, 
-  getAnuncioById, 
-  getDadosUsuarioAnfitriaoPorIdAnuncio, 
-  getComodidadesByAnuncioId, 
+import {
+  getReservasById,
+  getAnuncioById,
+  getDadosUsuarioAnfitriaoPorIdAnuncio,
+  getComodidadesByAnuncioId,
   getFotosByAnuncioId,
   getTipoImovel,
   getTipoEspaco,
   getComodidades,
   getSeguranca,
-  getTipoHospede
+  getTipoHospede,
 } from './repositories/anuncio.repositories';
 import { getReservaDto } from './database/dto/get-reserva.dto';
 import { getAnuncioDto } from './database/dto/get-anuncio.dto';
@@ -49,6 +52,41 @@ export class AnuncioService {
       };
     }
   }
+  async saveFotos(anuncioId: number, files: Express.Multer.File[]) {
+    // Verificar se o anúncio existe
+    const anuncio = await this.prisma.anuncio.findUnique({
+      where: { id: anuncioId },
+    });
+
+    if (!anuncio) {
+      throw new NotFoundException(
+        `Anúncio com ID ${anuncioId} não encontrado.`,
+      );
+    }
+
+    // Salvar as fotos e relacioná-las ao anúncio
+    const fotosData = files.map((file) => ({
+      url: file.filename,
+    }));
+
+    const fotos = await this.prisma.fotos.createMany({
+      data: fotosData,
+      skipDuplicates: true,
+    });
+
+    const fotoIds = await this.prisma.fotos.findMany({
+      where: { url: { in: fotosData.map((f) => f.url) } },
+    });
+
+    await this.prisma.anuncioFotos.createMany({
+      data: fotoIds.map((foto) => ({
+        anuncio_id: anuncioId,
+        foto_id: foto.id,
+      })),
+    });
+
+    return fotos;
+  }
 
   async getUserFromAnuncio(id: number): Promise<getUsuarioDto | null> {
     const anuncio = await this.getAnuncioById(id);
@@ -59,7 +97,7 @@ export class AnuncioService {
   async createAnuncio(data: CreateAnuncioDto): Promise<Object> {
     const { comodidades, endereco, ...values } = data;
 
-    const anuncio = await this.prisma.anuncio.create({ 
+    const anuncio = await this.prisma.anuncio.create({
       data: {
         ...values,
         publicado: false,
@@ -73,33 +111,36 @@ export class AnuncioService {
           }),
         },
         endereco: {
-          create: endereco
-        }
-      }
+          create: endereco,
+        },
+      },
     });
 
     return anuncio;
   }
 
-  async updateAnuncio(id: number, data: Partial<UpdateAnuncioDto>): Promise<Object> {
+  async updateAnuncio(
+    id: number,
+    data: Partial<UpdateAnuncioDto>,
+  ): Promise<Object> {
     try {
       const { comodidades, endereco, ...values } = data;
-  
+
       const anuncioAtualizado = await this.prisma.anuncio.update({
         where: { id },
         data: {
           // ...
           anuncioComodidades: comodidades
-          ? {
-              deleteMany: {},
-              create: comodidades.map((comodidade) => ({
-                comodidade_id: comodidade,
-              })),
-            }
-          : undefined,
+            ? {
+                deleteMany: {},
+                create: comodidades.map((comodidade) => ({
+                  comodidade_id: comodidade,
+                })),
+              }
+            : undefined,
         },
       });
-  
+
       return anuncioAtualizado;
     } catch (error) {
       console.error(error);
@@ -138,7 +179,9 @@ export class AnuncioService {
     return getTipoEspaco();
   }
 
-  async getComodidades(especial: boolean | undefined = undefined): Promise<Object> {
+  async getComodidades(
+    especial: boolean | undefined = undefined,
+  ): Promise<Object> {
     return getComodidades(especial);
   }
 
@@ -150,13 +193,15 @@ export class AnuncioService {
     return getTipoHospede();
   }
 
-  async getComodidadesByAnuncioId(id: number): Promise<getComodidadesAnuncioDto[] | null> {
+  async getComodidadesByAnuncioId(
+    id: number,
+  ): Promise<getComodidadesAnuncioDto[] | null> {
     const comodidades = await getComodidadesByAnuncioId(id);
     return comodidades;
   }
 
   async getFotosByAnuncioId(id: number): Promise<getAnuncioFotosDto[] | null> {
-    const listaFotos =  await getFotosByAnuncioId(id)
+    const listaFotos = await getFotosByAnuncioId(id);
     return listaFotos;
   }
 }
