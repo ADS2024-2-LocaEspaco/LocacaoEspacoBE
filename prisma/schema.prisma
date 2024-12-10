@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@localhost:3306/locacaoEspaco"
+  url      = "mysql://root:@localhost:3306/locacaoEspaco"
 }
 
 model anuncio {
@@ -209,7 +209,7 @@ model lista_favoritos_personalizada {
 
 model reserva {
   id               Int               @id @default(autoincrement())
-  id_usuario       Int?
+  id_usuario       Int
   id_anuncio       Int?
   qtd_adultos      Int?
   qtd_criancas     Int?
