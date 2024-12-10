@@ -75,50 +75,66 @@ export class DadosDeReserva{
         }
     }
 
-    async getDadosURA(id_usuario: number){
+    async getDadosURA(id_usuario: number) {
         try {
-            
+            // Buscar os anúncios do usuário
+            const anuncios = await this.outros.getDadosAnuncio(id_usuario);
+    
+            console.log('Anuncios: ', anuncios);
+    
+            if (!anuncios || anuncios.length === 0) {
 
-            const anuncio = await this.outros.getDadosAnuncio(id_usuario);
-
-        
-            if( !anuncio || anuncio.length === 0){
-
-                console.log('Entradas para anuncio não contradas')
-
-                throw new BadRequestException('Erro ao procurar por anuncio')
-
+                console.log('Entradas para anúncio não encontradas');
+                throw new BadRequestException('Erro ao procurar por anúncios fk');
             }
-
-            const id_anuncio = anuncio[0].id;
-            
-            const reserva = await this.getDadosReserva(id_anuncio);
-
-            if(!reserva || reserva.length === 0){
-
-                console.log('Reservas não encontradas')
-
-                throw new BadRequestException('Reservas não encontradas!')
-            }
-
-
-            const id = reserva[0].id;
-
-            const usuario = await this.outros.getDadosDeUsuario(id);
-
-            if(!usuario){
-
-                console.log('Usuario não encontrado.')
-
-                throw new BadRequestException('Usuário não encontrado.')
-            }
-            
-            return {
-                Reservas: {reserva},
-                Anuncio: {anuncio},
-                usuario: {usuario}
+    
+            const resultados = []; // Para armazenar os dados finais
+    
+            // Iterar sobre os anúncios e buscar as reservas e usuários
+            for (const anuncio of anuncios) {
+                const id_anuncio = anuncio.id;
+                console.log('ID Anuncio: ', id_anuncio);
+    
+                // Buscar as reservas para o anúncio
+                const reservas = await this.getDadosReserva(id_anuncio);
+    
+                if (!reservas || reservas.length === 0) {
+                    console.log('Reservas não encontradas para o anúncio ID: ', id_anuncio);
+                    continue; // Se não encontrar reservas, pula para o próximo anúncio
                 }
+    
+                console.log('Reservas para o anúncio ID: ', id_anuncio, reservas);
+    
+                // Para cada reserva, buscar o usuário correspondente
+                const reservasComUsuarios = [];
+                for (const reserva of reservas) {
 
+                    const usuario = await this.outros.getDadosDeUsuario(reserva.id_usuario);
+    
+                    if (!usuario) {
+                        console.log('Usuário não encontrado para a reserva ID: ', reserva.id);
+                        continue; // Se o usuário não for encontrado, pula para a próxima reserva
+                    }
+    
+                    // Adiciona a reserva com o usuário
+                    reservasComUsuarios.push({
+                        reserva,
+                        usuario
+                    });
+                }
+    
+                // Se houver reservas com usuários, adicione no resultado
+                if (reservasComUsuarios.length > 0) {
+                    resultados.push({
+                        anuncio,
+                        reservas: reservasComUsuarios
+                    });
+                }
+            }
+    
+            // Retorna os resultados finais
+            return resultados;
+    
         } catch (err) {
            
             if(err instanceof PrismaClientKnownRequestError){
@@ -133,7 +149,11 @@ export class DadosDeReserva{
                     console.log('Erro no prisma: ', err.code, err.meta, err.message)
 
                     throw new BadRequestException('Erro ao buscar dados.')
-                }
+
+            } else if(err instanceof BadRequestException){
+                
+                throw err
+            }
 
                 console.log('Erro não tratado: ', err)
 
